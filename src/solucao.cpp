@@ -98,13 +98,8 @@ void Solucao::adiciona_cliente(Cliente &c, Rota &r, int** mapa_rotulos)
 
 void Solucao::usa_rotulo(int id_rotulo)
 {
-    //std::vector<Rotulo>::iterator r = std::find_if(rotulos.begin(), rotulos.end(), [&](Rotulo r) { return (r.id == id_rotulo); });
-    int id = rotulos[0].id;
-    int i = 0;
-    while (id != id_rotulo)
-        id = rotulos[i++].id;
-
-    rotulos[i-1].vezes_utilizado++;
+    std::vector<Rotulo>::iterator r = std::find_if(rotulos.begin(), rotulos.end(), [&](Rotulo r) { return (r.id == id_rotulo); });
+    r->vezes_utilizado++;
 
     ordena_rotulos_por_uso();    
 }
