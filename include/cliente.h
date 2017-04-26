@@ -7,7 +7,6 @@ class Cliente {
         int demanda;
         int x_pos;
         int y_pos;
-        bool visited;
 };
 
 #endif
