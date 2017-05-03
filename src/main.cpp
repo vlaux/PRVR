@@ -30,20 +30,20 @@ int main()
 
     cout << "custo da solucao: " << s.get_custo() << endl;
 
-    cout << "rotulos antes movimento 1" << endl;
+    cout << "rotulos antes movimento:" << endl;
         for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
-            cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;            
+            cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;     
 
     Solucao s1(n_rotulos, n_clientes);
     for(int i = 0; i< 1000; i++)
     {
-        s1 = movimento_2(s, capacidade, rotulos);
+        s1 = movimento_3(s, capacidade, rotulos);
         if (s1.get_custo() < s.get_custo())
         {
             s1.imprime();
             cout << "Custo após movimento: " << s1.get_custo() << endl;
 
-            cout << "rotulos após movimento 1" << endl;
+            cout << "rotulos após movimento: " << endl;
             for (int i = 0; i<n_rotulos && s1.rotulos[i].vezes_utilizado > 0 ; i++)
                 cout << "[" << s1.rotulos[i].id << "]:"<< s1.rotulos[i].vezes_utilizado << ", " ;
             

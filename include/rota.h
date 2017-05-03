@@ -10,6 +10,7 @@ using namespace std;
 class Rota
 {
   public:
+    Rota();
     Rota(Cliente &base);
     std::vector<Cliente> clientes;
     int get_carga();

@@ -79,3 +79,61 @@ Solucao movimento_2(Solucao s, int capacidade, int** mapa_rotulos)
 
     return s;
 }
+
+Solucao movimento_3(Solucao s, int capacidade, int** mapa_rotulos) 
+{
+    cout << "Movimento 3: 2-opt. ";
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        return s;
+    
+    int id_rota_1 = rand()%n_rotas;
+    int id_rota_2 = id_rota_1;
+
+    while (id_rota_1 == id_rota_2)
+        id_rota_2 = rand()%n_rotas;
+
+    Rota rota_1 = s.rotas[id_rota_1];
+    Rota rota_2 = s.rotas[id_rota_2];
+    
+    int ponto_corte_rota_1 = rand()%(rota_1.get_tamanho() - 2) + 1;
+    int ponto_corte_rota_2 = rand()%(rota_2.get_tamanho() - 2) + 1;
+
+    cout << "Rota " << id_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
+    cout << " e Rota " << id_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
+
+    Rota nova_rota_1;
+    Rota nova_rota_2;
+
+    for (std::vector<Cliente>::iterator it = rota_1.clientes.begin(); it != rota_1.clientes.begin() + ponto_corte_rota_1; it++)
+        nova_rota_1.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2; it != rota_2.clientes.end(); it++)
+        nova_rota_1.clientes.push_back(*it);
+
+    if (nova_rota_1.get_carga() > capacidade)
+    {
+        cout << "-- capacidade excedida r1 --" << endl;
+        return s;
+    }
+
+    for (std::vector<Cliente>::iterator it = rota_2.clientes.begin(); it != rota_2.clientes.begin() + ponto_corte_rota_2; it++)
+        nova_rota_2.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1; it != rota_1.clientes.end(); it++)
+        nova_rota_2.clientes.push_back(*it);
+
+
+    if (nova_rota_2.get_carga() > capacidade)
+    {
+        cout << "-- capacidade excedida r2--" << endl;
+        return s;
+    }
+    
+    s.rotas[id_rota_1] = nova_rota_1;
+    s.rotas[id_rota_2] = nova_rota_2;
+
+    s.recalcula_rotulos_utilizados(mapa_rotulos);
+
+    cout << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
+
+    return s;    
+}
