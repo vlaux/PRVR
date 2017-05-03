@@ -18,14 +18,16 @@ class Solucao
   public:
     Solucao(int n_rotulos, int n_clientes);
     std::vector<Rota> rotas;
-    vector<Rotulo> rotulos;
+    std::vector<Rotulo> rotulos;
     int get_custo();
     int get_n_rotas();
     void adiciona_rota(Rota r);
     void ordena_rotulos_por_uso();
+    void recalcula_rotulos_utilizados(int** mapa_rotulos);
     void cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotulos, int capacidade);
     void adiciona_cliente(Cliente &c, Rota &r, int** mapa_rotulos);
-    void usa_rotulo(int id_rotulo);
+    void usa_rotulo(int id_rotulo, bool reordena = true);
+    void remove_rotulo(int id_rotulo, bool reordena = true);
     bool existe_cliente_nao_atendido();
     void imprime();
 };

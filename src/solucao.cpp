@@ -28,7 +28,7 @@ Solucao::Solucao(int n_rotulos, int n_clientes)
         rotulos[i].id = i;
         rotulos[i].vezes_utilizado = 0;
     }
-    
+
     // Ordena rótulos aleatoriamente para evitar escolhas viciadas
     std::random_shuffle(rotulos.begin(), rotulos.end());
 }
@@ -83,6 +83,7 @@ void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotu
             c = escolhe_melhor_cliente(clientes, r.clientes.back(), mapa_rotulos);
         }
 
+        Solucao::adiciona_cliente(deposito, r, mapa_rotulos);
         adiciona_rota(r);
     }
 }
@@ -96,10 +97,43 @@ void Solucao::adiciona_cliente(Cliente &c, Rota &r, int** mapa_rotulos)
     Solucao::usa_rotulo(id_rotulo);
 }
 
-void Solucao::usa_rotulo(int id_rotulo)
+void Solucao::usa_rotulo(int id_rotulo, bool reordena)
 {
     std::vector<Rotulo>::iterator r = std::find_if(rotulos.begin(), rotulos.end(), [&](Rotulo r) { return (r.id == id_rotulo); });
     r->vezes_utilizado++;
+
+    if (reordena) ordena_rotulos_por_uso();
+}
+
+void Solucao::remove_rotulo(int id_rotulo, bool reordena)
+{
+    std::vector<Rotulo>::iterator r = std::find_if(rotulos.begin(), rotulos.end(), [&](Rotulo r) { return (r.id == id_rotulo); });
+    if (r->vezes_utilizado > 0) 
+    {
+        r->vezes_utilizado--;
+        if (reordena) ordena_rotulos_por_uso();
+    }
+}
+
+void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
+{
+    //zera utilização de todos os rótulos
+    for(int i=0; i<rotulos.size(); i++) {
+        rotulos[i].id = i;
+        rotulos[i].vezes_utilizado = 0;
+    }
+
+    //recalcula utilização   
+    std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
+        int id_rotulo;
+        for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
+        {
+            id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
+            rotulos[id_rotulo].vezes_utilizado++;
+        }
+     });     
+
+    std::random_shuffle(rotulos.begin(), rotulos.end());
 
     ordena_rotulos_por_uso();    
 }

@@ -7,6 +7,7 @@
 #include "cliente.h"
 #include "solucao.h"
 #include "rota.h"
+#include "busca_local.h"
 
 using namespace std;
 
@@ -29,9 +30,28 @@ int main()
 
     cout << "custo da solucao: " << s.get_custo() << endl;
 
-    cout << "rotulos" << endl;
-    for (int i = 0; i<n_rotulos; i++)
-        cout << s.rotulos[i].vezes_utilizado << " " ;
+    cout << "rotulos antes movimento 1" << endl;
+        for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
+            cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;            
+
+    Solucao s1(n_rotulos, n_clientes);
+    for(int i = 0; i< 1000; i++)
+    {
+        s1 = movimento_1(s, rotulos);
+        if (s1.get_custo() < s.get_custo())
+        {
+            s1.imprime();
+            cout << "Custo após movimento: " << s1.get_custo() << endl;
+
+            cout << "rotulos após movimento 1" << endl;
+            for (int i = 0; i<n_rotulos && s1.rotulos[i].vezes_utilizado > 0 ; i++)
+                cout << "[" << s1.rotulos[i].id << "]:"<< s1.rotulos[i].vezes_utilizado << ", " ;
+            
+            break;
+        }
+    }
+    
+    cout << "Não conseguiu" << endl;
 
     return EXIT_SUCCESS;
 }
