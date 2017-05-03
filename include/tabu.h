@@ -15,6 +15,8 @@ class ListaTabu {
         ListaTabu(int tamanho_maximo);
         void adiciona(std::tuple<int, int, int> movimento);
         bool is_tabu(std::tuple<int, int, int> movimento);
+        void aumenta_lista();
+        void diminui_lista();
 };
 
 #endif

@@ -79,7 +79,8 @@ Solucao movimento_2(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotul
     int posicao_destino = rand()%(rota_2->get_tamanho() - 2) + 1;
 
     Cliente cliente_movido = rota_1->clientes[posicao_origem];
-    cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << id_rota_1 << " para pos " << posicao_destino << " da rota " << id_rota_2;
+    cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << id_rota_1;
+    cout << " para pos " << posicao_destino << " da rota " << id_rota_2 << endl;
 
     if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
     {

@@ -24,38 +24,58 @@ int main()
 
     std::vector<Rota> rotas;
 
-    Solucao s(n_rotulos, n_clientes);
+    Solucao s_best(n_rotulos, n_clientes);
 
-    s.cria_solucao(clientes, rotulos, capacidade);
+    s_best.cria_solucao(clientes, rotulos, capacidade);
 
-    s.imprime();
+    s_best.imprime();
 
-    cout << "custo da solucao: " << s.get_custo() << endl;
+    cout << "custo da solucao: " << s_best.get_custo() << endl;
 
-    cout << "rotulos antes movimento:" << endl;
-        for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
-            cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;     
+    // cout << "rotulos antes movimento:" << endl;
+    //     for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
+    //         cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;     
 
     ListaTabu tabu = ListaTabu(n_rotulos);
     
-    Solucao s1(n_rotulos, n_clientes);
-    for(int i = 0; i< 100; i++)
-    {
-        s1 = movimento_1(s, tabu, rotulos);
-        if (s1.get_custo() < s.get_custo())
-        {
-            s1.imprime();
-            cout << "Custo após movimento: " << s1.get_custo() << endl;
+    // int iter_max = n_clientes * n_rotulos;
+    int iter_max = 1000;
+    int iter = 0;
+    int iter_best = -1;
 
-            cout << "rotulos após movimento: " << endl;
-            for (int i = 0; i<n_rotulos && s1.rotulos[i].vezes_utilizado > 0 ; i++)
-                cout << "[" << s1.rotulos[i].id << "]:"<< s1.rotulos[i].vezes_utilizado << ", " ;
-            
-            return EXIT_SUCCESS;    
+    Solucao s = s_best;
+
+    while (iter < iter_max)
+    {
+        switch(rand()%3)
+        {
+            case 0:
+                s = movimento_1(s, tabu, rotulos);
+                break;
+            case 1:
+                s = movimento_2(s, capacidade, tabu, rotulos);
+                break;
+            case 2:
+                s = movimento_3(s, capacidade, tabu, rotulos);
+                break;
+        }
+        if (s.get_custo() < s_best.get_custo())
+        {
+            cout << "Novo s_best na iter " << iter << " com custo: " << s.get_custo() << endl;
+            s_best = s;
+            iter_best = iter;
+            iter = 0;
+        }
+        else 
+        {
+            s = s_best;
+            iter++;
         }
     }
     
-    cout << "Não conseguiu" << endl;
+    cout << "Melhor solução encontrada na iteração " << iter_best << " com custo " << s_best.get_custo() << endl;
+
+    s_best.imprime();
 
     return EXIT_SUCCESS;
 }

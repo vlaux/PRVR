@@ -20,14 +20,14 @@ bool ListaTabu::is_tabu(std::tuple<int, int, int> movimento)
 }
 
 // TODO melhorar isso
-void aumenta_lista()
+void ListaTabu::aumenta_lista()
 {
-    tamanho = tamanho_max;
+    tamanho = tamanho_maximo;
 }
 
-void diminui_lista()
+void ListaTabu::diminui_lista()
 {
-    tamanho = tamanho_max / 2;
+    tamanho = tamanho_maximo / 2;
 }
 
 ListaTabu::ListaTabu(int tamanho_maximo)
