@@ -1,12 +1,14 @@
 #include <iostream>
+#include <tuple>
 #include "solucao.h"
 #include "rota.h"
+#include "tabu.h"
 
 #define MODULO(x) ((x)>=0?(x):-(x))
 
 using namespace std;
 
-Solucao movimento_1(Solucao s, int** mapa_rotulos)
+Solucao movimento_1(Solucao s, ListaTabu &tabu, int** mapa_rotulos)
 {
     cout << "Movimento 1 - Intra rota ";
     int n_rotas = s.get_n_rotas();
@@ -32,6 +34,21 @@ Solucao movimento_1(Solucao s, int** mapa_rotulos)
     }
 
     cout << ", posições " << pos_1 << " e " << pos_2 << endl;
+
+    std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_1].id, id_rota, pos_2);
+    std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_2].id, id_rota, pos_1);
+
+    if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
+    {
+        cout << "-- movimento tabu --" << endl;
+        return s;
+    }
+    else 
+    {
+        tabu.adiciona(mov_1);
+        tabu.adiciona(mov_2);        
+    }
+
     //Efetua a troca
     std::swap(r->clientes[pos_1], r->clientes[pos_2]);
 
@@ -42,7 +59,7 @@ Solucao movimento_1(Solucao s, int** mapa_rotulos)
     return s;
 }
 
-Solucao movimento_2(Solucao s, int capacidade, int** mapa_rotulos)
+Solucao movimento_2(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotulos)
 {
     cout << "Movimento 2 - Realocação - ";
     int n_rotas = s.get_n_rotas();
@@ -80,7 +97,7 @@ Solucao movimento_2(Solucao s, int capacidade, int** mapa_rotulos)
     return s;
 }
 
-Solucao movimento_3(Solucao s, int capacidade, int** mapa_rotulos) 
+Solucao movimento_3(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotulos) 
 {
     cout << "Movimento 3: 2-opt. ";
     int n_rotas = s.get_n_rotas();

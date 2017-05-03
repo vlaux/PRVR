@@ -3,11 +3,13 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <tuple>
 #include "leitor_arquivos.h"
 #include "cliente.h"
 #include "solucao.h"
 #include "rota.h"
 #include "busca_local.h"
+#include "tabu.h"
 
 using namespace std;
 
@@ -34,10 +36,12 @@ int main()
         for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
             cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;     
 
+    ListaTabu tabu = ListaTabu(n_rotulos);
+    
     Solucao s1(n_rotulos, n_clientes);
-    for(int i = 0; i< 1000; i++)
+    for(int i = 0; i< 100; i++)
     {
-        s1 = movimento_3(s, capacidade, rotulos);
+        s1 = movimento_1(s, tabu, rotulos);
         if (s1.get_custo() < s.get_custo())
         {
             s1.imprime();
@@ -47,7 +51,7 @@ int main()
             for (int i = 0; i<n_rotulos && s1.rotulos[i].vezes_utilizado > 0 ; i++)
                 cout << "[" << s1.rotulos[i].id << "]:"<< s1.rotulos[i].vezes_utilizado << ", " ;
             
-            break;
+            return EXIT_SUCCESS;    
         }
     }
     
