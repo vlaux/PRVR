@@ -14,6 +14,7 @@ class Rota
     std::vector<Cliente> clientes;
     int get_carga();
     void adiciona_cliente(Cliente &c);
+    int get_tamanho();
 };
 
 #endif

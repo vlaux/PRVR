@@ -10,11 +10,6 @@
 
 using namespace std;
 
-void imprime(Cliente c)
-{
-    cout << c.id << " " << c.x_pos << " " << c.y_pos << " " << c.demanda << endl;
-}
-
 int main()
 {
     srand(time(NULL));
@@ -26,18 +21,13 @@ int main()
 
     std::vector<Rota> rotas;
 
-    //cout << n_clientes << capacidade << endl;
-
-    //std::for_each(clientes.begin(), clientes.end(), imprime);
-
     Solucao s(n_rotulos, n_clientes);
 
     s.cria_solucao(clientes, rotulos, capacidade);
 
     s.imprime();
 
-    cout << "custo da solucao : " << s.get_custo() << endl;
-
+    cout << "custo da solucao: " << s.get_custo() << endl;
 
     cout << "rotulos" << endl;
     for (int i = 0; i<n_rotulos; i++)

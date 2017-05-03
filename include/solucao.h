@@ -20,6 +20,7 @@ class Solucao
     std::vector<Rota> rotas;
     vector<Rotulo> rotulos;
     int get_custo();
+    int get_n_rotas();
     void adiciona_rota(Rota r);
     void ordena_rotulos_por_uso();
     void cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotulos, int capacidade);

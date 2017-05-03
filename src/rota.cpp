@@ -19,3 +19,8 @@ Rota::Rota(Cliente &base)
 {
     Rota::adiciona_cliente(base);
 }
+
+int Rota::get_tamanho()
+{
+    return clientes.size();
+}

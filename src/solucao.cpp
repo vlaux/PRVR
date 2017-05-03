@@ -28,7 +28,7 @@ Solucao::Solucao(int n_rotulos, int n_clientes)
         rotulos[i].id = i;
         rotulos[i].vezes_utilizado = 0;
     }
-
+    
     // Ordena rótulos aleatoriamente para evitar escolhas viciadas
     std::random_shuffle(rotulos.begin(), rotulos.end());
 }
@@ -104,6 +104,10 @@ void Solucao::usa_rotulo(int id_rotulo)
     ordena_rotulos_por_uso();    
 }
 
+int Solucao::get_n_rotas()
+{
+    return rotas.size();
+}
 
 void Solucao::imprime()
 {
