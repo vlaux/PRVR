@@ -42,34 +42,40 @@ Solucao movimento_1(Solucao s, int** mapa_rotulos)
     return s;
 }
 
-// Solucao movimento_2(Solucao s, int capacidade, int** mapa_rotulos)
-// {
-//     cout << "Movimento 2 - Realocação - ";
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 2)
-//         return s;
+Solucao movimento_2(Solucao s, int capacidade, int** mapa_rotulos)
+{
+    cout << "Movimento 2 - Realocação - ";
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        return s;
     
-//     int id_rota_1 = rand()%n_rotas;
-//     int id_rota_2 = id_rota_1;
+    int id_rota_1 = rand()%n_rotas;
+    int id_rota_2 = id_rota_1;
 
-//     while (id_rota_1 == id_rota_2)
-//         id_rota_2 = rand()%n_rotas;
+    while (id_rota_1 == id_rota_2)
+        id_rota_2 = rand()%n_rotas;
 
-//     Rota rota_1 = s.rotas[id_rota_1];
-//     Rota rota_2 = s.rotas[id_rota_2];
+    Rota *rota_1 = &s.rotas[id_rota_1];
+    Rota *rota_2 = &s.rotas[id_rota_2];
     
-//     int posicao_origem = rand()%(rota_1.get_tamanho() - 2) + 1;
-//     int posicao_destino = rand()%(rota_2.get_tamanho() - 2) + 1;
+    int posicao_origem = rand()%(rota_1->get_tamanho() - 2) + 1;
+    int posicao_destino = rand()%(rota_2->get_tamanho() - 2) + 1;
 
-//     Cliente cliente_movido = rota_1.clientes[posicao_origem];
+    Cliente cliente_movido = rota_1->clientes[posicao_origem];
+    cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << id_rota_1 << " para pos " << posicao_destino << " da rota " << id_rota_2;
 
-//     if (rota_2.get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
-//         return s; 
+    if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
+    {
+        cout << "-- capacidade excedida --" << endl;
+        return s; 
+    }
 
-//     rota_2.clientes.insert(rota_2.clientes.begin() + posicao_destino, cliente_movido);
-//     rota_1.clientes.erase(posicao_origem);
+    rota_2->clientes.insert(rota_2->clientes.begin() + posicao_destino, cliente_movido);
+    rota_1->clientes.erase(rota_1->clientes.begin() + posicao_origem);
 
-//     s.recalcula_rotulos_utilizados(mapa_rotulos);
+    s.recalcula_rotulos_utilizados(mapa_rotulos);
 
-//     Rota r = s.rotas[id_rota];   
-// }
+    cout << "Realocado! Custo agora é " << s.get_custo() << endl;
+
+    return s;
+}

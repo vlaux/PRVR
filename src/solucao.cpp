@@ -6,6 +6,7 @@
 #include "rota.h"
 #include "rotulo.h"
 
+#define LIMITE_CONSTRUCAO 0.8
 
 bool Solucao::existe_cliente_nao_atendido() {
     for (int i = 1; i <= n_clientes; i++)
@@ -78,7 +79,7 @@ void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotu
         Rota r(deposito);
         
         Cliente c = escolhe_melhor_cliente(clientes, r.clientes.back(), mapa_rotulos);
-        while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= capacidade_veiculo) {
+        while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= capacidade_veiculo * LIMITE_CONSTRUCAO) {
             Solucao::adiciona_cliente(c, r, mapa_rotulos);
             c = escolhe_melhor_cliente(clientes, r.clientes.back(), mapa_rotulos);
         }

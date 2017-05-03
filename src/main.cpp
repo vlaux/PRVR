@@ -37,7 +37,7 @@ int main()
     Solucao s1(n_rotulos, n_clientes);
     for(int i = 0; i< 1000; i++)
     {
-        s1 = movimento_1(s, rotulos);
+        s1 = movimento_2(s, capacidade, rotulos);
         if (s1.get_custo() < s.get_custo())
         {
             s1.imprime();
