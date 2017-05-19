@@ -86,5 +86,10 @@ int main()
 
     s_best.imprime();
 
+    for (int i = 0; i <= n_clientes; i++)
+        delete rotulos[i];
+    
+    delete rotulos;
+
     return EXIT_SUCCESS;
 }

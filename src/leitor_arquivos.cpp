@@ -39,8 +39,6 @@ void le_arquivo(string nome_arquivo, std::vector<Cliente> &clientes, int &capaci
         rotulos[i] = new int[n_clientes + 1];
 
         for (int j = 0; j <= n_clientes; j++)
-        {
             arquivo >> rotulos[i][j];
-        }
     }
 }
