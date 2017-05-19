@@ -1,7 +1,0 @@
-all: build run
-
-build:
-	/usr/local/bin/g++-6 src/leitor_arquivos.cpp src/solucao.cpp src/main.cpp
-
-run:
-	./a.out

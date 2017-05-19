@@ -23,7 +23,7 @@ CXXFLAGS = -Wall -O0 -g3 -std=c++11
 INCLUDES = -I include/ -I /usr/local/include
 
 # LIBS = -lpthread -lconfig++
-LIBS = ''
+LIBS =
 LDFLAGS = $(LIBS)
 
 .PHONY: default_target
@@ -73,6 +73,9 @@ $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 remake:
 	@$(MAKE) clean
 	@$(MAKE)
+
+teste:
+	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
 
 run: remake
 	@clear
