@@ -14,7 +14,7 @@ void ListaTabu::adiciona(const std::tuple<int, int, int> movimento)
     lista_tabu.push_back(movimento);
 }
 
-bool ListaTabu::is_tabu(std::tuple<int, int, int> movimento)
+bool ListaTabu::is_tabu(const std::tuple<int, int, int> movimento)
 {
     return (std::find(lista_tabu.begin(), lista_tabu.end(), movimento) != lista_tabu.end());
 }
