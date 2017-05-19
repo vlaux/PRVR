@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <tuple>
+#include <algorithm>
 #include "tabu.h"
 
 using namespace std;
