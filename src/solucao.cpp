@@ -142,6 +142,11 @@ void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos)
     ordena_rotulos_por_uso();    
 }
 
+void Solucao::remove_rota(pos_rota)
+{
+    rotas.erase(rotas.begin() + pos_rota);
+}
+
 int Solucao::get_n_rotas()
 {
     return rotas.size();

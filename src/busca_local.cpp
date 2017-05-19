@@ -66,21 +66,21 @@ Solucao movimento_2(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotul
     if (n_rotas < 2)
         return s;
     
-    int id_rota_1 = rand()%n_rotas;
-    int id_rota_2 = id_rota_1;
+    int pos_rota_1 = rand()%n_rotas;
+    int pos_rota_2 = pos_rota_1;
 
-    while (id_rota_1 == id_rota_2)
-        id_rota_2 = rand()%n_rotas;
+    while (pos_rota_1 == pos_rota_2)
+        pos_rota_2 = rand()%n_rotas;
 
-    Rota *rota_1 = &s.rotas[id_rota_1];
-    Rota *rota_2 = &s.rotas[id_rota_2];
+    Rota *rota_1 = &s.rotas[pos_rota_1];
+    Rota *rota_2 = &s.rotas[pos_rota_2];
     
     int posicao_origem = rand()%(rota_1->get_tamanho() - 2) + 1;
     int posicao_destino = rand()%(rota_2->get_tamanho() - 2) + 1;
 
     Cliente cliente_movido = rota_1->clientes[posicao_origem];
-    cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << id_rota_1;
-    cout << " para pos " << posicao_destino << " da rota " << id_rota_2 << endl;
+    cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
+    cout << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
 
     if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
     {
@@ -90,6 +90,9 @@ Solucao movimento_2(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotul
 
     rota_2->clientes.insert(rota_2->clientes.begin() + posicao_destino, cliente_movido);
     rota_1->clientes.erase(rota_1->clientes.begin() + posicao_origem);
+
+    if(rota_1.get_tamanho() < 3) // só sobrou o depósito (no início e no fim)
+        s.remove_rota(pos_rota_1)
 
     s.recalcula_rotulos_utilizados(mapa_rotulos);
 
@@ -105,20 +108,20 @@ Solucao movimento_3(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotul
     if (n_rotas < 2)
         return s;
     
-    int id_rota_1 = rand()%n_rotas;
-    int id_rota_2 = id_rota_1;
+    int pos_rota_1 = rand()%n_rotas;
+    int pos_rota_2 = pos_rota_1;
 
-    while (id_rota_1 == id_rota_2)
-        id_rota_2 = rand()%n_rotas;
+    while (pos_rota_1 == pos_rota_2)
+        pos_rota_2 = rand()%n_rotas;
 
-    Rota rota_1 = s.rotas[id_rota_1];
-    Rota rota_2 = s.rotas[id_rota_2];
+    Rota rota_1 = s.rotas[pos_rota_1];
+    Rota rota_2 = s.rotas[pos_rota_2];
     
     int ponto_corte_rota_1 = rand()%(rota_1.get_tamanho() - 2) + 1;
     int ponto_corte_rota_2 = rand()%(rota_2.get_tamanho() - 2) + 1;
 
-    cout << "Rota " << id_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
-    cout << " e Rota " << id_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
+    cout << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
+    cout << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
 
     Rota nova_rota_1;
     Rota nova_rota_2;
@@ -146,8 +149,15 @@ Solucao movimento_3(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotul
         return s;
     }
     
-    s.rotas[id_rota_1] = nova_rota_1;
-    s.rotas[id_rota_2] = nova_rota_2;
+    s.rotas[pos_rota_1] = nova_rota_1;
+    s.rotas[pos_rota_2] = nova_rota_2;
+
+    //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
+    if(nova_rota_1.get_tamanho() < 3)
+        s.remove_rota(pos_rota_1);
+
+    if(nova_rota_2.get_tamanho() < 3)
+        s.remove_rota(pos_rota_2);
 
     s.recalcula_rotulos_utilizados(mapa_rotulos);
 

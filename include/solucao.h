@@ -28,6 +28,7 @@ class Solucao
     void adiciona_cliente(Cliente &c, Rota &r, int** mapa_rotulos);
     void usa_rotulo(int id_rotulo, bool reordena = true);
     void remove_rotulo(int id_rotulo, bool reordena = true);
+    void remove_rota(int pos_rota);
     bool existe_cliente_nao_atendido();
     void imprime();
 };
