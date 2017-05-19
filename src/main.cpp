@@ -25,23 +25,32 @@ int main()
     std::vector<Rota> rotas;
 
     Solucao s_best(n_rotulos, n_clientes);
-
     s_best.cria_solucao(clientes, rotulos, capacidade);
+    cout << "custo da solucao inicial criada: " << s_best.get_custo() << endl;    
+
+    for (int i = 0; i<1000; i++)
+    {
+        Solucao s(n_rotulos, n_clientes);
+        s.cria_solucao(clientes, rotulos, capacidade);
+        if (s.get_custo() < s_best.get_custo())
+        {
+            s_best = s;
+            cout << "Melhor solução construída na iteração " << i << ". Custo: " << s_best.get_custo() << endl;    
+        }
+    }    
 
     s_best.imprime();
-
-    cout << "custo da solucao: " << s_best.get_custo() << endl;
 
     // cout << "rotulos antes movimento:" << endl;
     //     for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
     //         cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;     
-
+    
     ListaTabu tabu = ListaTabu(n_rotulos);
     
     // int iter_max = n_clientes * n_rotulos;
-    int iter_max = 1000;
+    int iter_max = 600000;
     int iter = 0;
-    int iter_best = -1;
+    long double iter_best = -1;
 
     Solucao s = s_best;
 
@@ -61,7 +70,7 @@ int main()
         }
         if (s.get_custo() < s_best.get_custo())
         {
-            cout << "Novo s_best na iter " << iter << " com custo: " << s.get_custo() << endl;
+            cout << "<<<<<<<<<<<< Novo s_best na iter " << iter << " com custo: " << s.get_custo() << " >>>>>>>>>>>>>>>" <<endl;
             s_best = s;
             iter_best = iter;
             iter = 0;

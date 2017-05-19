@@ -67,8 +67,10 @@ Cliente Solucao::escolhe_melhor_cliente(const vector<Cliente> &clientes, const C
     }
     
     cerr << "Não era pra ter chegado aqui... como assim não tinha nenhum cliente com nenhum rótulo?" << endl;
+    fflush(stdout);
+    exit(EXIT_FAILURE);
 
-    return origem;
+    //return origem;
 }
 
 void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotulos, int capacidade_veiculo)
