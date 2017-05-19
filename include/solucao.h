@@ -13,7 +13,7 @@ class Solucao
 {
   private:
     int n_clientes;
-    bool* clientes_visitados;  
+    std::vector<bool> clientes_visitados;
     Cliente escolhe_melhor_cliente(const vector<Cliente> &clientes, const Cliente& origem, int** mapa_rotulos);
   public:
     Solucao(int n_rotulos, int n_clientes);
