@@ -142,7 +142,7 @@ void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos)
     ordena_rotulos_por_uso();    
 }
 
-void Solucao::remove_rota(pos_rota)
+void Solucao::remove_rota(int pos_rota)
 {
     rotas.erase(rotas.begin() + pos_rota);
 }

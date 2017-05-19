@@ -91,8 +91,8 @@ Solucao movimento_2(Solucao s, int capacidade, ListaTabu &tabu, int** mapa_rotul
     rota_2->clientes.insert(rota_2->clientes.begin() + posicao_destino, cliente_movido);
     rota_1->clientes.erase(rota_1->clientes.begin() + posicao_origem);
 
-    if(rota_1.get_tamanho() < 3) // só sobrou o depósito (no início e no fim)
-        s.remove_rota(pos_rota_1)
+    if(rota_1->get_tamanho() < 3) // só sobrou o depósito (no início e no fim)
+        s.remove_rota(pos_rota_1);
 
     s.recalcula_rotulos_utilizados(mapa_rotulos);
 
