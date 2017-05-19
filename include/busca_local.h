@@ -1,6 +1,8 @@
 #ifndef BUSCA_LOCAL
 #define BUSCA_LOCAL
 
+#define N_MOVIMENTOS 3
+
 #include "solucao.h"
 #include "tabu.h"
 

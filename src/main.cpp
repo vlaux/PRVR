@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <tuple>
 #include "leitor_arquivos.h"
 #include "cliente.h"
 #include "solucao.h"
@@ -22,13 +21,13 @@ int main()
     int** rotulos;
     le_arquivo("ins/c50r500i01.txt", clientes, capacidade, n_clientes, n_rotulos, rotulos);
 
-    std::vector<Rota> rotas;
+    std::vector<Rota> rotas; 
 
     Solucao s_best(n_rotulos, n_clientes);
     s_best.cria_solucao(clientes, rotulos, capacidade);
     cout << "custo da solucao inicial criada: " << s_best.get_custo() << endl;    
 
-    for (int i = 0; i<1000; i++)
+    for (int i = 0; i<10000; i++)
     {
         Solucao s(n_rotulos, n_clientes);
         s.cria_solucao(clientes, rotulos, capacidade);
@@ -48,7 +47,7 @@ int main()
     ListaTabu tabu = ListaTabu(n_rotulos);
     
     // int iter_max = n_clientes * n_rotulos;
-    int iter_max = 600000;
+    int iter_max = 100000;
     int iter = 0;
     long double iter_best = -1;
 
@@ -56,7 +55,7 @@ int main()
 
     while (iter < iter_max)
     {
-        switch(rand()%3)
+        switch(rand()%N_MOVIMENTOS)
         {
             case 0:
                 s = movimento_1(s, tabu, rotulos);
