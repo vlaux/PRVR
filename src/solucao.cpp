@@ -23,7 +23,8 @@ Solucao::Solucao(int n_rotulos, int n_clientes)
 {
     Solucao::n_clientes = n_clientes;
     rotulos = vector<Rotulo>(n_rotulos);
-    clientes_visitados = new bool[n_clientes];
+    clientes_visitados = vector<bool>(n_clientes);
+    fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
     for(int i=0; i<n_rotulos; i++) {
         rotulos[i].id = i;
