@@ -210,7 +210,7 @@ Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
         return s;
 
     int teto_inicio = (tamanho - 2 - k);
-    assert(teto_inicio > 1);
+    assert(teto_inicio > 0);
 
     int pos_inicio = (rand() % teto_inicio) + 1;
     assert(pos_inicio > 0);
