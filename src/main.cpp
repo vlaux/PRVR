@@ -8,7 +8,6 @@
 #include "solucao.h"
 #include "rota.h"
 #include "busca_local.h"
-#include "tabu.h"
 
 using namespace std;
 
@@ -39,12 +38,6 @@ int main()
     }    
 
     s_best.imprime();
-
-    // cout << "rotulos antes movimento:" << endl;
-    //     for (int i = 0; i<n_rotulos && s.rotulos[i].vezes_utilizado > 0; i++)
-    //         cout << "[" << s.rotulos[i].id << "]:"<< s.rotulos[i].vezes_utilizado << ", " ;     
-    
-    ListaTabu tabu = ListaTabu(n_rotulos);
     
     // int iter_max = n_clientes * n_rotulos;
     int iter_max = 100000;
@@ -60,16 +53,16 @@ int main()
         switch(rand()%N_MOVIMENTOS)
         {
             case 0:
-                s = movimento_intra_rota(s, rotulos, k);
+                s = movimento_intra_rota(s, rotulos);
                 break;
             case 1:
-                s = movimento_intra_rota_n_rotas(s, rotulos, k);
+                s = movimento_intra_rota_n_rotas(s, rotulos);
                 break;
             case 2:
-                s = movimento_inter_move_n(s, capacidade, rotulos, k);
+                s = movimento_inter_move_n(s, capacidade, rotulos);
                 break;
             case 3:
-                s = movimento_intra_2_opt(s, rotulos, k);
+                s = movimento_intra_2_opt(s, rotulos);
                 break;
             default:
                 cerr << "Que movimento é esse???" << endl;

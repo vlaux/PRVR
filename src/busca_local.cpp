@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "solucao.h"
 #include "rota.h"
-#include "tabu.h"
+// #include "tabu.h"
 
 #define MODULO(x) ((x) >= 0 ? (x) : -(x))
 
