@@ -53,19 +53,27 @@ int main()
 
     Solucao s = s_best;
 
+    int k = 1;
+
     while (iter < iter_max)
     {
         switch(rand()%N_MOVIMENTOS)
         {
             case 0:
-                s = movimento_1(s, tabu, rotulos);
+                s = movimento_intra_rota(s, rotulos, k);
                 break;
             case 1:
-                s = movimento_2(s, capacidade, tabu, rotulos);
+                s = movimento_intra_rota_n_rotas(s, rotulos, k);
                 break;
             case 2:
-                s = movimento_3(s, capacidade, tabu, rotulos);
+                s = movimento_inter_move_n(s, capacidade, rotulos, k);
                 break;
+            case 3:
+                s = movimento_intra_2_opt(s, rotulos, k);
+                break;
+            default:
+                cerr << "Que movimento é esse???" << endl;
+                exit(EXIT_FAILURE);
         }
         if (s.get_custo() < s_best.get_custo())
         {
