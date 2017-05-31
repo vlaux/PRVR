@@ -2,6 +2,7 @@
 #include <vector>
 #include <numeric>
 #include <algorithm>
+#include <assert.h>
 #include "solucao.h"
 #include "rota.h"
 #include "rotulo.h"
@@ -31,8 +32,6 @@ Solucao::Solucao(int n_rotulos, int n_clientes)
         rotulos[i].vezes_utilizado = 0;
     }
 
-    // Ordena rótulos aleatoriamente para evitar escolhas viciadas
-    std::random_shuffle(rotulos.begin(), rotulos.end());
 }
 
 void Solucao::adiciona_rota(Rota rota)
@@ -74,6 +73,35 @@ Cliente Solucao::escolhe_melhor_cliente(const vector<Cliente> &clientes, const C
     //return origem;
 }
 
+Cliente Solucao::escolhe_melhor_cliente_grasp(const vector<Cliente> &clientes, const Cliente& origem, int** mapa_rotulos, float alpha)
+{
+    int max = -1, min = 999999;
+    vector<int> avaliacao(clientes.size());
+
+    for_each(clientes.begin()+1, clientes.end(), [&](const Cliente c) {
+            if(c.id != origem.id && !clientes_visitados[c.id])
+            {
+                avaliacao[c.id] = rotulos[mapa_rotulos[origem.id][c.id]].vezes_utilizado;
+
+                if (avaliacao[c.id] > max) max = avaliacao[c.id];
+                if (avaliacao[c.id] < min) min = avaliacao[c.id];
+            }
+            else 
+                avaliacao[c.id] = -1;
+         });
+
+    vector<Cliente> lrc;
+
+    for_each(clientes.begin()+1, clientes.end(), [&](const Cliente c) {
+        if (avaliacao[c.id] >= min + alpha*(max-min))
+            lrc.push_back(c);
+    });
+
+    assert(!lrc.empty());
+
+    return lrc[rand()%lrc.size()];
+}
+
 void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotulos, int capacidade_veiculo)
 {
     Cliente deposito = clientes[0];
@@ -81,10 +109,10 @@ void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotu
     while(existe_cliente_nao_atendido()) {
         Rota r(deposito);
         
-        Cliente c = escolhe_melhor_cliente(clientes, r.clientes.back(), mapa_rotulos);
+        Cliente c = escolhe_melhor_cliente_grasp(clientes, r.clientes.back(), mapa_rotulos, 1);
         while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= capacidade_veiculo * LIMITE_CONSTRUCAO) {
             Solucao::adiciona_cliente(c, r, mapa_rotulos);
-            c = escolhe_melhor_cliente(clientes, r.clientes.back(), mapa_rotulos);
+            c = escolhe_melhor_cliente_grasp(clientes, r.clientes.back(), mapa_rotulos, 1);
         }
 
         Solucao::adiciona_cliente(deposito, r, mapa_rotulos);
@@ -101,22 +129,15 @@ void Solucao::adiciona_cliente(Cliente &c, Rota &r, int** mapa_rotulos)
     Solucao::usa_rotulo(id_rotulo);
 }
 
-void Solucao::usa_rotulo(int id_rotulo, bool reordena)
+void Solucao::usa_rotulo(int id_rotulo)
 {
-    std::vector<Rotulo>::iterator r = std::find_if(rotulos.begin(), rotulos.end(), [&](Rotulo r) { return (r.id == id_rotulo); });
-    r->vezes_utilizado++;
-
-    if (reordena) ordena_rotulos_por_uso();
+    rotulos[id_rotulo].vezes_utilizado += 1;
 }
 
-void Solucao::remove_rotulo(int id_rotulo, bool reordena)
+void Solucao::remove_rotulo(int id_rotulo)
 {
-    std::vector<Rotulo>::iterator r = std::find_if(rotulos.begin(), rotulos.end(), [&](Rotulo r) { return (r.id == id_rotulo); });
-    if (r->vezes_utilizado > 0) 
-    {
-        r->vezes_utilizado--;
-        if (reordena) ordena_rotulos_por_uso();
-    }
+    if (rotulos[id_rotulo].vezes_utilizado > 0) 
+        rotulos[id_rotulo].vezes_utilizado--;
 }
 
 void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
@@ -137,9 +158,6 @@ void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos)
         }
      });     
 
-    std::random_shuffle(rotulos.begin(), rotulos.end());
-
-    ordena_rotulos_por_uso();    
 }
 
 void Solucao::remove_rota(int pos_rota)
