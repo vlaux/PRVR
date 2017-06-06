@@ -8,11 +8,10 @@
 #include "solucao.h"
 #include "rota.h"
 #include "busca_local.h"
-#include "vnd.h"
 
 using namespace std;
 
-int main()
+int main_grasp()
 {
     srand(time(NULL));
 
@@ -41,16 +40,49 @@ int main()
     s_best.imprime();
     
     // int iter_max = n_clientes * n_rotulos;
-    // int iter_max = 100000;
-    // int iter = 0;
-    // long double iter_best = -1;
+    int iter_max = 100000;
+    int iter = 0;
+    long double iter_best = -1;
 
     Solucao s = s_best;
 
-    s = aplica_vnd(s, n_clientes, capacidade, rotulos, 6);
+    int k = 1;
 
-    if (s.get_custo() < s_best.get_custo())
-        s_best = s;
+    while (iter < iter_max)
+    {
+        switch(rand()%N_MOVIMENTOS)
+        {
+            case 0:
+                s = movimento_intra_rota(s, rotulos);
+                break;
+            case 1:
+                s = movimento_intra_rota_n_rotas(s, rotulos);
+                break;
+            case 2:
+                s = movimento_inter_move_n(s, capacidade, rotulos);
+                break;
+            case 3:
+                s = movimento_intra_2_opt(s, rotulos);
+                break;
+            default:
+                cerr << "Que movimento é esse???" << endl;
+                exit(EXIT_FAILURE);
+        }
+        if (s.get_custo() < s_best.get_custo())
+        {
+            cout << "<<<<<<<<<<<< Novo s_best na iter " << iter << " com custo: " << s.get_custo() << " >>>>>>>>>>>>>>>" <<endl;
+            s_best = s;
+            iter_best = iter;
+            iter = 0;
+        }
+        else 
+        {
+            s = s_best;
+            iter++;
+        }
+    }
+    
+    cout << "Melhor solução encontrada na iteração " << iter_best << " com custo " << s_best.get_custo() << endl;
 
     s_best.imprime();
 

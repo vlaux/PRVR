@@ -15,7 +15,7 @@ using namespace std;
  */
 Solucao movimento_intra_rota(Solucao s, int **mapa_rotulos, int k)
 {
-    cout << "Movimento #1 - Intra-rota ";
+    //count << "Movimento #1 - Intra-rota ";
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 1)
         return s;
@@ -23,7 +23,7 @@ Solucao movimento_intra_rota(Solucao s, int **mapa_rotulos, int k)
     int id_rota = rand() % n_rotas;
     Rota *r = &s.rotas[id_rota];
 
-    cout << "Rota " << id_rota;
+    //count << "Rota " << id_rota;
 
     int tamanho = r->get_tamanho();
 
@@ -42,14 +42,14 @@ Solucao movimento_intra_rota(Solucao s, int **mapa_rotulos, int k)
             pos_destino = rand() % (tamanho - 2) + 1;
         }
 
-        cout << ", posições " << pos_origem << " e " << pos_destino << endl;
+        //count << ", posições " << pos_origem << " e " << pos_destino << endl;
 
         // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
         // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
 
         // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
         // {
-        //     cout << "-- movimento tabu --" << endl;
+        //     //count << "-- movimento tabu --" << endl;
         //     return s;
         // }
         // else
@@ -64,7 +64,7 @@ Solucao movimento_intra_rota(Solucao s, int **mapa_rotulos, int k)
         s.recalcula_rotulos_utilizados(mapa_rotulos);
     }
 
-    cout << "Trocado! Custo agora é " << s.get_custo() << endl;
+    //count << "Trocado! Custo agora é " << s.get_custo() << endl;
 
     return s;
 }
@@ -75,7 +75,7 @@ Solucao movimento_intra_rota(Solucao s, int **mapa_rotulos, int k)
  */
 Solucao movimento_intra_rota_n_rotas(Solucao s, int **mapa_rotulos, int k)
 {
-    cout << "Movimento 1 - Intra rota múltiplas rotas";
+    //count << "Movimento 1 - Intra rota múltiplas rotas";
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 1)
         return s;
@@ -88,7 +88,7 @@ Solucao movimento_intra_rota_n_rotas(Solucao s, int **mapa_rotulos, int k)
         id_rota = rand() % n_rotas;
         r = &s.rotas[id_rota];
 
-        cout << "Rota " << id_rota;
+        //count << "Rota " << id_rota;
 
         tamanho = r->get_tamanho();
 
@@ -103,14 +103,14 @@ Solucao movimento_intra_rota_n_rotas(Solucao s, int **mapa_rotulos, int k)
             pos_destino = rand() % (tamanho - 2) + 1;
         }
 
-        cout << ", posições " << pos_origem << " e " << pos_destino << endl;
+        //count << ", posições " << pos_origem << " e " << pos_destino << endl;
 
         // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
         // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
 
         // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
         // {
-        //     cout << "-- movimento tabu --" << endl;
+        //     //count << "-- movimento tabu --" << endl;
         //     return s;
         // }
         // else
@@ -125,7 +125,7 @@ Solucao movimento_intra_rota_n_rotas(Solucao s, int **mapa_rotulos, int k)
         s.recalcula_rotulos_utilizados(mapa_rotulos);
     }
 
-    cout << "Trocado! Custo agora é " << s.get_custo() << endl;
+    //count << "Trocado! Custo agora é " << s.get_custo() << endl;
 
     return s;
 }
@@ -136,7 +136,7 @@ Solucao movimento_intra_rota_n_rotas(Solucao s, int **mapa_rotulos, int k)
  */
 Solucao movimento_inter_move_n(Solucao s, int capacidade, int **mapa_rotulos, int k)
 {
-    cout << "Movimento 2 - Realocação - ";
+    //count << "Movimento 2 - Realocação - ";
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         return s;
@@ -160,12 +160,12 @@ Solucao movimento_inter_move_n(Solucao s, int capacidade, int **mapa_rotulos, in
         posicao_destino = rand() % (rota_2->get_tamanho() - 2) + 1;
 
         Cliente cliente_movido = rota_1->clientes[posicao_origem];
-        cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
-        cout << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
+        //count << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
+        //count << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
 
         if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
         {
-            cout << "-- capacidade excedida --" << endl;
+            //count << "-- capacidade excedida --" << endl;
             return s;
         }
 
@@ -178,7 +178,7 @@ Solucao movimento_inter_move_n(Solucao s, int capacidade, int **mapa_rotulos, in
             return s;
         }
 
-        cout << "Realocado! Custo agora é " << s.get_custo() << endl;
+        //count << "Realocado! Custo agora é " << s.get_custo() << endl;
     }
 
     s.recalcula_rotulos_utilizados(mapa_rotulos);
@@ -193,7 +193,7 @@ Solucao movimento_inter_move_n(Solucao s, int capacidade, int **mapa_rotulos, in
  */
 Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
 {
-    cout << "Movimento intra rota 2-opt" << endl;
+    //count << "Movimento intra rota 2-opt" << endl;
 
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 1)
@@ -202,7 +202,7 @@ Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
     int pos_rota = rand() % n_rotas;
     Rota *r = &s.rotas[pos_rota];
 
-    cout << "Rota " << pos_rota;
+    //count << "Rota " << pos_rota;
 
     int tamanho = r->get_tamanho();
 
@@ -215,7 +215,7 @@ Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
     int pos_inicio = (rand() % teto_inicio) + 1;
     assert(pos_inicio > 0);
 
-    cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
+    //count << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
 
     reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k);
 
@@ -231,7 +231,7 @@ Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
  */
 Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotulos)
 {
-    cout << "Movimento de perturbação ";
+    //count << "Movimento de perturbação ";
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         return s;
@@ -248,8 +248,8 @@ Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotul
     int ponto_corte_rota_1 = rand() % (rota_1.get_tamanho() - 2) + 1;
     int ponto_corte_rota_2 = rand() % (rota_2.get_tamanho() - 2) + 1;
 
-    cout << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
-    cout << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
+    //count << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
+    //count << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
 
     Rota nova_rota_1;
     Rota nova_rota_2;
@@ -261,7 +261,7 @@ Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotul
 
     if (nova_rota_1.get_carga() > capacidade)
     {
-        cout << "-- capacidade excedida r1 --" << endl;
+        //count << "-- capacidade excedida r1 --" << endl;
         return s;
     }
 
@@ -272,7 +272,7 @@ Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotul
 
     if (nova_rota_2.get_carga() > capacidade)
     {
-        cout << "-- capacidade excedida r2--" << endl;
+        //count << "-- capacidade excedida r2--" << endl;
         return s;
     }
 
@@ -288,7 +288,7 @@ Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotul
 
     s.recalcula_rotulos_utilizados(mapa_rotulos);
 
-    cout << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
+    //count << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
 
     return s;
 }
