@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void le_arquivo(string nome_arquivo, std::vector<Cliente> &clientes, int &capacidade, int &n_clientes, int &n_rotulos, int **&rotulos)
+Instancia le_arquivo(string nome_arquivo)
 {
     std::ifstream arquivo(nome_arquivo, ios::in);
 
@@ -14,7 +14,13 @@ void le_arquivo(string nome_arquivo, std::vector<Cliente> &clientes, int &capaci
         exit(EXIT_FAILURE);
     }
 
+    int n_clientes, capacidade, n_rotulos;
+
     arquivo >> n_clientes >> capacidade >> n_rotulos;
+
+    Instancia instancia(n_clientes, n_rotulos);
+
+    instancia.set_capacidade(capacidade);
 
     Cliente deposito;
     deposito.id = 0;
@@ -22,23 +28,23 @@ void le_arquivo(string nome_arquivo, std::vector<Cliente> &clientes, int &capaci
 
     arquivo >> deposito.x_pos >> deposito.y_pos;
 
-    clientes.push_back(deposito);
+    instancia.add_cliente(deposito);
 
     for (int i = 1; i <= n_clientes; i++)
     {
         Cliente c;
         c.id = i;
         arquivo >> c.x_pos >> c.y_pos >> c.demanda;
-        clientes.push_back(c);
+        instancia.add_cliente(c);
     }
 
-    rotulos = new int *[n_clientes + 1];
-
+    int rotulo;
     for (int i = 0; i <= n_clientes; i++)
-    {
-        rotulos[i] = new int[n_clientes + 1];
+        for (int j = 0; j <= n_clientes; j++) 
+        {
+            arquivo >> rotulo;
+            instancia.add_rotulo(i, j, rotulo);
+        }
 
-        for (int j = 0; j <= n_clientes; j++)
-            arquivo >> rotulos[i][j];
-    }
+    return instancia;
 }
