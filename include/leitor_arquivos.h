@@ -8,6 +8,6 @@
 
 using namespace std;
 
-Instancia le_arquivo(string nome_arquivo);
+Instancia* le_arquivo(string nome_arquivo);
 
 #endif

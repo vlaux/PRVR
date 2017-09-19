@@ -17,10 +17,6 @@ Instancia::~Instancia() {
     delete [] Instancia::mapa_rotulos;
 }
 
-int Instancia::get_capacidade() {
-    return capacidade;
-}
-
 void Instancia::set_capacidade(int capacidade) {
     Instancia::capacidade = capacidade;
 }

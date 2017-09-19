@@ -3,6 +3,7 @@
 #include <numeric>
 #include <algorithm>
 #include <assert.h>
+#include <math.h>
 #include "solucao.h"
 #include "rota.h"
 #include "rotulo.h"
@@ -10,6 +11,7 @@
 #define LIMITE_CONSTRUCAO 0.8
 
 bool Solucao::existe_cliente_nao_atendido() {
+    int n_clientes = Solucao::instancia->get_n_clientes();
     for (int i = 1; i <= n_clientes; i++)
         if (!clientes_visitados[i]) return true;
     return false;
@@ -17,21 +19,24 @@ bool Solucao::existe_cliente_nao_atendido() {
 
 int Solucao::get_custo()
 {
-    return std::count_if(rotulos.begin(), rotulos.end(), [](Rotulo r) { return (r.vezes_utilizado > 0);});
+    if (rotas.size())
+        return std::count_if(rotulos.begin(), rotulos.end(), [](Rotulo r) { return (r.vezes_utilizado > 0);});
+
+    return INFINITY;
 }
 
-Solucao::Solucao(int n_rotulos, int n_clientes)
+Solucao::Solucao(Instancia* ins)
 {
-    Solucao::n_clientes = n_clientes;
+    Solucao::instancia = ins;
+    int n_rotulos = ins->get_n_rotulos();
     rotulos = vector<Rotulo>(n_rotulos);
-    clientes_visitados = vector<bool>(n_clientes);
+    clientes_visitados = vector<bool>(ins->get_n_clientes());
     fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
     for(int i=0; i<n_rotulos; i++) {
         rotulos[i].id = i;
         rotulos[i].vezes_utilizado = 0;
     }
-
 }
 
 void Solucao::adiciona_rota(Rota rota)
@@ -140,25 +145,26 @@ void Solucao::remove_rotulo(int id_rotulo)
         rotulos[id_rotulo].vezes_utilizado--;
 }
 
-void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
-{
-    //zera utilização de todos os rótulos
-    for(int i=0; i<rotulos.size(); i++) {
-        rotulos[i].id = i;
-        rotulos[i].vezes_utilizado = 0;
-    }
+// TODO: remover?
+// void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
+// {
+//     //zera utilização de todos os rótulos
+//     for(int i=0; i<rotulos.size(); i++) {
+//         rotulos[i].id = i;
+//         rotulos[i].vezes_utilizado = 0;
+//     }
 
-    //recalcula utilização   
-    std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
-        int id_rotulo;
-        for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
-        {
-            id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
-            rotulos[id_rotulo].vezes_utilizado++;
-        }
-     });     
+//     //recalcula utilização   
+//     std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
+//         int id_rotulo;
+//         for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
+//         {
+//             id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
+//             rotulos[id_rotulo].vezes_utilizado++;
+//         }
+//      });     
 
-}
+// }
 
 void Solucao::remove_rota(int pos_rota)
 {

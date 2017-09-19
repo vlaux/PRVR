@@ -18,7 +18,11 @@ class Instancia {
     public:
         Instancia(int n_clientes, int n_rotulos);
         ~Instancia();
-        int get_capacidade();
+        int get_capacidade() { return capacidade; };
+        int get_n_clientes() { return n_clientes; };
+        int get_n_rotulos() { return n_rotulos; };
+        std::vector<Cliente> get_clientes() { return clientes; }; // DEPRECATED
+        int** get_mapa_rotulos() { return mapa_rotulos; } // DEPRECATED
         int get_rotulo(int id_origem, int id_destino);
         Cliente get_cliente(int id_cliente);
         void set_capacidade(int capacidade);
