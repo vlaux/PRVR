@@ -22,7 +22,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
         return s;
 
     int id_rota = rand() % n_rotas;
-    Rota *r = s->get_rota(id_rota);
+    Rota *r = s->get_rota_ref(id_rota);
 
     cout << "Rota " << id_rota;
 
@@ -88,7 +88,7 @@ Solucao* movimento_intra_rota_n_rotas(Solucao* s, int **mapa_rotulos, int k)
     for (int i = 0; i < k; i++)
     {
         id_rota = rand() % n_rotas;
-        r = s->get_rota(id_rota);
+        r = s->get_rota_ref(id_rota);
 
         cout << "Rota " << id_rota;
 
@@ -156,8 +156,8 @@ Solucao* movimento_inter_move_n(Solucao* s, int capacidade, int **mapa_rotulos, 
         while (pos_rota_1 == pos_rota_2)
             pos_rota_2 = rand() % n_rotas;
 
-        rota_1 = s->get_rota(pos_rota_1);
-        rota_2 = s->get_rota(pos_rota_2);
+        rota_1 = s->get_rota_ref(pos_rota_1);
+        rota_2 = s->get_rota_ref(pos_rota_2);
 
         posicao_origem = rand() % (rota_1->get_tamanho() - 2) + 1;
         posicao_destino = rand() % (rota_2->get_tamanho() - 2) + 1;
@@ -205,7 +205,7 @@ Solucao* movimento_intra_2_opt(Solucao* s, int **mapa_rotulos, int k)
         return s;
 
     int pos_rota = rand() % n_rotas;
-    Rota *r = s->get_rota(pos_rota);
+    Rota *r = s->get_rota_ref(pos_rota);
 
     cout << "Rota " << pos_rota;
 
@@ -230,71 +230,72 @@ Solucao* movimento_intra_2_opt(Solucao* s, int **mapa_rotulos, int k)
     return s;
 }
 
-// /* 
-//  * Movimento de perturbação
-//  * Cria k pontos de corte em um par de rotas e alterna entre esses pontos
-//  * TODO: atualmente, só funciona para k = 1 (um ponto de corte em cada rota)
-//  */
-// Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotulos)
-// {
-//     //cout << "Movimento de perturbação ";
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 2)
-//         return s;
+/* 
+ * Movimento de perturbação
+ * Cria k pontos de corte em um par de rotas e alterna entre esses pontos
+ * TODO: atualmente, só funciona para k = 1 (um ponto de corte em cada rota)
+ */
+Solucao* movimento_perturbacao_cortes(Solucao* s, int capacidade, int **mapa_rotulos)
+{
+    cout << "Movimento de perturbação ";
+    int n_rotas = s->get_n_rotas();
+    if (n_rotas < 2)
+        return s;
 
-//     int pos_rota_1 = rand() % n_rotas;
-//     int pos_rota_2 = pos_rota_1;
+    int pos_rota_1 = rand() % n_rotas;
+    int pos_rota_2 = pos_rota_1;
 
-//     while (pos_rota_1 == pos_rota_2)
-//         pos_rota_2 = rand() % n_rotas;
+    while (pos_rota_1 == pos_rota_2)
+        pos_rota_2 = rand() % n_rotas;
 
-//     Rota rota_1 = s.rotas[pos_rota_1];
-//     Rota rota_2 = s.rotas[pos_rota_2];
+    Rota rota_1 = s->get_rota(pos_rota_1);
+    Rota rota_2 = s->get_rota(pos_rota_2);
 
-//     int ponto_corte_rota_1 = rand() % (rota_1.get_tamanho() - 2) + 1;
-//     int ponto_corte_rota_2 = rand() % (rota_2.get_tamanho() - 2) + 1;
+    int ponto_corte_rota_1 = rand() % (rota_1.get_tamanho() - 2) + 1;
+    int ponto_corte_rota_2 = rand() % (rota_2.get_tamanho() - 2) + 1;
 
-//     //cout << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
-//     //cout << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
+    cout << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
+    cout << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
 
-//     Rota nova_rota_1;
-//     Rota nova_rota_2;
+    Rota nova_rota_1;
+    Rota nova_rota_2;
 
-//     for (std::vector<Cliente>::iterator it = rota_1.clientes.begin(); it != rota_1.clientes.begin() + ponto_corte_rota_1; it++)
-//         nova_rota_1.clientes.push_back(*it);
-//     for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2; it != rota_2.clientes.end(); it++)
-//         nova_rota_1.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_1.clientes.begin(); it != rota_1.clientes.begin() + ponto_corte_rota_1; it++)
+        nova_rota_1.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2; it != rota_2.clientes.end(); it++)
+        nova_rota_1.clientes.push_back(*it);
 
-//     if (nova_rota_1.get_carga() > capacidade)
-//     {
-//         //cout << "-- capacidade excedida r1 --" << endl;
-//         return s;
-//     }
+    if (nova_rota_1.get_carga() > capacidade)
+    {
+        cout << "-- capacidade excedida r1 --" << endl;
+        return s;
+    }
 
-//     for (std::vector<Cliente>::iterator it = rota_2.clientes.begin(); it != rota_2.clientes.begin() + ponto_corte_rota_2; it++)
-//         nova_rota_2.clientes.push_back(*it);
-//     for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1; it != rota_1.clientes.end(); it++)
-//         nova_rota_2.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_2.clientes.begin(); it != rota_2.clientes.begin() + ponto_corte_rota_2; it++)
+        nova_rota_2.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1; it != rota_1.clientes.end(); it++)
+        nova_rota_2.clientes.push_back(*it);
 
-//     if (nova_rota_2.get_carga() > capacidade)
-//     {
-//         //cout << "-- capacidade excedida r2--" << endl;
-//         return s;
-//     }
+    if (nova_rota_2.get_carga() > capacidade)
+    {
+        cout << "-- capacidade excedida r2--" << endl;
+        return s;
+    }
 
-//     s.rotas[pos_rota_1] = nova_rota_1;
-//     s.rotas[pos_rota_2] = nova_rota_2;
+    s->update_rota(nova_rota_1, pos_rota_1);
+    s->update_rota(nova_rota_2, pos_rota_2);
 
-//     //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
-//     if (nova_rota_1.get_tamanho() < 3)
-//         s.remove_rota(pos_rota_1);
+    //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
+    if (nova_rota_1.get_tamanho() < 3)
+        s->remove_rota(pos_rota_1);
 
-//     if (nova_rota_2.get_tamanho() < 3)
-//         s.remove_rota(pos_rota_2);
+    if (nova_rota_2.get_tamanho() < 3)
+        s->remove_rota(pos_rota_2);
 
-//     s.recalcula_rotulos_utilizados(mapa_rotulos);
+    s->recalcula_rotulos_utilizados(mapa_rotulos);
+    s->imprime();
 
-//     //cout << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
+    cout << "Movimento 2opt aplicado! Novo custo é " << s->get_custo() << endl;
 
-//     return s;
-// }
+    return s;
+}

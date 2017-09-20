@@ -21,7 +21,9 @@ class Solucao
     Cliente escolhe_melhor_cliente_grasp(const vector<Cliente> &clientes, const Cliente& origem, int** mapa_rotulos, float alpha);    
   public:
     Solucao(Instancia *ins);
-    Rota* get_rota(int id_rota) { return &rotas[id_rota]; };
+    Rota* get_rota_ref(int id_rota) { return &rotas[id_rota]; };
+    Rota get_rota(int id_rota) { return rotas[id_rota]; };
+    void update_rota(Rota rota, int id_rota);
     int get_custo();
     int get_n_rotas();
     void adiciona_rota(Rota r);

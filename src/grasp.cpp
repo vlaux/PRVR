@@ -14,7 +14,7 @@ Solucao* grasp(Instancia* ins) {
         s->imprime();
         
         int k = 6; // tem que vir via param de configuração
-        s = movimento_intra_2_opt(s, ins->get_mapa_rotulos(), 2);
+        s = movimento_perturbacao_cortes(s, ins->get_capacidade(), ins->get_mapa_rotulos());
         // s = aplica_vnd(s, ins, k);
 
         // transformar em função

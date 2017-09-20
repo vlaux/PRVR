@@ -45,6 +45,16 @@ void Solucao::adiciona_rota(Rota rota)
     rotas.push_back(rota);
 }
 
+void Solucao::update_rota(Rota rota, int id_rota)
+{
+    try {
+        Solucao::rotas[id_rota] = rota;
+    } catch(std::exception& e) {
+        cerr << "Erro ao atualizar rota com índice " << id_rota << endl << e.what() << endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
 void Solucao::ordena_rotulos_por_uso() 
 {
     std::sort(rotulos.begin(), rotulos.end(), greater<Rotulo>());   
