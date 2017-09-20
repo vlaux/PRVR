@@ -22,7 +22,7 @@ int Solucao::get_custo()
     if (rotas.size())
         return std::count_if(rotulos.begin(), rotulos.end(), [](Rotulo r) { return (r.vezes_utilizado > 0);});
 
-    return INFINITY;
+    return INT32_MAX;
 }
 
 Solucao::Solucao(Instancia* ins)
@@ -30,6 +30,7 @@ Solucao::Solucao(Instancia* ins)
     Solucao::instancia = ins;
     int n_rotulos = ins->get_n_rotulos();
     rotulos = vector<Rotulo>(n_rotulos);
+    Solucao::rotas = vector<Rota>();
     clientes_visitados = vector<bool>(ins->get_n_clientes());
     fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
@@ -184,4 +185,5 @@ void Solucao::imprime()
         for_each(r.clientes.begin(), r.clientes.end(), [](Cliente c) { cout << " " << c.id;});
         cout << endl;
      });
+     cout << "Custo: " << get_custo();
 }

@@ -11,7 +11,7 @@ int main() {
 
     Instancia *ins = le_arquivo("ins/c50r500i01.txt");
 
-    // Solucao* s = grasp(ins);
+    Solucao* s = grasp(ins);
 
     return EXIT_SUCCESS;
 }

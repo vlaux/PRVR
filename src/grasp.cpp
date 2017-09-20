@@ -1,16 +1,16 @@
 #include "heuristicas.h"
 
-Solucao* grasp(Instancia ins) {
-    Solucao* s_best;
+Solucao* grasp(Instancia* ins) {
+    Solucao* s_best = new Solucao(ins);
 
     int iter = 0, iter_sem_melhora = 0;
     while (iter_sem_melhora < 500) {
         iter++;
         cout << "iteração " << iter;
         
-        Solucao* s = new Solucao(&ins);
-        s->cria_solucao(ins.get_clientes(), ins.get_mapa_rotulos(), ins.get_capacidade());
-        cout << "custo da solucao criada: " << s_best->get_custo() << endl;
+        Solucao* s = new Solucao(ins);
+        s->cria_solucao(ins->get_clientes(), ins->get_mapa_rotulos(), ins->get_capacidade());
+        cout << "custo da solucao criada: " << s->get_custo() << endl;
         
         // s = aplica_vnd(s, n_clientes, capacidade, rotulos, 6);
 

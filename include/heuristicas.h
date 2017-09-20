@@ -6,6 +6,6 @@
 
 using namespace std;
 
-Solucao* grasp(Instancia ins);
+Solucao* grasp(Instancia* ins);
 
 #endif
