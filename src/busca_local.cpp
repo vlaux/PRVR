@@ -1,5 +1,6 @@
 #include <iostream>
 #include <tuple>
+#include <algorithm>
 #include <assert.h>
 #include "solucao.h"
 #include "rota.h"
@@ -221,7 +222,7 @@ Solucao* movimento_intra_2_opt(Solucao* s, int **mapa_rotulos, int k)
 
     cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
 
-    reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k + 1);
+    std::reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k + 1);
 
     s->recalcula_rotulos_utilizados(mapa_rotulos);
     s->imprime();
