@@ -13,5 +13,8 @@ int main() {
 
     Solucao* s = grasp(ins);
 
+    delete s;
+    delete ins;
+
     return EXIT_SUCCESS;
 }

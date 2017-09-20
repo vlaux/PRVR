@@ -4,8 +4,7 @@ Solucao* grasp(Instancia* ins) {
     Solucao* s_best = new Solucao(ins);
 
     int iter = 0, iter_sem_melhora = 0;
-    while (iter_sem_melhora < 500) {
-        iter++;
+    while (iter_sem_melhora < 1) {
         cout << "iteração " << iter;
         
         Solucao* s = new Solucao(ins);
@@ -16,10 +15,12 @@ Solucao* grasp(Instancia* ins) {
 
         // transformar em função
         if (s->get_custo() < s_best->get_custo()) {
-            s_best = s;
+            delete s_best;
+	    s_best = s;
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;
+	    delete s;
         }
 
         iter++;
