@@ -42,14 +42,14 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
             pos_destino = rand() % (tamanho - 2) + 1;
         }
 
-        //count << ", posições " << pos_origem << " e " << pos_destino << endl;
+        //cout << ", posições " << pos_origem << " e " << pos_destino << endl;
 
         // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
         // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
 
         // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
         // {
-        //     //count << "-- movimento tabu --" << endl;
+        //     //cout << "-- movimento tabu --" << endl;
         //     return s;
         // }
         // else
@@ -70,66 +70,67 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
     return s;
 }
 
-// /* 
-//  * Movimento intra rota para múltiplas rotas
-//  * Troca clientes de posição k vezes, em quaisquer rotas da solução
-//  */
-// Solucao movimento_intra_rota_n_rotas(Solucao s, int **mapa_rotulos, int k)
-// {
-//     //count << "Movimento 1 - Intra rota múltiplas rotas";
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 1)
-//         return s;
+/* 
+ * Movimento intra rota para múltiplas rotas
+ * Troca clientes de posição k vezes, em quaisquer rotas da solução
+ */
+Solucao* movimento_intra_rota_n_rotas(Solucao* s, int **mapa_rotulos, int k)
+{
+    cout << "Movimento 1 - Intra rota múltiplas rotas";
+    int n_rotas = s->get_n_rotas();
+    if (n_rotas < 1)
+        return s;
 
-//     int id_rota, tamanho;
-//     Rota *r;
+    int id_rota, tamanho;
+    Rota *r;
 
-//     for (int i = 0; i < k; i++)
-//     {
-//         id_rota = rand() % n_rotas;
-//         r = &s.rotas[id_rota];
+    for (int i = 0; i < k; i++)
+    {
+        id_rota = rand() % n_rotas;
+        r = s->get_rota(id_rota);
 
-//         //count << "Rota " << id_rota;
+        cout << "Rota " << id_rota;
 
-//         tamanho = r->get_tamanho();
+        tamanho = r->get_tamanho();
 
-//         if (tamanho < 4) // pelo menos dois clientes são necessários: depósito, cliente 1, cliente 2, depósito
-//             return s;
+        if (tamanho < 4) // pelo menos dois clientes são necessários: depósito, cliente 1, cliente 2, depósito
+            return s;
 
-//         int pos_origem = rand() % (tamanho - 2) + 1;
-//         int pos_destino = pos_origem;
+        int pos_origem = rand() % (tamanho - 2) + 1;
+        int pos_destino = pos_origem;
 
-//         while (pos_destino == pos_origem)
-//         {
-//             pos_destino = rand() % (tamanho - 2) + 1;
-//         }
+        while (pos_destino == pos_origem)
+        {
+            pos_destino = rand() % (tamanho - 2) + 1;
+        }
 
-//         //count << ", posições " << pos_origem << " e " << pos_destino << endl;
+        //cout << ", posições " << pos_origem << " e " << pos_destino << endl;
 
-//         // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
-//         // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
+        // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
+        // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
 
-//         // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
-//         // {
-//         //     //count << "-- movimento tabu --" << endl;
-//         //     return s;
-//         // }
-//         // else
-//         // {
-//         //     tabu.adiciona(mov_1);
-//         //     tabu.adiciona(mov_2);
-//         // }
+        // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
+        // {
+        //     //cout << "-- movimento tabu --" << endl;
+        //     return s;
+        // }
+        // else
+        // {
+        //     tabu.adiciona(mov_1);
+        //     tabu.adiciona(mov_2);
+        // }
 
-//         //Efetua a troca
-//         std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
+        //Efetua a troca
+        std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
 
-//         s.recalcula_rotulos_utilizados(mapa_rotulos);
-//     }
+        s->recalcula_rotulos_utilizados(mapa_rotulos);
+    }
 
-//     //count << "Trocado! Custo agora é " << s.get_custo() << endl;
+    s->imprime();
+    cout << "Trocado! Custo agora é " << s->get_custo() << endl;
 
-//     return s;
-// }
+    return s;
+}
 
 // /* 
 //  * Movimento inter rota
@@ -137,7 +138,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //  */
 // Solucao movimento_inter_move_n(Solucao s, int capacidade, int **mapa_rotulos, int k)
 // {
-//     //count << "Movimento 2 - Realocação - ";
+//     //cout << "Movimento 2 - Realocação - ";
 //     int n_rotas = s.get_n_rotas();
 //     if (n_rotas < 2)
 //         return s;
@@ -161,12 +162,12 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //         posicao_destino = rand() % (rota_2->get_tamanho() - 2) + 1;
 
 //         Cliente cliente_movido = rota_1->clientes[posicao_origem];
-//         //count << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
-//         //count << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
+//         //cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
+//         //cout << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
 
 //         if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
 //         {
-//             //count << "-- capacidade excedida --" << endl;
+//             //cout << "-- capacidade excedida --" << endl;
 //             return s;
 //         }
 
@@ -179,7 +180,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //             return s;
 //         }
 
-//         //count << "Realocado! Custo agora é " << s.get_custo() << endl;
+//         //cout << "Realocado! Custo agora é " << s.get_custo() << endl;
 //     }
 
 //     s.recalcula_rotulos_utilizados(mapa_rotulos);
@@ -194,7 +195,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //  */
 // Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
 // {
-//     //count << "Movimento intra rota 2-opt" << endl;
+//     //cout << "Movimento intra rota 2-opt" << endl;
 
 //     int n_rotas = s.get_n_rotas();
 //     if (n_rotas < 1)
@@ -203,7 +204,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //     int pos_rota = rand() % n_rotas;
 //     Rota *r = &s.rotas[pos_rota];
 
-//     //count << "Rota " << pos_rota;
+//     //cout << "Rota " << pos_rota;
 
 //     int tamanho = r->get_tamanho();
 
@@ -216,7 +217,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //     int pos_inicio = (rand() % teto_inicio) + 1;
 //     assert(pos_inicio > 0);
 
-//     //count << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
+//     //cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
 
 //     reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k);
 
@@ -232,7 +233,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //  */
 // Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, int **mapa_rotulos)
 // {
-//     //count << "Movimento de perturbação ";
+//     //cout << "Movimento de perturbação ";
 //     int n_rotas = s.get_n_rotas();
 //     if (n_rotas < 2)
 //         return s;
@@ -249,8 +250,8 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 //     int ponto_corte_rota_1 = rand() % (rota_1.get_tamanho() - 2) + 1;
 //     int ponto_corte_rota_2 = rand() % (rota_2.get_tamanho() - 2) + 1;
 
-//     //count << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
-//     //count << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
+//     //cout << "Rota " << pos_rota_1 << ":ponto de corte " << ponto_corte_rota_1;
+//     //cout << " e Rota " << pos_rota_2 << ":ponto de corte " << ponto_corte_rota_2 << endl;
 
 //     Rota nova_rota_1;
 //     Rota nova_rota_2;
@@ -262,7 +263,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 
 //     if (nova_rota_1.get_carga() > capacidade)
 //     {
-//         //count << "-- capacidade excedida r1 --" << endl;
+//         //cout << "-- capacidade excedida r1 --" << endl;
 //         return s;
 //     }
 
@@ -273,7 +274,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 
 //     if (nova_rota_2.get_carga() > capacidade)
 //     {
-//         //count << "-- capacidade excedida r2--" << endl;
+//         //cout << "-- capacidade excedida r2--" << endl;
 //         return s;
 //     }
 
@@ -289,7 +290,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
 
 //     s.recalcula_rotulos_utilizados(mapa_rotulos);
 
-//     //count << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
+//     //cout << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
 
 //     return s;
 // }

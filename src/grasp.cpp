@@ -14,7 +14,7 @@ Solucao* grasp(Instancia* ins) {
         s->imprime();
         
         int k = 6; // tem que vir via param de configuração
-        s = movimento_intra_rota(s, ins->get_mapa_rotulos(), 1);
+        s = movimento_intra_rota_n_rotas(s, ins->get_mapa_rotulos(), 1);
         // s = aplica_vnd(s, ins, k);
 
         // transformar em função
