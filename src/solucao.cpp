@@ -146,26 +146,24 @@ void Solucao::remove_rotulo(int id_rotulo)
         rotulos[id_rotulo].vezes_utilizado--;
 }
 
-// TODO: remover?
-// void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
-// {
-//     //zera utilização de todos os rótulos
-//     for(int i=0; i<rotulos.size(); i++) {
-//         rotulos[i].id = i;
-//         rotulos[i].vezes_utilizado = 0;
-//     }
+void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
+{
+    //zera utilização de todos os rótulos
+    for(int i=0; i<rotulos.size(); i++) {
+        rotulos[i].id = i;
+        rotulos[i].vezes_utilizado = 0;
+    }
 
-//     //recalcula utilização   
-//     std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
-//         int id_rotulo;
-//         for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
-//         {
-//             id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
-//             rotulos[id_rotulo].vezes_utilizado++;
-//         }
-//      });     
-
-// }
+    //recalcula utilização   
+    std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
+        int id_rotulo;
+        for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
+        {
+            id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
+            rotulos[id_rotulo].vezes_utilizado++;
+        }
+     });
+}
 
 void Solucao::remove_rota(int pos_rota)
 {
@@ -180,10 +178,11 @@ int Solucao::get_n_rotas()
 void Solucao::imprime()
 {
     cout << "Solucao" << endl;
-    for_each(rotas.begin(), rotas.end(), [](Rota r){ 
-        cout << "ROTA: ";
+    int index = 0;
+    for_each(rotas.begin(), rotas.end(), [&index](Rota r){ 
+        cout << "ROTA: " << index++ << ": ";
         for_each(r.clientes.begin(), r.clientes.end(), [](Cliente c) { cout << " " << c.id;});
         cout << endl;
      });
-     cout << "Custo: " << get_custo();
+     cout << "Custo: " << get_custo() << endl;
 }

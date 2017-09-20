@@ -1,26 +1,30 @@
 #include "heuristicas.h"
+#include "vnd.h"
+#include "busca_local.h" // remover
 
 Solucao* grasp(Instancia* ins) {
     Solucao* s_best = new Solucao(ins);
 
     int iter = 0, iter_sem_melhora = 0;
     while (iter_sem_melhora < 1) {
-        cout << "iteração " << iter;
+        cout << "iteração " << iter << endl;
         
         Solucao* s = new Solucao(ins);
         s->cria_solucao(ins->get_clientes(), ins->get_mapa_rotulos(), ins->get_capacidade());
-        cout << "custo da solucao criada: " << s->get_custo() << endl;
+        s->imprime();
         
-        // s = aplica_vnd(s, n_clientes, capacidade, rotulos, 6);
+        int k = 6; // tem que vir via param de configuração
+        s = movimento_intra_rota(s, ins->get_mapa_rotulos(), 1);
+        // s = aplica_vnd(s, ins, k);
 
         // transformar em função
         if (s->get_custo() < s_best->get_custo()) {
             delete s_best;
-	    s_best = s;
+	        s_best = s;
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;
-	    delete s;
+	        delete s;
         }
 
         iter++;
