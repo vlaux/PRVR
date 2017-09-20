@@ -190,43 +190,44 @@ Solucao* movimento_inter_move_n(Solucao* s, int capacidade, int **mapa_rotulos, 
     return s;
 }
 
-// /* 
-//  * Movimento de troca 2-opt
-//  * Escolhe dois pontos na rota e inverte todos os clientes entre eles
-//  * TODO adicionar movimento Tabu
-//  */
-// Solucao movimento_intra_2_opt(Solucao s, int **mapa_rotulos, int k)
-// {
-//     //cout << "Movimento intra rota 2-opt" << endl;
+/* 
+ * Movimento de troca 2-opt
+ * Escolhe dois pontos na rota e inverte todos os clientes entre eles
+ * TODO adicionar movimento Tabu
+ */
+Solucao* movimento_intra_2_opt(Solucao* s, int **mapa_rotulos, int k)
+{
+    cout << "Movimento intra rota 2-opt" << endl;
 
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 1)
-//         return s;
+    int n_rotas = s->get_n_rotas();
+    if (n_rotas < 1)
+        return s;
 
-//     int pos_rota = rand() % n_rotas;
-//     Rota *r = &s.rotas[pos_rota];
+    int pos_rota = rand() % n_rotas;
+    Rota *r = s->get_rota(pos_rota);
 
-//     //cout << "Rota " << pos_rota;
+    cout << "Rota " << pos_rota;
 
-//     int tamanho = r->get_tamanho();
+    int tamanho = r->get_tamanho();
 
-//     if (tamanho < (2+k+1)) // pelo menos 2 (depósito no início e fim) + (k+1) clientes necessários
-//         return s;
+    if (tamanho < (2+k+1)) // pelo menos 2 (depósito no início e fim) + (k+1) clientes necessários
+        return s;
 
-//     int teto_inicio = (tamanho - 2 - k);
-//     assert(teto_inicio > 0);
+    int teto_inicio = (tamanho - 2 - k);
+    assert(teto_inicio > 0);
 
-//     int pos_inicio = (rand() % teto_inicio) + 1;
-//     assert(pos_inicio > 0);
+    int pos_inicio = (rand() % teto_inicio) + 1;
+    assert(pos_inicio > 0);
 
-//     //cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
+    cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
 
-//     reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k);
+    reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k + 1);
 
-//     s.recalcula_rotulos_utilizados(mapa_rotulos);
+    s->recalcula_rotulos_utilizados(mapa_rotulos);
+    s->imprime();
 
-//     return s;    
-// }
+    return s;
+}
 
 // /* 
 //  * Movimento de perturbação
