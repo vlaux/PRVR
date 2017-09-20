@@ -132,61 +132,63 @@ Solucao* movimento_intra_rota_n_rotas(Solucao* s, int **mapa_rotulos, int k)
     return s;
 }
 
-// /* 
-//  * Movimento inter rota
-//  * Move k clientes de uma rota para outras rotas
-//  */
-// Solucao movimento_inter_move_n(Solucao s, int capacidade, int **mapa_rotulos, int k)
-// {
-//     //cout << "Movimento 2 - Realocação - ";
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 2)
-//         return s;
+/* 
+ * Movimento inter rota
+ * Move k clientes de uma rota para outras rotas
+ */
+Solucao* movimento_inter_move_n(Solucao* s, int capacidade, int **mapa_rotulos, int k)
+{
+    cout << "Movimento 2 - Realocação - ";
+    int n_rotas = s->get_n_rotas();
+    if (n_rotas < 2)
+        return s;
 
-//     int pos_rota_1 = rand() % n_rotas;
-//     int pos_rota_2;
-//     int posicao_origem, posicao_destino;
-//     Rota *rota_1, *rota_2;
+    int pos_rota_1 = rand() % n_rotas;
+    int pos_rota_2;
+    int posicao_origem, posicao_destino;
+    Rota *rota_1, *rota_2;
 
-//     for (int i = 0; i < k; i++)
-//     {
-//         pos_rota_2 = pos_rota_1;
+    for (int i = 0; i < k; i++)
+    {
+        pos_rota_2 = pos_rota_1;
 
-//         while (pos_rota_1 == pos_rota_2)
-//             pos_rota_2 = rand() % n_rotas;
+        while (pos_rota_1 == pos_rota_2)
+            pos_rota_2 = rand() % n_rotas;
 
-//         rota_1 = &s.rotas[pos_rota_1];
-//         rota_2 = &s.rotas[pos_rota_2];
+        rota_1 = s->get_rota(pos_rota_1);
+        rota_2 = s->get_rota(pos_rota_2);
 
-//         posicao_origem = rand() % (rota_1->get_tamanho() - 2) + 1;
-//         posicao_destino = rand() % (rota_2->get_tamanho() - 2) + 1;
+        posicao_origem = rand() % (rota_1->get_tamanho() - 2) + 1;
+        posicao_destino = rand() % (rota_2->get_tamanho() - 2) + 1;
 
-//         Cliente cliente_movido = rota_1->clientes[posicao_origem];
-//         //cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
-//         //cout << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
+        Cliente cliente_movido = rota_1->clientes[posicao_origem];
+        cout << "cliente " << cliente_movido.id << " na pos " << posicao_origem << " da rota " << pos_rota_1;
+        cout << " para pos " << posicao_destino << " da rota " << pos_rota_2 << endl;
 
-//         if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
-//         {
-//             //cout << "-- capacidade excedida --" << endl;
-//             return s;
-//         }
+        if (rota_2->get_carga() + cliente_movido.demanda > capacidade) // capacidade excedida // throw(?)
+        {
+            cout << "-- capacidade excedida --" << endl;
+            return s;
+        }
 
-//         rota_2->clientes.insert(rota_2->clientes.begin() + posicao_destino, cliente_movido);
-//         rota_1->clientes.erase(rota_1->clientes.begin() + posicao_origem);
+        rota_2->clientes.insert(rota_2->clientes.begin() + posicao_destino, cliente_movido);
+        rota_1->clientes.erase(rota_1->clientes.begin() + posicao_origem);
 
-//         if (rota_1->get_tamanho() < 3) // só sobrou o depósito (no início e no fim)
-//         {
-//             s.remove_rota(pos_rota_1);
-//             return s;
-//         }
+        if (rota_1->get_tamanho() < 3) // só sobrou o depósito (no início e no fim)
+        {
+            cout << "Só sobrou depósito; remove rota " << pos_rota_1 << endl;
+            s->remove_rota(pos_rota_1);
+            return s;
+        }
 
-//         //cout << "Realocado! Custo agora é " << s.get_custo() << endl;
-//     }
+        cout << "Realocado! Custo agora é " << s->get_custo() << endl;
+        s->imprime();
+    }
 
-//     s.recalcula_rotulos_utilizados(mapa_rotulos);
+    s->recalcula_rotulos_utilizados(mapa_rotulos);
 
-//     return s;
-// }
+    return s;
+}
 
 // /* 
 //  * Movimento de troca 2-opt
