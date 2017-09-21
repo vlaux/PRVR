@@ -4,7 +4,15 @@
 #include "instancia.h"
 #include "busca_local.h"
 
-Solucao aplica_vnd(Solucao s, Instancia& ins, int k_max)
+
+Vnd::Vnd() {};
+
+Vnd::Vnd(ListaTabu* lista_tabu)
+{
+    tabu = lista_tabu;
+}
+
+Solucao Vnd::executa(Solucao s, Instancia& ins, int k_max)
 {
     int k = 1;
 
@@ -33,11 +41,12 @@ Solucao aplica_vnd(Solucao s, Instancia& ins, int k_max)
     return s_best;
 }
 
-Solucao busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
+Solucao Vnd::busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
 {
     cout << "Procurando melhor vizinho em k = " << k << endl;
 
-    int max_busca_em_k = ins.get_n_rotulos(); // bom valor?
+    // int max_busca_em_k = ins.get_n_rotulos(); // bom valor?
+    int max_busca_em_k = 1; // bom valor?    
     Solucao s_temp = s;
     Solucao s_best = s;
 
@@ -46,7 +55,7 @@ Solucao busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
         switch (rand() % N_MOVIMENTOS)
         {
         case 0:
-            s_temp = movimento_intra_rota(s_temp, ins.get_mapa_rotulos(), k);
+            s_temp = movimento_intra_rota(s_temp, ins.get_mapa_rotulos(), k, tabu);
             break;
         case 1:
             s_temp = movimento_intra_rota_n_rotas(s_temp, ins.get_mapa_rotulos(), k);

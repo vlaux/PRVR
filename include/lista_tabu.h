@@ -9,13 +9,13 @@ using namespace std;
 
 class ListaTabu {
     private:
-        std::list<std::tuple<int, int, int> > lista_tabu;
+        std::list<Movimento > lista_tabu;
         int tamanho_maximo;
         int tamanho;
     public:
         ListaTabu(int tamanho_maximo);
-        void adiciona(std::tuple<int, int, int> movimento);
-        bool is_tabu(std::tuple<int, int, int> movimento);
+        void adiciona(Movimento movimento);
+        bool is_tabu(Movimento movimento);
         void aumenta_lista();
         void diminui_lista();
 };

@@ -19,6 +19,7 @@
 #include <cmath>
 
 typedef std::vector<std::vector<int>> Matriz;
+typedef std::tuple<int, int, int> Movimento;
 
 namespace utils{
 

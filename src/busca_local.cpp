@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "solucao.h"
 #include "rota.h"
-// #include "tabu.h"
+#include "lista_tabu.h"
 
 #define MODULO(x) ((x) >= 0 ? (x) : -(x))
 
@@ -14,7 +14,7 @@ using namespace std;
  * Movimento intra rota
  * Troca k clientes de posição dentro de uma mesma rota
  */
-Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k)
+Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k, ListaTabu* tabu)
 {
     cout << "Movimento #1 - Intra-rota ";
     int n_rotas = s.get_n_rotas();
@@ -43,21 +43,22 @@ Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k)
             pos_destino = rand() % (tamanho - 2) + 1;
         }
 
-        //cout << ", posições " << pos_origem << " e " << pos_destino << endl;
+        if (tabu != nullptr) {
+            cout << "Verificando lista tabu..." << endl;
+            Movimento mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
+            Movimento mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
 
-        // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
-        // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
-
-        // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
-        // {
-        //     //cout << "-- movimento tabu --" << endl;
-        //     return s;
-        // }
-        // else
-        // {
-        //     tabu.adiciona(mov_1);
-        //     tabu.adiciona(mov_2);
-        // }
+            if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2))
+            {
+                cout << "-- Movimento Tabu --" << endl;
+                return s;
+            }
+            else
+            {
+                tabu->adiciona(mov_1);
+                tabu->adiciona(mov_2);
+            }
+        }
 
         //Efetua a troca
         std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
@@ -75,7 +76,7 @@ Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k)
  * Movimento intra rota para múltiplas rotas
  * Troca clientes de posição k vezes, em quaisquer rotas da solução
  */
-Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k)
+Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k, ListaTabu* tabu)
 {
     cout << "Movimento 1 - Intra rota múltiplas rotas";
     int n_rotas = s.get_n_rotas();
@@ -105,21 +106,21 @@ Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k)
             pos_destino = rand() % (tamanho - 2) + 1;
         }
 
-        //cout << ", posições " << pos_origem << " e " << pos_destino << endl;
+        if (tabu != nullptr) {
+            Movimento mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
+            Movimento mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
 
-        // std::tuple<int, int, int> mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
-        // std::tuple<int, int, int> mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
-
-        // if (tabu.is_tabu(mov_1) || tabu.is_tabu(mov_2))
-        // {
-        //     //cout << "-- movimento tabu --" << endl;
-        //     return s;
-        // }
-        // else
-        // {
-        //     tabu.adiciona(mov_1);
-        //     tabu.adiciona(mov_2);
-        // }
+            if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2))
+            {
+                cout << "-- Movimento Tabu --" << endl;
+                return s;
+            }
+            else
+            {
+                tabu->adiciona(mov_1);
+                tabu->adiciona(mov_2);
+            }
+        }
 
         //Efetua a troca
         std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
@@ -137,7 +138,7 @@ Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k)
  * Movimento inter rota
  * Move k clientes de uma rota para outras rotas
  */
-Solucao movimento_inter_move_n(Solucao s, int capacidade, Matriz &mapa_rotulos, int k)
+Solucao movimento_inter_move_n(Solucao s, int capacidade, Matriz &mapa_rotulos, int k, ListaTabu* tabu)
 {
     cout << "Movimento 2 - Realocação - ";
     int n_rotas = s.get_n_rotas();
@@ -172,6 +173,18 @@ Solucao movimento_inter_move_n(Solucao s, int capacidade, Matriz &mapa_rotulos, 
             return s;
         }
 
+        if (tabu != nullptr) {
+            Movimento mov = std::make_tuple(cliente_movido.id, posicao_destino, pos_rota_2);
+
+            if (tabu->is_tabu(mov)) {
+                cout << "Movimento tabu!" << endl;
+                return s;
+            }
+            else {
+                tabu->adiciona(mov);
+            }
+        }
+
         rota_2->clientes.insert(rota_2->clientes.begin() + posicao_destino, cliente_movido);
         rota_1->clientes.erase(rota_1->clientes.begin() + posicao_origem);
 
@@ -196,7 +209,7 @@ Solucao movimento_inter_move_n(Solucao s, int capacidade, Matriz &mapa_rotulos, 
  * Escolhe dois pontos na rota e inverte todos os clientes entre eles
  * TODO adicionar movimento Tabu
  */
-Solucao movimento_intra_2_opt(Solucao s, Matriz &mapa_rotulos, int k)
+Solucao movimento_intra_2_opt(Solucao s, Matriz &mapa_rotulos, int k, ListaTabu* tabu)
 {
     cout << "Movimento intra rota 2-opt" << endl;
 
@@ -221,6 +234,25 @@ Solucao movimento_intra_2_opt(Solucao s, Matriz &mapa_rotulos, int k)
     assert(pos_inicio > 0);
 
     cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
+
+    if (tabu != nullptr) {
+        std::vector<Movimento> movimentos;
+
+        for (int i = pos_inicio; i < pos_inicio + k; i++) 
+        {
+            Movimento mov = std::make_tuple(r->clientes[i].id, pos_rota, pos_inicio + k - i);
+            if (tabu->is_tabu(mov)) 
+            {
+                cout << "Movimento Tabu" << endl;
+                return s;
+            } 
+            else 
+            {
+                movimentos.push_back(mov);
+            }
+        }
+        for_each(movimentos.begin(), movimentos.end(), [tabu](Movimento mov) { tabu->adiciona(mov); });
+    }
 
     std::reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k + 1);
 

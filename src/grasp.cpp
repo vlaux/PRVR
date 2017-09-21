@@ -37,8 +37,8 @@ Solucao Grasp::executa(Instancia &ins) {
 
         avalia_alpha(s, s_best, alpha_idx, iter);
         
-        int k = 6; // tem que vir via param de configuração
-        s = aplica_vnd(s, ins, k);
+        int k_max = 6; // tem que vir via param de configuração
+        s = Vnd().executa(s, ins, k_max);
 
         // transformar em função
         if (s.get_custo() < s_best.get_custo()) {

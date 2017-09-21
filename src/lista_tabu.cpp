@@ -2,11 +2,11 @@
 #include <list>
 #include <tuple>
 #include <algorithm>
-#include "tabu.h"
+#include "lista_tabu.h"
 
 using namespace std;
 
-void ListaTabu::adiciona(const std::tuple<int, int, int> movimento)
+void ListaTabu::adiciona(const Movimento movimento)
 {
     // cout << "Tamanho: " << lista_tabu.size() << "/" << tamanho << endl;
     if (lista_tabu.size() == tamanho)
@@ -15,7 +15,7 @@ void ListaTabu::adiciona(const std::tuple<int, int, int> movimento)
     lista_tabu.push_back(movimento);
 }
 
-bool ListaTabu::is_tabu(const std::tuple<int, int, int> movimento)
+bool ListaTabu::is_tabu(const Movimento movimento)
 {
     return (std::find(lista_tabu.begin(), lista_tabu.end(), movimento) != lista_tabu.end());
 }

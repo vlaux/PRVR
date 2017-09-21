@@ -3,8 +3,19 @@
 
 #include "solucao.h"
 #include "utils.h"
+#include "lista_tabu.h"
 
-Solucao aplica_vnd(Solucao s, Instancia& ins, int k_max);
-Solucao busca_melhor_vizinho(Solucao s, Instancia& ins, int k);
+using namespace std;
+
+class Vnd {
+    private:
+        ListaTabu* tabu = nullptr;
+        Solucao busca_melhor_vizinho(Solucao s, Instancia& ins, int k);        
+
+    public:
+        Vnd();
+        Vnd(ListaTabu* tabu);
+        Solucao executa(Solucao s, Instancia& ins, int k_max);
+};
 
 #endif
