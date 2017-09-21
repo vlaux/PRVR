@@ -1,6 +1,11 @@
+#include <assert.h>
 #include "heuristicas.h"
 #include "vnd.h"
-#include "busca_local.h" // remover
+
+#define LIMITE_CONSTRUCAO 0.8
+
+Solucao constroi_solucao(Instancia &ins);
+Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha);
 
 Solucao grasp(Instancia &ins) {
     Solucao s_best(ins);
@@ -10,7 +15,7 @@ Solucao grasp(Instancia &ins) {
         cout << "iteração " << iter << endl;
         
         Solucao s(ins);
-        s.cria_solucao(ins.get_clientes(), ins.get_mapa_rotulos(), ins.get_capacidade());
+        s = constroi_solucao(ins);
         s.imprime();
         
         int k = 6; // tem que vir via param de configuração
@@ -50,4 +55,64 @@ Solucao grasp(Instancia &ins) {
     // int iter_max = 100000;
     // int iter = 0;
     // long double iter_best = -1;
+}
+
+Solucao constroi_solucao(Instancia &ins)
+{
+    Solucao s(ins);
+
+    Cliente deposito = ins.get_cliente(0);
+    
+    while(s.existe_cliente_nao_atendido()) {
+        Rota r(deposito);
+        
+        Cliente c = escolhe_melhor_cliente(s, ins, r.clientes.back(), 1);
+        while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= ins.get_capacidade() * LIMITE_CONSTRUCAO) {
+            s.adiciona_cliente(c, r, ins.get_mapa_rotulos());
+            c = escolhe_melhor_cliente(s, ins, r.clientes.back(), 1);
+        }
+
+        s.adiciona_cliente(deposito, r, ins.get_mapa_rotulos());
+        s.adiciona_rota(r);
+    }
+
+    return s;
+}
+
+Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha)
+{
+    if (!s.existe_cliente_nao_atendido())
+        return origem;
+
+    int max = -1, min = INT32_MAX;
+    int n_clientes = ins.get_n_clientes();
+    vector<int> avaliacao(n_clientes);
+
+    for(int i = 1; i <= n_clientes; i++)
+    {
+        if(i != origem.id && !s.is_cliente_visitado(i))
+        {
+            avaliacao[i] = s.get_rotulo(ins.get_rotulo(origem.id, i)).vezes_utilizado;
+            
+            if (avaliacao[i] > max) max = avaliacao[i];
+            if (avaliacao[i] < min) min = avaliacao[i];
+        }
+        else 
+            avaliacao[i] = -1;
+    }
+
+    vector<Cliente> lrc;
+
+    for(int i = 1; i <= n_clientes; i++)
+    {
+        if (avaliacao[i] >= (min + alpha*(max-min))) 
+        {
+            Cliente c = ins.get_cliente(i);        
+            lrc.push_back(c);            
+        }
+    }
+
+    assert(!lrc.empty());
+    
+    return lrc[rand()%lrc.size()];
 }

@@ -18,9 +18,7 @@ class Solucao
     std::vector<bool> clientes_visitados;
     std::vector<Rota> rotas;
     std::vector<Rotulo> rotulos;
-    Cliente escolhe_melhor_cliente(const vector<Cliente> &clientes, const Cliente& origem, Matriz &mapa_rotulos);
-    Cliente escolhe_melhor_cliente_grasp(const vector<Cliente> &clientes, const Cliente& origem, Matriz &mapa_rotulos, float alpha);
-    void copy(const Solucao& s);      
+    void copy(const Solucao& s);
   public:
     Solucao(Instancia &ins);
     Solucao(const Solucao& s);
@@ -30,10 +28,10 @@ class Solucao
     void update_rota(Rota rota, int id_rota);
     int get_custo();
     int get_n_rotas();
+    Rotulo get_rotulo(int id_rotulo) { return rotulos[id_rotulo]; };
     void adiciona_rota(Rota r);
-    void ordena_rotulos_por_uso();
+    bool is_cliente_visitado(int id_cliente) { return clientes_visitados[id_cliente]; };
     void recalcula_rotulos_utilizados(Matriz &mapa_rotulos);
-    void cria_solucao(const std::vector<Cliente> &clientes, Matriz &mapa_rotulos, int capacidade);
     void adiciona_cliente(Cliente &c, Rota &r, Matriz &mapa_rotulos);
     void usa_rotulo(int id_rotulo);
     void remove_rotulo(int id_rotulo);
