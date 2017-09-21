@@ -75,10 +75,10 @@ Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k)
  * Movimento intra rota para múltiplas rotas
  * Troca clientes de posição k vezes, em quaisquer rotas da solução
  */
-Solucao* movimento_intra_rota_n_rotas(Solucao* s, Matriz &mapa_rotulos, int k)
+Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento 1 - Intra rota múltiplas rotas";
-    int n_rotas = s->get_n_rotas();
+    int n_rotas = s.get_n_rotas();
     if (n_rotas < 1)
         return s;
 
@@ -88,7 +88,7 @@ Solucao* movimento_intra_rota_n_rotas(Solucao* s, Matriz &mapa_rotulos, int k)
     for (int i = 0; i < k; i++)
     {
         id_rota = rand() % n_rotas;
-        r = s->get_rota_ref(id_rota);
+        r = s.get_rota_ref(id_rota);
 
         cout << "Rota " << id_rota;
 
@@ -124,11 +124,11 @@ Solucao* movimento_intra_rota_n_rotas(Solucao* s, Matriz &mapa_rotulos, int k)
         //Efetua a troca
         std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
 
-        s->recalcula_rotulos_utilizados(mapa_rotulos);
+        s.recalcula_rotulos_utilizados(mapa_rotulos);
     }
 
-    s->imprime();
-    cout << "Trocado! Custo agora é " << s->get_custo() << endl;
+    s.imprime();
+    cout << "Trocado! Custo agora é " << s.get_custo() << endl;
 
     return s;
 }
@@ -137,10 +137,10 @@ Solucao* movimento_intra_rota_n_rotas(Solucao* s, Matriz &mapa_rotulos, int k)
  * Movimento inter rota
  * Move k clientes de uma rota para outras rotas
  */
-Solucao* movimento_inter_move_n(Solucao* s, int capacidade, Matriz &mapa_rotulos, int k)
+Solucao movimento_inter_move_n(Solucao s, int capacidade, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento 2 - Realocação - ";
-    int n_rotas = s->get_n_rotas();
+    int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         return s;
 
@@ -156,8 +156,8 @@ Solucao* movimento_inter_move_n(Solucao* s, int capacidade, Matriz &mapa_rotulos
         while (pos_rota_1 == pos_rota_2)
             pos_rota_2 = rand() % n_rotas;
 
-        rota_1 = s->get_rota_ref(pos_rota_1);
-        rota_2 = s->get_rota_ref(pos_rota_2);
+        rota_1 = s.get_rota_ref(pos_rota_1);
+        rota_2 = s.get_rota_ref(pos_rota_2);
 
         posicao_origem = rand() % (rota_1->get_tamanho() - 2) + 1;
         posicao_destino = rand() % (rota_2->get_tamanho() - 2) + 1;
@@ -178,15 +178,15 @@ Solucao* movimento_inter_move_n(Solucao* s, int capacidade, Matriz &mapa_rotulos
         if (rota_1->get_tamanho() < 3) // só sobrou o depósito (no início e no fim)
         {
             cout << "Só sobrou depósito; remove rota " << pos_rota_1 << endl;
-            s->remove_rota(pos_rota_1);
+            s.remove_rota(pos_rota_1);
             return s;
         }
 
-        cout << "Realocado! Custo agora é " << s->get_custo() << endl;
-        s->imprime();
+        cout << "Realocado! Custo agora é " << s.get_custo() << endl;
+        s.imprime();
     }
 
-    s->recalcula_rotulos_utilizados(mapa_rotulos);
+    s.recalcula_rotulos_utilizados(mapa_rotulos);
 
     return s;
 }
@@ -196,16 +196,16 @@ Solucao* movimento_inter_move_n(Solucao* s, int capacidade, Matriz &mapa_rotulos
  * Escolhe dois pontos na rota e inverte todos os clientes entre eles
  * TODO adicionar movimento Tabu
  */
-Solucao* movimento_intra_2_opt(Solucao* s, Matriz &mapa_rotulos, int k)
+Solucao movimento_intra_2_opt(Solucao s, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento intra rota 2-opt" << endl;
 
-    int n_rotas = s->get_n_rotas();
+    int n_rotas = s.get_n_rotas();
     if (n_rotas < 1)
         return s;
 
     int pos_rota = rand() % n_rotas;
-    Rota *r = s->get_rota_ref(pos_rota);
+    Rota *r = s.get_rota_ref(pos_rota);
 
     cout << "Rota " << pos_rota;
 
@@ -224,8 +224,8 @@ Solucao* movimento_intra_2_opt(Solucao* s, Matriz &mapa_rotulos, int k)
 
     std::reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k + 1);
 
-    s->recalcula_rotulos_utilizados(mapa_rotulos);
-    s->imprime();
+    s.recalcula_rotulos_utilizados(mapa_rotulos);
+    s.imprime();
 
     return s;
 }
@@ -235,10 +235,10 @@ Solucao* movimento_intra_2_opt(Solucao* s, Matriz &mapa_rotulos, int k)
  * Cria k pontos de corte em um par de rotas e alterna entre esses pontos
  * TODO: atualmente, só funciona para k = 1 (um ponto de corte em cada rota)
  */
-Solucao* movimento_perturbacao_cortes(Solucao* s, int capacidade, Matriz &mapa_rotulos)
+Solucao movimento_perturbacao_cortes(Solucao s, int capacidade, Matriz &mapa_rotulos)
 {
     cout << "Movimento de perturbação ";
-    int n_rotas = s->get_n_rotas();
+    int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         return s;
 
@@ -248,8 +248,8 @@ Solucao* movimento_perturbacao_cortes(Solucao* s, int capacidade, Matriz &mapa_r
     while (pos_rota_1 == pos_rota_2)
         pos_rota_2 = rand() % n_rotas;
 
-    Rota rota_1 = s->get_rota(pos_rota_1);
-    Rota rota_2 = s->get_rota(pos_rota_2);
+    Rota rota_1 = s.get_rota(pos_rota_1);
+    Rota rota_2 = s.get_rota(pos_rota_2);
 
     int ponto_corte_rota_1 = rand() % (rota_1.get_tamanho() - 2) + 1;
     int ponto_corte_rota_2 = rand() % (rota_2.get_tamanho() - 2) + 1;
@@ -282,20 +282,20 @@ Solucao* movimento_perturbacao_cortes(Solucao* s, int capacidade, Matriz &mapa_r
         return s;
     }
 
-    s->update_rota(nova_rota_1, pos_rota_1);
-    s->update_rota(nova_rota_2, pos_rota_2);
+    s.update_rota(nova_rota_1, pos_rota_1);
+    s.update_rota(nova_rota_2, pos_rota_2);
 
     //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
     if (nova_rota_1.get_tamanho() < 3)
-        s->remove_rota(pos_rota_1);
+        s.remove_rota(pos_rota_1);
 
     if (nova_rota_2.get_tamanho() < 3)
-        s->remove_rota(pos_rota_2);
+        s.remove_rota(pos_rota_2);
 
-    s->recalcula_rotulos_utilizados(mapa_rotulos);
-    s->imprime();
+    s.recalcula_rotulos_utilizados(mapa_rotulos);
+    s.imprime();
 
-    cout << "Movimento 2opt aplicado! Novo custo é " << s->get_custo() << endl;
+    cout << "Movimento 2opt aplicado! Novo custo é " << s.get_custo() << endl;
 
     return s;
 }

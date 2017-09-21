@@ -43,21 +43,20 @@ Solucao busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
 
     for (int i = 0; i < max_busca_em_k; i++)
     {
-        // switch (rand() % N_MOVIMENTOS)
-        switch (0)
+        switch (rand() % N_MOVIMENTOS)
         {
         case 0:
             s_temp = movimento_intra_rota(s_temp, ins.get_mapa_rotulos(), k);
             break;
-        // case 1:
-        //     s_temp = movimento_intra_rota_n_rotas(s_temp, ins->get_mapa_rotulos(), k);
-        //     break;
-        // case 2:
-        //     s_temp = movimento_inter_move_n(s_temp, ins->get_capacidade(), ins->get_mapa_rotulos(), k);
-        //     break;
-        // case 3:
-        //     s_temp = movimento_intra_2_opt(s_temp, ins->get_mapa_rotulos(), k);
-        //     break;
+        case 1:
+            s_temp = movimento_intra_rota_n_rotas(s_temp, ins.get_mapa_rotulos(), k);
+            break;
+        case 2:
+            s_temp = movimento_inter_move_n(s_temp, ins.get_capacidade(), ins.get_mapa_rotulos(), k);
+            break;
+        case 3:
+            s_temp = movimento_intra_2_opt(s_temp, ins.get_mapa_rotulos(), k);
+            break;
         default:
             cerr << "Que movimento é esse???" << endl;
             exit(EXIT_FAILURE);
