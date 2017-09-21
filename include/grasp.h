@@ -24,7 +24,7 @@ class Grasp
         void avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter);        
         Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha);
     public:
-        Grasp(bool is_reativo, float alpha = 1);        
+        Grasp(bool is_reativo = false, float alpha = 1);        
         Solucao constroi_solucao(Instancia &ins, float alpha);
         Solucao executa(Instancia &ins);
 };
