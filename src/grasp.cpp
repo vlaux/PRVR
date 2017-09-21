@@ -1,13 +1,8 @@
 #include <assert.h>
-#include "heuristicas.h"
+#include "grasp.h"
 #include "vnd.h"
 
-#define LIMITE_CONSTRUCAO 0.8
-
-Solucao constroi_solucao(Instancia &ins);
-Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha);
-
-Solucao grasp(Instancia &ins) {
+Solucao Grasp::executa(Instancia &ins) {
     Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0;
@@ -57,7 +52,7 @@ Solucao grasp(Instancia &ins) {
     // long double iter_best = -1;
 }
 
-Solucao constroi_solucao(Instancia &ins)
+Solucao Grasp::constroi_solucao(Instancia &ins)
 {
     Solucao s(ins);
 
@@ -79,7 +74,7 @@ Solucao constroi_solucao(Instancia &ins)
     return s;
 }
 
-Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha)
+Cliente Grasp::escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha)
 {
     if (!s.existe_cliente_nao_atendido())
         return origem;
