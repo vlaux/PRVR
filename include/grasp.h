@@ -25,7 +25,7 @@ class Grasp
         Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha);
     public:
         Grasp(bool is_reativo = false, float alpha = 1);        
-        Solucao constroi_solucao(Instancia &ins, float alpha);
+        Solucao constroi_solucao(Instancia &ins, float alpha = 1);
         Solucao executa(Instancia &ins);
 };
 

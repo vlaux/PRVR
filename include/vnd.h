@@ -15,7 +15,7 @@ class Vnd {
     public:
         Vnd();
         Vnd(ListaTabu* tabu);
-        Solucao executa(Solucao s, Instancia& ins, int k_max);
+        Solucao executa(Solucao s, Instancia& ins, int k_max = 1);
 };
 
 #endif
