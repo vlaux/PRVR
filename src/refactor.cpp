@@ -11,7 +11,7 @@ int main() {
 
     Instancia ins = le_arquivo("ins/c50r500i01.txt");
 
-    Solucao s = Grasp().executa(ins);
+    Solucao s = Grasp(true).executa(ins);
 
     return EXIT_SUCCESS;
 }

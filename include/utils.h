@@ -76,6 +76,61 @@ namespace utils{
         }
     }
 
+        namespace lists {
+        template <typename Iter, typename result>
+        inline result sum(Iter start, Iter end, result initialValue){
+            return utils::functional::reduce(start, end, initialValue, [](result a, result b){return a + b;});
+        }
+
+        template <typename Collection, typename result>
+        inline result sum(Collection const & col, result initialValue){
+            return utils::functional::reduce(col, initialValue, [](result a, result b){return a + b;});
+        }
+
+        template <typename Iter, typename result>
+        inline result prod(Iter start, Iter end, result initialValue){
+            return utils::functional::reduce(start, end, initialValue, [](result a, result b){return a * b;});
+        }
+
+        template <typename Collection, typename result>
+        inline result prod(Collection const & col, result initialValue){
+            return utils::functional::reduce(col, initialValue, [](result a, result b){return a * b;});
+        }
+
+        template <typename Collection, typename valType>
+        inline void values(Collection& col, valType value){
+            for (auto &e: col){
+                e = value;
+            }
+        }
+
+        template <typename Collection>
+        inline void ones(Collection& col){
+            utils::lists::values(col, 1.0);
+        }
+
+        template <typename Collection>
+        inline void zeros(Collection& col){
+            utils::lists::values(col, 0.0);
+        }
+
+        template<class T1, class T2, class T3>
+        inline void printVet(const T1* vet, T2 ini, T3 fim){
+            for (size_t i = ini; i < (size_t) fim; i++)
+            {
+                std::cout << i << " - " << vet[i] << std::endl;
+            }
+        }
+
+        template<class T1, class T2, class T3, class A>
+        inline void printVet(const T1* vet, T2 ini, T3 fim, A access){
+            for (size_t i = ini; i < (size_t) fim; i++)
+            {
+                std::cout << i << " - " << access(vet[i]) << std::endl;
+            }
+        }
+    }
+
     namespace random{
         class mt19937_rng_singleton
         {
