@@ -3,9 +3,10 @@
 
 #include "solucao.h"
 #include "instancia.h"
+#include "utils.h"
 
 using namespace std;
 
-Solucao* grasp(Instancia* ins);
+Solucao grasp(Instancia &ins);
 
 #endif

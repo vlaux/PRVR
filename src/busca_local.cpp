@@ -14,15 +14,15 @@ using namespace std;
  * Movimento intra rota
  * Troca k clientes de posição dentro de uma mesma rota
  */
-Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
+Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento #1 - Intra-rota ";
-    int n_rotas = s->get_n_rotas();
+    int n_rotas = s.get_n_rotas();
     if (n_rotas < 1)
         return s;
 
     int id_rota = rand() % n_rotas;
-    Rota *r = s->get_rota_ref(id_rota);
+    Rota *r = s.get_rota_ref(id_rota);
 
     cout << "Rota " << id_rota;
 
@@ -62,11 +62,11 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
         //Efetua a troca
         std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
 
-        s->recalcula_rotulos_utilizados(mapa_rotulos);
+        s.recalcula_rotulos_utilizados(mapa_rotulos);
     }
 
-    cout << "Trocado! Custo agora é " << s->get_custo() << endl;
-    s->imprime();
+    cout << "Trocado! Custo agora é " << s.get_custo() << endl;
+    s.imprime();
 
     return s;
 }
@@ -75,7 +75,7 @@ Solucao* movimento_intra_rota(Solucao* s, int **mapa_rotulos, int k)
  * Movimento intra rota para múltiplas rotas
  * Troca clientes de posição k vezes, em quaisquer rotas da solução
  */
-Solucao* movimento_intra_rota_n_rotas(Solucao* s, int **mapa_rotulos, int k)
+Solucao* movimento_intra_rota_n_rotas(Solucao* s, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento 1 - Intra rota múltiplas rotas";
     int n_rotas = s->get_n_rotas();
@@ -137,7 +137,7 @@ Solucao* movimento_intra_rota_n_rotas(Solucao* s, int **mapa_rotulos, int k)
  * Movimento inter rota
  * Move k clientes de uma rota para outras rotas
  */
-Solucao* movimento_inter_move_n(Solucao* s, int capacidade, int **mapa_rotulos, int k)
+Solucao* movimento_inter_move_n(Solucao* s, int capacidade, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento 2 - Realocação - ";
     int n_rotas = s->get_n_rotas();
@@ -196,7 +196,7 @@ Solucao* movimento_inter_move_n(Solucao* s, int capacidade, int **mapa_rotulos, 
  * Escolhe dois pontos na rota e inverte todos os clientes entre eles
  * TODO adicionar movimento Tabu
  */
-Solucao* movimento_intra_2_opt(Solucao* s, int **mapa_rotulos, int k)
+Solucao* movimento_intra_2_opt(Solucao* s, Matriz &mapa_rotulos, int k)
 {
     cout << "Movimento intra rota 2-opt" << endl;
 
@@ -235,7 +235,7 @@ Solucao* movimento_intra_2_opt(Solucao* s, int **mapa_rotulos, int k)
  * Cria k pontos de corte em um par de rotas e alterna entre esses pontos
  * TODO: atualmente, só funciona para k = 1 (um ponto de corte em cada rota)
  */
-Solucao* movimento_perturbacao_cortes(Solucao* s, int capacidade, int **mapa_rotulos)
+Solucao* movimento_perturbacao_cortes(Solucao* s, int capacidade, Matriz &mapa_rotulos)
 {
     cout << "Movimento de perturbação ";
     int n_rotas = s->get_n_rotas();

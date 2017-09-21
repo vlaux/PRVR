@@ -4,3 +4,4 @@ a.out*
 *.d
 *.exe
 teste.c
+*.DS_Store*

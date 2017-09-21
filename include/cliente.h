@@ -1,6 +1,8 @@
 #ifndef CLIENTE
 #define CLIENTE
 
+#include "utils.h"
+
 class Cliente {
     public:
         int id;

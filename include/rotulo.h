@@ -1,6 +1,8 @@
 #ifndef ROTULO
 #define ROTULO
 
+#include "utils.h"
+
 class Rotulo {
     public:
         int id;

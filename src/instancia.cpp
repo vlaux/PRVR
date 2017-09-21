@@ -1,20 +1,12 @@
 #include "instancia.h"
 
 Instancia::Instancia(int n_clientes, int n_rotulos) {
-    Instancia::n_clientes = n_clientes;
-    Instancia::n_rotulos = n_rotulos;
+    this->n_clientes = n_clientes;
+    this->n_rotulos = n_rotulos;
 
-    // Instancia matriz com mapa de rótulos. n_clientes + 1 por causa do depósito
-    Instancia::mapa_rotulos = new int *[n_clientes + 1];
+    mapa_rotulos = std::vector<std::vector<int>>(n_clientes + 1);
     for (int i = 0; i <= n_clientes; i++)
-        Instancia::mapa_rotulos[i] = new int[n_clientes + 1];
-}
-
-Instancia::~Instancia() {
-    for (int i = 0; i <= n_clientes; i++)
-        delete [] Instancia::mapa_rotulos[i];
-
-    delete [] Instancia::mapa_rotulos;
+        mapa_rotulos[i] = std::vector<int>(n_clientes + 1);
 }
 
 void Instancia::set_capacidade(int capacidade) {
@@ -35,12 +27,7 @@ void Instancia::add_cliente(Cliente c) {
 }
 
 void Instancia::add_rotulo(int id_origem, int id_destino, int rotulo) {
-    try {
-        Instancia::mapa_rotulos[id_origem][id_destino] = rotulo;
-    } catch (std::exception& e) {
-        std::cerr << "Erro ao adicionar rótulo ao mapa. Possível índice errado? (" << id_origem << ", " << id_destino << ") " << e.what() << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    Instancia::mapa_rotulos[id_origem][id_destino] = rotulo;
 }
 
 Cliente Instancia::get_cliente(int id_cliente) {

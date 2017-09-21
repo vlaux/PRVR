@@ -7,7 +7,7 @@
 #include "cliente.h"
 #include "solucao.h"
 #include "rota.h"
-#include "busca_local.h"
+// #include "busca_local.h"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ using namespace std;
 
 //     int n_clientes, capacidade, n_rotulos;
 //     std::vector<Cliente> clientes;
-//     int** rotulos;
+//     Matriz & rotulos;
 //     le_arquivo("ins/c50r500i01.txt", clientes, capacidade, n_clientes, n_rotulos, rotulos);
 
 //     std::vector<Rota> rotas; 

@@ -11,7 +11,7 @@
 #define LIMITE_CONSTRUCAO 0.8
 
 bool Solucao::existe_cliente_nao_atendido() {
-    int n_clientes = Solucao::instancia->get_n_clientes();
+    int n_clientes = instancia.get_n_clientes();
     for (int i = 1; i <= n_clientes; i++)
         if (!clientes_visitados[i]) return true;
     return false;
@@ -25,19 +25,37 @@ int Solucao::get_custo()
     return INT32_MAX;
 }
 
-Solucao::Solucao(Instancia* ins)
+Solucao::Solucao(Instancia &ins) : instancia(ins)
 {
-    Solucao::instancia = ins;
-    int n_rotulos = ins->get_n_rotulos();
+    int n_rotulos = ins.get_n_rotulos();
     rotulos = vector<Rotulo>(n_rotulos);
     Solucao::rotas = vector<Rota>();
-    clientes_visitados = vector<bool>(ins->get_n_clientes());
+    clientes_visitados = vector<bool>(ins.get_n_clientes());
     fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
     for(int i=0; i<n_rotulos; i++) {
         rotulos[i].id = i;
         rotulos[i].vezes_utilizado = 0;
     }
+}
+
+Solucao::Solucao(const Solucao& s) : instancia(s.instancia) 
+{
+    copy(s);
+}
+
+Solucao& Solucao::operator=(const Solucao& s) 
+{
+    copy(s);
+    return *this;
+}
+
+void Solucao::copy(const Solucao& s) 
+{
+    instancia = s.instancia;
+    clientes_visitados = s.clientes_visitados;
+    rotas = s.rotas;
+    rotulos = s.rotulos;
 }
 
 void Solucao::adiciona_rota(Rota rota)
@@ -56,11 +74,11 @@ void Solucao::update_rota(Rota rota, int id_rota)
 }
 
 void Solucao::ordena_rotulos_por_uso() 
-{
+{\
     std::sort(rotulos.begin(), rotulos.end(), greater<Rotulo>());   
 }
 
-Cliente Solucao::escolhe_melhor_cliente(const vector<Cliente> &clientes, const Cliente& origem, int** mapa_rotulos)
+Cliente Solucao::escolhe_melhor_cliente(const vector<Cliente> &clientes, const Cliente& origem, Matriz & mapa_rotulos)
 {
     std::vector<Cliente> clientes_viaveis(clientes.size());
 
@@ -89,7 +107,7 @@ Cliente Solucao::escolhe_melhor_cliente(const vector<Cliente> &clientes, const C
     //return origem;
 }
 
-Cliente Solucao::escolhe_melhor_cliente_grasp(const vector<Cliente> &clientes, const Cliente& origem, int** mapa_rotulos, float alpha)
+Cliente Solucao::escolhe_melhor_cliente_grasp(const vector<Cliente> &clientes, const Cliente& origem, Matriz & mapa_rotulos, float alpha)
 {
     int max = -1, min = 999999;
     vector<int> avaliacao(clientes.size());
@@ -118,7 +136,7 @@ Cliente Solucao::escolhe_melhor_cliente_grasp(const vector<Cliente> &clientes, c
     return lrc[rand()%lrc.size()];
 }
 
-void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotulos, int capacidade_veiculo)
+void Solucao::cria_solucao(const std::vector<Cliente> &clientes, Matriz & mapa_rotulos, int capacidade_veiculo)
 {
     Cliente deposito = clientes[0];
 
@@ -136,7 +154,7 @@ void Solucao::cria_solucao(const std::vector<Cliente> &clientes, int** mapa_rotu
     }
 }
 
-void Solucao::adiciona_cliente(Cliente &c, Rota &r, int** mapa_rotulos)
+void Solucao::adiciona_cliente(Cliente &c, Rota &r, Matriz & mapa_rotulos)
 {
     Cliente ultimo_cliente = r.clientes.back();
     r.adiciona_cliente(c);
@@ -156,7 +174,7 @@ void Solucao::remove_rotulo(int id_rotulo)
         rotulos[id_rotulo].vezes_utilizado--;
 }
 
-void Solucao::recalcula_rotulos_utilizados(int** mapa_rotulos) 
+void Solucao::recalcula_rotulos_utilizados(Matriz & mapa_rotulos) 
 {
     //zera utilização de todos os rótulos
     for(int i=0; i<rotulos.size(); i++) {

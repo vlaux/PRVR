@@ -5,9 +5,10 @@
 #include <fstream>
 #include <vector>
 #include "instancia.h"
+#include "utils.h"
 
 using namespace std;
 
-Instancia* le_arquivo(string nome_arquivo);
+Instancia le_arquivo(string nome_arquivo);
 
 #endif

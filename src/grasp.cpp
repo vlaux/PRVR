@@ -2,35 +2,32 @@
 #include "vnd.h"
 #include "busca_local.h" // remover
 
-Solucao* grasp(Instancia* ins) {
-    Solucao* s_best = new Solucao(ins);
+Solucao grasp(Instancia &ins) {
+    Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0;
     while (iter_sem_melhora < 1) {
         cout << "iteração " << iter << endl;
         
-        Solucao* s = new Solucao(ins);
-        s->cria_solucao(ins->get_clientes(), ins->get_mapa_rotulos(), ins->get_capacidade());
-        s->imprime();
+        Solucao s(ins);
+        s.cria_solucao(ins.get_clientes(), ins.get_mapa_rotulos(), ins.get_capacidade());
+        s.imprime();
         
         int k = 6; // tem que vir via param de configuração
-        s = movimento_perturbacao_cortes(s, ins->get_capacidade(), ins->get_mapa_rotulos());
-        // s = aplica_vnd(s, ins, k);
+        s = aplica_vnd(s, ins, k);
 
         // transformar em função
-        if (s->get_custo() < s_best->get_custo()) {
-            delete s_best;
+        if (s.get_custo() < s_best.get_custo()) {
 	        s_best = s;
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;
-	        delete s;
         }
 
         iter++;
     }
 
-    s_best->imprime();
+    s_best.imprime();
 
     return s_best;
 

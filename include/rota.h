@@ -4,6 +4,7 @@
 #include <vector>
 #include <numeric>
 #include "cliente.h"
+#include "utils.h"
 
 using namespace std;
 
