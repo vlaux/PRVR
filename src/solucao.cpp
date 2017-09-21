@@ -28,7 +28,7 @@ Solucao::Solucao(Instancia &ins) : instancia(ins)
     int n_rotulos = ins.get_n_rotulos();
     rotulos = vector<Rotulo>(n_rotulos);
     Solucao::rotas = vector<Rota>();
-    clientes_visitados = vector<bool>(ins.get_n_clientes());
+    clientes_visitados = vector<bool>(ins.get_n_clientes() + 1);
     fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
     for(int i=0; i<n_rotulos; i++) {

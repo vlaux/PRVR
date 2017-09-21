@@ -86,7 +86,7 @@ Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float 
 
     int max = -1, min = INT32_MAX;
     int n_clientes = ins.get_n_clientes();
-    vector<int> avaliacao(n_clientes);
+    vector<int> avaliacao(n_clientes + 1);
 
     for(int i = 1; i <= n_clientes; i++)
     {
