@@ -11,9 +11,9 @@ Solucao Ils::executa(Instancia &ins)
     Solucao s_best(ins);
     s_best = Vnd().executa(sol_inicial, ins);
 
-    int iter = 0, iter_sem_melhora = ins.get_n_rotulos(); // valor melhor?
+    int iter = 0, iter_sem_melhora = 0, max_iter = ins.get_n_rotulos(); // valor melhor?
 
-    while(iter < iter_sem_melhora)
+    while(iter_sem_melhora < max_iter)
     {
         Solucao s_temp = movimento_perturbacao_cortes(s_best, ins.get_capacidade(), ins.get_mapa_rotulos());
 

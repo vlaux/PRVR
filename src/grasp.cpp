@@ -20,8 +20,8 @@ Grasp::Grasp(bool is_reativo, float alpha)
 Solucao Grasp::executa(Instancia &ins) {
     Solucao s_best(ins);
 
-    int iter = 0, iter_sem_melhora = 0;
-    while (iter_sem_melhora < 1) {
+    int iter = 0, iter_sem_melhora = 0, max_iter_grasp = ins.get_n_rotulos();
+    while (iter_sem_melhora < max_iter_grasp) {
         
         int alpha_idx = -1;
         if (is_reativo) {
