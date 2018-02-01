@@ -77,8 +77,12 @@ remake:
 teste:
 	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
 
-run: remake
+run-clear: remake
 	@clear
+	@./$(BIN_NAME)
+
+run: 
+	@$(MAKE)
 	@./$(BIN_NAME)
 
 val: remake
