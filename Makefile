@@ -79,11 +79,11 @@ teste:
 
 run-clear: remake
 	@clear
-	@./$(BIN_NAME)
+	@./$(BIN_NAME) ${ARGS}
 
 run: 
 	@$(MAKE)
-	@./$(BIN_NAME)
+	@./$(BIN_NAME) ${ARGS}
 
 val: remake
 	@clear
