@@ -8,6 +8,7 @@
 #include "solucao.h"
 #include "grasp.h"
 #include "ils.h"
+#include "vns.h"
 
 using namespace std;
 
@@ -35,6 +36,16 @@ int main(int argc, char *argv[])
 
         int max_iter = atoi(argv[3]);
         Solucao s = Ils().executa(ins, sol_inicial, max_iter, argv);
+        s.imprime();
+    }
+    else if (strcmp(modo, "VNS") == 0) {
+        cout << "Executando VNS para instância " << nome_arquivo << endl;
+        
+        Solucao sol_inicial(ins);
+        sol_inicial = Grasp(false, 0, 0, 1).constroi_solucao(ins);
+
+        int k_max = atoi(argv[3]);
+        Solucao s = Vns().executa(sol_inicial, ins, argv, k_max);
         s.imprime();
     }
     else {
