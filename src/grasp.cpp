@@ -1,14 +1,17 @@
 #include <assert.h>
+#include <stdlib.h>
 #include "grasp.h"
 #include "vnd.h"
 
-Grasp::Grasp(bool is_reativo, float alpha) 
+Grasp::Grasp(bool is_reativo, int n_iter, int iter_until_update, float alpha)
 {
     counts = vector<int>(alphas.size());
     scores = vector<double>(alphas.size());
     probs = vector<double>(alphas.size());
 
     this->alpha = alpha;
+    this->n_iter = n_iter;
+    this->iter_until_update = iter_until_update;
 
     if (is_reativo) {
         fill(counts.begin(), counts.end(), 0);        
@@ -17,10 +20,11 @@ Grasp::Grasp(bool is_reativo, float alpha)
     }
 }
 
-Solucao Grasp::executa(Instancia &ins) {
+Solucao Grasp::executa(Instancia &ins, char* argv[]) {
     Solucao s_best(ins);
 
-    int iter = 0, iter_sem_melhora = 0, max_iter_grasp = ins.get_n_rotulos();
+    int iter = 0, iter_sem_melhora = 0, max_iter_grasp = this->n_iter;
+    cout << max_iter_grasp << endl;
     while (iter_sem_melhora < max_iter_grasp) {
         
         int alpha_idx = -1;
@@ -37,9 +41,27 @@ Solucao Grasp::executa(Instancia &ins) {
 
         avalia_alpha(s, s_best, alpha_idx, iter);
         
-        int k_max = 6; // tem que vir via param de configuração
-        s = Vnd().executa(s, ins, k_max);
+        //Busca local definida via param de entrada
 
+        char* busca_local = argv[4];
+        if (strcmp(busca_local, "VND") == 0) {
+            int k_max = atoi(argv[5]);
+            s = Vnd().executa(s, ins, k_max);
+        }
+        else if (strcmp(busca_local, "VNS") == 0) {
+            cerr << "VNS não implementado para GRASP" << endl;
+            abort();
+        }
+        else if (strcmp(busca_local, "TABU") == 0) {
+            cerr << "TABU não implementado para GRASP" << endl;
+            abort();
+        }
+        else { // random
+            cerr << "deveria executar busca aleatória?" << endl;
+            abort();
+        }
+
+        
         // transformar em função
         if (s.get_custo() < s_best.get_custo()) {
 	        s_best = s;

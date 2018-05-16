@@ -30,6 +30,10 @@ void Instancia::add_rotulo(int id_origem, int id_destino, int rotulo) {
     Instancia::mapa_rotulos[id_origem][id_destino] = rotulo;
 }
 
+void Instancia::set_iter_grasp(int n_iter) {
+    Instancia::n_iter_grasp = n_iter;
+}
+
 Cliente Instancia::get_cliente(int id_cliente) {
     try {
         return Instancia::clientes.at(id_cliente);

@@ -1,19 +1,20 @@
 #include <vector>
 #include "leitor_arquivos.h"
 #include "cliente.h"
+#include "instancia.h"
 #include <math.h>
 #include <assert.h>
 
 using namespace std;
 
-const float A = (sqrt(5) - 1)/2;
+// const float A = (sqrt(5) - 1)/2;
 
-int getRotulo(int i, int j, int n_rotulos)
-{
-    int rotulo = floor(n_rotulos*(i*j*A - floor(i*j*A)));
-    assert(rotulo < n_rotulos);
-    return rotulo;
-}
+// int getRotulo(int i, int j, int n_rotulos)
+// {
+//     int rotulo = floor(n_rotulos*(i*j*A - floor(i*j*A)));
+//     assert(rotulo < n_rotulos);
+//     return rotulo;
+// }
 
 Instancia le_arquivo(string nome_arquivo)
 {

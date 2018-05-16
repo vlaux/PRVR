@@ -19,22 +19,28 @@ Solucao Vnd::executa(Solucao s, Instancia& ins, int k_max)
     Solucao s_temp = s;
     Solucao s_best = s;
     
-    while (k < k_max)
+    while (k <= k_max)
     {
+        #ifdef DEBUG
         cout << "K = " << k << endl;
+        #endif
 
         s_temp = busca_melhor_vizinho(s_best, ins, k);
         
         if (s_temp.get_custo() < s_best.get_custo())
         {
+            #ifdef DEBUG
             cout << "ENCONTROU. K=1" << endl;
+            #endif
             s_best = s_temp;
             k = 1;
         }
         else 
         {
             k++;
+            #ifdef DEBUG
             cout << "NÃO ENCONTROU. K = " << k << endl;
+            #endif
         }
     }
 
@@ -45,8 +51,8 @@ Solucao Vnd::busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
 {
     cout << "Procurando melhor vizinho em k = " << k << endl;
 
-    // int max_busca_em_k = ins.get_n_rotulos(); // bom valor?
-    int max_busca_em_k = 1; // bom valor?    
+    int max_busca_em_k = ins.get_n_rotulos(); // bom valor?
+    // int max_busca_em_k = 1; // para testes
     Solucao s_temp = s;
     Solucao s_best = s;
 
@@ -73,16 +79,19 @@ Solucao Vnd::busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
         if (s_temp.get_custo() < s_best.get_custo())
         {
             s_best = s_temp;
+            #ifdef DEBUG
             cout << "Encontrou melhora em k " << k << endl;
+            #endif
         }
         else
         {
             s_temp = s_best;
-            i++;
         }
     }
 
+    #ifdef DEBUG
     cout << "Encerrando busca em k=" << k << endl;
+    #endif
 
     return s_best;
 }
