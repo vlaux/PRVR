@@ -18,9 +18,10 @@ class BuscaTabu
         int ultimo_custo_avaliado = INT32_MAX;
         int iter_until_update = 20; //receber via param de conf
         void avalia_tamanho_lista_tabu(Solucao s_best, int iter);
+        Solucao busca_local(Solucao s, Instancia ins, char* tipo_busca, char* argv[]);        
     public:
         BuscaTabu();
-        Solucao executa(Instancia &ins);
+        Solucao executa(Instancia &ins, Solucao sol_inicial, int max_iter, char* argv[]);
 };
 
 #endif

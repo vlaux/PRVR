@@ -12,19 +12,19 @@ BuscaTabu::BuscaTabu()
     lista_tabu = new ListaTabu(tam_maximo_lista);
 }
 
-Solucao BuscaTabu::executa(Instancia &ins)
+Solucao BuscaTabu::executa(Instancia &ins, Solucao sol_inicial, int max_iter, char* argv[])
 {
     Solucao s_best(ins);
     Solucao s(ins);
-    s = Grasp(false).constroi_solucao(ins, 1);
+    s = sol_inicial;
 
-    Vnd vnd(lista_tabu);
-    int k_max = 5;
-
-    int iter = 0, iter_sem_melhora = ins.get_n_clientes();
-    while(iter < iter_sem_melhora)
+    int iter_sem_melhora = 0, iter = 0;
+    while(iter_sem_melhora < max_iter)
     {
-        s = vnd.executa(s, ins, k_max);
+        // s = vnd.executa(s, ins, k_max);
+        char* tipo_busca = argv[4];
+        s = busca_local(s, ins, tipo_busca, argv);
+
         if (s.get_custo() < s_best.get_custo()) 
         {
             s_best = s;
@@ -33,11 +33,11 @@ Solucao BuscaTabu::executa(Instancia &ins)
         else
         {
             s = s_best;
+            iter_sem_melhora++;
         }
 
-        avalia_tamanho_lista_tabu(s_best, iter);
-
         iter++;
+        avalia_tamanho_lista_tabu(s_best, iter);
     }
 
     delete lista_tabu;
@@ -55,4 +55,20 @@ void BuscaTabu::avalia_tamanho_lista_tabu(Solucao s_best, int iter)
         else
             lista_tabu->aumenta_lista();
     }
+}
+
+Solucao BuscaTabu::busca_local(Solucao s, Instancia ins, char *tipo_busca, char* argv[]) {
+    if (strcmp(tipo_busca, "VND") == 0) {
+        int k_max = atoi(argv[5]);
+        return Vnd(lista_tabu).executa(s, ins, k_max);
+    }
+    else if (strcmp(tipo_busca, "VNS") == 0) {
+        cout << "vns para tabu não implementado" << endl;
+        abort();
+    }
+    else {
+        cout << "deveria executar movs aleatórios no ILS: não implementado yet" << endl;
+        abort();
+    }
+    return s;
 }

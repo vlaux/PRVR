@@ -9,6 +9,7 @@
 #include "grasp.h"
 #include "ils.h"
 #include "vns.h"
+#include "busca_tabu.h"
 
 using namespace std;
 
@@ -46,6 +47,16 @@ int main(int argc, char *argv[])
 
         int k_max = atoi(argv[3]);
         Solucao s = Vns().executa(sol_inicial, ins, argv, k_max);
+        s.imprime();
+    }
+    else if (strcmp(modo, "TABU") == 0) {
+        cout << "Executando TABU para instância " << nome_arquivo << endl;
+        
+        Solucao sol_inicial(ins);
+        sol_inicial = Grasp(false, 0, 0, 1).constroi_solucao(ins);
+
+        int max_iter = atoi(argv[3]);
+        Solucao s = BuscaTabu().executa(ins, sol_inicial, max_iter, argv);
         s.imprime();
     }
     else {
