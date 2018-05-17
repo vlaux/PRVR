@@ -10,12 +10,14 @@ using namespace std;
 class Vns {
     private:
         ListaTabu* tabu = nullptr;
-        Solucao busca_local(Solucao s, Instancia ins, char* tipo_busca, char* argv[]);         
+        char *tipo_busca_local;
+        int k_max_bl;
+        Solucao busca_local(Solucao s, Instancia ins);
 
     public:
         Vns();
-        Vns(ListaTabu* tabu);
-        Solucao executa(Solucao s, Instancia& ins, char* argv[], int k_max = 1);
+        Vns(char* tipo_busca, int k_max_bl, ListaTabu* tabu = nullptr);
+        Solucao executa(Solucao s, Instancia& ins, int k_max = 1);
 };
 
 #endif

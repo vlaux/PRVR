@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "grasp.h"
 #include "vnd.h"
+#include "vns.h"
 
 Grasp::Grasp(bool is_reativo, int n_iter, int iter_until_update, float alpha)
 {
@@ -37,7 +38,9 @@ Solucao Grasp::executa(Instancia &ins, char* argv[]) {
         
         Solucao s(ins);
         s = constroi_solucao(ins, alpha);
+        #ifdef DEBUG
         s.imprime();
+        #endif
 
         avalia_alpha(s, s_best, alpha_idx, iter);
         
@@ -49,8 +52,11 @@ Solucao Grasp::executa(Instancia &ins, char* argv[]) {
             s = Vnd().executa(s, ins, k_max);
         }
         else if (strcmp(busca_local, "VNS") == 0) {
-            cerr << "VNS não implementado para GRASP" << endl;
-            abort();
+            int k_max = atoi(argv[5]);
+            char *tipo_bl = argv[6];
+            int k_max_bl = atoi(argv[7]);
+            s = Vns(tipo_bl, k_max_bl).executa(s, ins, k_max);
+            s.imprime();
         }
         else if (strcmp(busca_local, "TABU") == 0) {
             cerr << "TABU não implementado para GRASP" << endl;

@@ -7,12 +7,14 @@
 
 Vns::Vns() {};
 
-Vns::Vns(ListaTabu* lista_tabu)
+Vns::Vns(char* tipo_busca, int k_max_bl, ListaTabu* lista_tabu)
 {
-    tabu = lista_tabu;
+    this->tabu = lista_tabu;
+    this->tipo_busca_local = tipo_busca;
+    this->k_max_bl = k_max_bl;
 }
 
-Solucao Vns::executa(Solucao s, Instancia& ins, char* argv[], int k_max)
+Solucao Vns::executa(Solucao s, Instancia& ins, int k_max)
 {
     int k = 1;
 
@@ -26,8 +28,7 @@ Solucao Vns::executa(Solucao s, Instancia& ins, char* argv[], int k_max)
         #endif
 
         s_temp = movimento_perturbacao_cortes(s_best, ins.get_capacidade(), ins.get_mapa_rotulos());
-        char* tipo_busca = argv[4];
-        s_temp = busca_local(s_temp, ins, tipo_busca, argv);
+        s_temp = busca_local(s_temp, ins);
         
         if (s_temp.get_custo() < s_best.get_custo())
         {
@@ -49,12 +50,11 @@ Solucao Vns::executa(Solucao s, Instancia& ins, char* argv[], int k_max)
     return s_best;
 }
 
-Solucao Vns::busca_local(Solucao s, Instancia ins, char *tipo_busca, char* argv[]) {
-    if (strcmp(tipo_busca, "VND") == 0) {
-        int k_max = atoi(argv[5]);
-        return Vnd().executa(s, ins, k_max);
+Solucao Vns::busca_local(Solucao s, Instancia ins) {
+    if (strcmp(tipo_busca_local, "VND") == 0) {
+        return Vnd().executa(s, ins, k_max_bl);
     }
-    else if (strcmp(tipo_busca, "TABU") == 0) {
+    else if (strcmp(tipo_busca_local, "TABU") == 0) {
         cout << "tabu para ILS ainda não suportado" << endl;
         abort();
     }
