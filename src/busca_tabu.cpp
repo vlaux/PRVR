@@ -7,23 +7,26 @@
 
 using namespace std;
 
-BuscaTabu::BuscaTabu()
+BuscaTabu::BuscaTabu() {}
+
+BuscaTabu::BuscaTabu(char* busca_local, int k_max_bl)
 {
-    lista_tabu = new ListaTabu(tam_maximo_lista);
+    this->tipo_busca_local = busca_local;
+    this->k_max_bl = k_max_bl;
 }
 
-Solucao BuscaTabu::executa(Instancia &ins, Solucao sol_inicial, int max_iter, char* argv[])
+Solucao BuscaTabu::executa(Instancia &ins, Solucao sol_inicial, int max_iter)
 {
     Solucao s_best(ins);
     Solucao s(ins);
     s = sol_inicial;
 
+    lista_tabu = new ListaTabu(tam_maximo_lista); // vai ser definido por algum param da instância    
+
     int iter_sem_melhora = 0, iter = 0;
     while(iter_sem_melhora < max_iter)
     {
-        // s = vnd.executa(s, ins, k_max);
-        char* tipo_busca = argv[4];
-        s = busca_local(s, ins, tipo_busca, argv);
+        s = busca_local(s, ins);
 
         if (s.get_custo() < s_best.get_custo()) 
         {
@@ -57,17 +60,16 @@ void BuscaTabu::avalia_tamanho_lista_tabu(Solucao s_best, int iter)
     }
 }
 
-Solucao BuscaTabu::busca_local(Solucao s, Instancia ins, char *tipo_busca, char* argv[]) {
-    if (strcmp(tipo_busca, "VND") == 0) {
-        int k_max = atoi(argv[5]);
-        return Vnd(lista_tabu).executa(s, ins, k_max);
+Solucao BuscaTabu::busca_local(Solucao s, Instancia ins) {
+    if (strcmp(tipo_busca_local, "VND") == 0) {
+        return Vnd(lista_tabu).executa(s, ins, k_max_bl);
     }
-    else if (strcmp(tipo_busca, "VNS") == 0) {
+    else if (strcmp(tipo_busca_local, "VNS") == 0) {
         cout << "vns para tabu não implementado" << endl;
         abort();
     }
     else {
-        cout << "deveria executar movs aleatórios no ILS: não implementado yet" << endl;
+        cout << "deveria executar movs aleatórios na Tabu: não implementado" << endl;
         abort();
     }
     return s;

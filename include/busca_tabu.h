@@ -14,14 +14,17 @@ class BuscaTabu
 {
     private:
         ListaTabu* lista_tabu;
-        int tam_maximo_lista = 100; // receber via param; tem que ser dinâmico!
+        int tam_maximo_lista = 100; // definir via tamanho da ins?
         int ultimo_custo_avaliado = INT32_MAX;
         int iter_until_update = 20; //receber via param de conf
         void avalia_tamanho_lista_tabu(Solucao s_best, int iter);
-        Solucao busca_local(Solucao s, Instancia ins, char* tipo_busca, char* argv[]);        
+        char* tipo_busca_local;
+        int k_max_bl;
+        Solucao busca_local(Solucao s, Instancia ins);        
     public:
         BuscaTabu();
-        Solucao executa(Instancia &ins, Solucao sol_inicial, int max_iter, char* argv[]);
+        BuscaTabu(char* tipo_busca_local, int k_max_bl);
+        Solucao executa(Instancia &ins, Solucao sol_inicial, int max_iter);
 };
 
 #endif

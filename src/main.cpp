@@ -58,7 +58,9 @@ int main(int argc, char *argv[])
         sol_inicial = Grasp(false, 0, 0, 1).constroi_solucao(ins);
 
         int max_iter = atoi(argv[3]);
-        Solucao s = BuscaTabu().executa(ins, sol_inicial, max_iter, argv);
+        char* tipo_bl = argv[4];
+        int k_max_bl = atoi(argv[5]);
+        Solucao s = BuscaTabu(tipo_bl, k_max_bl).executa(ins, sol_inicial, max_iter);
         s.imprime();
     }
     else {
