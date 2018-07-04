@@ -17,6 +17,7 @@ class Instancia {
         Matriz mapa_rotulos;
         std::vector<Cliente> clientes;
         int n_iter_grasp;
+        std::vector<int> frequencias;        
     public:
         Instancia(int n_clientes, int n_rotulos);
         int get_capacidade() { return capacidade; };
@@ -30,6 +31,7 @@ class Instancia {
         void add_cliente(Cliente c);
         void add_rotulo(int id_origem, int id_destino, int rotulo);
         void set_iter_grasp(int n_iter);
+        void add_frequencia(int rotulo, int frequencia);
 };
 
 #endif
