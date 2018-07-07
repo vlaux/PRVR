@@ -5,15 +5,17 @@
 
 class Rotulo {
     public:
+        Rotulo(int id);
         int id;
-        int vezes_utilizado;
+        int frequencia;
+        int get_frequencia();
         bool operator < (const Rotulo& r) const
         {
-            return (vezes_utilizado < r.vezes_utilizado);
+            return (frequencia < r.frequencia);
         }
         bool operator > (const Rotulo& r) const
         {
-            return (vezes_utilizado > r.vezes_utilizado);
+            return (frequencia > r.frequencia);
         }
 };
 

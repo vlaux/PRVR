@@ -48,7 +48,8 @@ Instancia le_arquivo(string nome_arquivo)
             arquivo >> rotulo;
             instancia.add_rotulo(i, j, rotulo);
             
-            if (j < i) instancia.add_frequencia(rotulo, 1);
+            if (j < i) 
+                instancia.add_frequencia(rotulo);
         }
 
     return instancia;

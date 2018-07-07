@@ -18,7 +18,7 @@ bool Solucao::existe_cliente_nao_atendido() {
 int Solucao::get_custo()
 {
     if (rotas.size())
-        return std::count_if(rotulos.begin(), rotulos.end(), [](Rotulo r) { return (r.vezes_utilizado > 0);});
+        return std::count_if(rotulos.begin(), rotulos.end(), [](Rotulo r) { return (r.get_frequencia() > 0);});
 
     return INT32_MAX;
 }
@@ -26,14 +26,12 @@ int Solucao::get_custo()
 Solucao::Solucao(Instancia &ins) : instancia(ins)
 {
     int n_rotulos = ins.get_n_rotulos();
-    rotulos = vector<Rotulo>(n_rotulos);
     Solucao::rotas = vector<Rota>();
     clientes_visitados = vector<bool>(ins.get_n_clientes() + 1);
     fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
     for(int i=0; i<n_rotulos; i++) {
-        rotulos[i].id = i;
-        rotulos[i].vezes_utilizado = 0;
+        rotulos.push_back(Rotulo(i));
     }
 }
 
@@ -86,21 +84,20 @@ void Solucao::adiciona_cliente(Cliente &c, Rota &r, Matriz & mapa_rotulos)
 
 void Solucao::usa_rotulo(int id_rotulo)
 {
-    rotulos[id_rotulo].vezes_utilizado += 1;
+    rotulos[id_rotulo].frequencia++;
 }
 
 void Solucao::remove_rotulo(int id_rotulo)
 {
-    if (rotulos[id_rotulo].vezes_utilizado > 0) 
-        rotulos[id_rotulo].vezes_utilizado--;
+    if (rotulos[id_rotulo].get_frequencia() > 0) 
+        rotulos[id_rotulo].frequencia -= 1;
 }
 
 void Solucao::recalcula_rotulos_utilizados(Matriz & mapa_rotulos) 
 {
     //zera utilização de todos os rótulos
     for(int i=0; i<rotulos.size(); i++) {
-        rotulos[i].id = i;
-        rotulos[i].vezes_utilizado = 0;
+        rotulos[i] = Rotulo(i);
     }
 
     //recalcula utilização   
@@ -109,7 +106,7 @@ void Solucao::recalcula_rotulos_utilizados(Matriz & mapa_rotulos)
         for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
         {
             id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
-            rotulos[id_rotulo].vezes_utilizado++;
+            rotulos[id_rotulo].frequencia++;
         }
      });
 }
@@ -134,4 +131,13 @@ void Solucao::imprime()
         cout << endl;
      });
      cout << "Custo: " << get_custo() << endl;
+}
+
+Instancia* Solucao::get_instancia() {
+    return &instancia;
+}
+
+Rotulo& Solucao::get_rotulo_entre(int id_origem, int id_destino) {
+    int id_rotulo = instancia.get_rotulo_entre(id_origem, id_destino).id;
+    return rotulos[id_rotulo];
 }

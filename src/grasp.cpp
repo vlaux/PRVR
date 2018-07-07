@@ -15,6 +15,10 @@ Grasp::Grasp(bool is_reativo, int n_iter, int iter_until_update, float alpha)
     this->iter_until_update = iter_until_update;
 
     if (is_reativo) {
+        counts = vector<int>(alphas.size());
+        scores = vector<double>(alphas.size());
+        probs = vector<double>(alphas.size());
+
         fill(counts.begin(), counts.end(), 0);        
         fill(scores.begin(), scores.end(), 0);        
         fill(probs.begin(), probs.end(), (1.0 / (double) alphas.size()));
@@ -124,7 +128,7 @@ Solucao Grasp::constroi_solucao(Instancia &ins, float alpha)
         Rota r(deposito);
         
         Cliente c = escolhe_melhor_cliente(s, ins, r.clientes.back(), alpha);
-        while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= ins.get_capacidade() * LIMITE_CONSTRUCAO) {
+        while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= ins.get_capacidade() * 1) { // CORRIGIR
             s.adiciona_cliente(c, r, ins.get_mapa_rotulos());
             c = escolhe_melhor_cliente(s, ins, r.clientes.back(), alpha);
         }
@@ -149,7 +153,7 @@ Cliente Grasp::escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem,
     {
         if(i != origem.id && !s.is_cliente_visitado(i))
         {
-            avaliacao[i] = s.get_rotulo(ins.get_rotulo(origem.id, i)).vezes_utilizado;
+            avaliacao[i] = s.get_rotulo_entre(origem.id, i).get_frequencia();
             
             if (avaliacao[i] > max) max = avaliacao[i];
             if (avaliacao[i] < min) min = avaliacao[i];
