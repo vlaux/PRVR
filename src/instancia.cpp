@@ -39,7 +39,7 @@ void Instancia::set_iter_grasp(int n_iter) {
     Instancia::n_iter_grasp = n_iter;
 }
 
-Cliente Instancia::get_cliente(int id_cliente) {
+Cliente& Instancia::get_cliente(int id_cliente) {
     try {
         return Instancia::clientes.at(id_cliente);
     } catch (std::exception& e) {
@@ -48,7 +48,7 @@ Cliente Instancia::get_cliente(int id_cliente) {
     }
 }
 
-Cliente Instancia::get_deposito() {
+Cliente& Instancia::get_deposito() {
     return Instancia::clientes.at(0);
 }
 

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Instancia le_arquivo(string nome_arquivo)
+Instancia* le_arquivo(string nome_arquivo)
 {
     std::ifstream arquivo(nome_arquivo, ios::in);
 
@@ -21,9 +21,9 @@ Instancia le_arquivo(string nome_arquivo)
 
     arquivo >> n_clientes >> capacidade >> n_rotulos;
 
-    Instancia instancia(n_clientes, n_rotulos);
+    Instancia* instancia = new Instancia(n_clientes, n_rotulos);
 
-    instancia.set_capacidade(capacidade);
+    instancia->set_capacidade(capacidade);
 
     Cliente deposito;
     deposito.id = 0;
@@ -31,14 +31,14 @@ Instancia le_arquivo(string nome_arquivo)
 
     arquivo >> deposito.x_pos >> deposito.y_pos;
 
-    instancia.add_cliente(deposito);
+    instancia->add_cliente(deposito);
 
     for (int i = 1; i <= n_clientes; i++)
     {
         Cliente c;
         c.id = i;
         arquivo >> c.x_pos >> c.y_pos >> c.demanda;
-        instancia.add_cliente(c);
+        instancia->add_cliente(c);
     }
 
     int rotulo;
@@ -46,10 +46,10 @@ Instancia le_arquivo(string nome_arquivo)
         for (int j = 0; j <= n_clientes; j++) 
         {
             arquivo >> rotulo;
-            instancia.add_rotulo(i, j, rotulo);
+            instancia->add_rotulo(i, j, rotulo);
             
             if (j < i) 
-                instancia.add_frequencia(rotulo);
+                instancia->add_frequencia(rotulo);
         }
 
     return instancia;
