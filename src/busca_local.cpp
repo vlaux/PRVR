@@ -32,52 +32,58 @@ Solucao movimento_intra_realoacao(Solucao &s, ListaTabu* tabu)
 
         int tamanho = r->get_tamanho();
 
-        int pos_cliente_sorteado = (rand() % (tamanho -2)) + 1;
-        Cliente c = r->clientes.at(pos_cliente_sorteado);
+        for (int pos_cliente = 1; pos_cliente < tamanho - 1; pos_cliente++) {
 
-        // tenta realocá-lo em todas as outras posições
-        // começa em 1 pq não troca com depósito
-        // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
-        for (int i = 1; i < tamanho - 2; i++)
-        {
-            r->clientes.erase(r->clientes.begin()+pos_cliente_sorteado);
+            Cliente c = r->clientes.at(pos_cliente);
 
-            // não tenta realocar na mesma posição
-            if (i == pos_cliente_sorteado) continue;
+            // tenta realocá-lo em todas as outras posições
+            // começa em 1 pq não troca com depósito
+            // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
+            for (int i = 1; i < tamanho - 2; i++)
+            {
+                r->clientes.erase(r->clientes.begin() + pos_cliente);
 
-            r->clientes.insert(r->clientes.begin()+i, c);
+                // não tenta realocar na mesma posição
+                if (i == pos_cliente) continue;
 
-            s_temp.recalcula_rotulos_utilizados();
+                r->clientes.insert(r->clientes.begin()+i, c);
 
-            // encontrou movimento aprimorante        
-            if (s_temp.get_custo() < s.get_custo()) {
+                s_temp.recalcula_rotulos_utilizados();
 
-                // se existir lista tabu para verificar...
-                if (tabu != nullptr) {
-                    cout << "Verificando lista tabu..." << endl;
-                    vector<int> lista_clientes = {c.id};
-                    Movimento mov = std::make_tuple(id_rota, i, lista_clientes);
+                // encontrou movimento aprimorante        
+                if (s_temp.get_custo() < s.get_custo()) {
 
-                    // se for tabu, ignora
-                    if (tabu->is_tabu(mov))
-                    {
-                        cout << "-- Movimento Tabu --" << endl;
-                        continue;
+                    // se existir lista tabu para verificar...
+                    if (tabu != nullptr) {
+                        cout << "Verificando lista tabu..." << endl;
+                        vector<int> lista_clientes = {c.id};
+                        Movimento mov = std::make_tuple(id_rota, i, lista_clientes);
+
+                        // se for tabu, ignora
+                        if (tabu->is_tabu(mov))
+                        {
+                            cout << "-- Movimento Tabu --" << endl;
+                            continue;
+                        }
+                        else
+                            tabu->adiciona(mov);
                     }
-                    else
-                        tabu->adiciona(mov);
+
+                    // estratégia primeiro aprimorante
+                    cout << "movimento aprimorante encontrado" << endl;
+                    return s_temp;
                 }
 
-                // estratégia primeiro aprimorante
-                cout << "movimento aprimorante encontrado" << endl;
-                return s_temp;
+                // não melhorou, restaura rota pro estado anterior ao movimento
+                else {
+                    s_temp.rotas[id_rota] = rota_original;
+                    s_temp.recalcula_rotulos_utilizados();
+                }
             }
 
-            // não melhorou, restaura rota pro estado anterior ao movimento
-            else {
-                s_temp.rotas[id_rota] = rota_original;
-                s_temp.recalcula_rotulos_utilizados();
-            }
+            s_temp.rotas[id_rota] = rota_original;
+            s_temp.recalcula_rotulos_utilizados();
+
         }
     }
 
