@@ -16,7 +16,7 @@ using namespace std;
  * Realoca k clientes dentro de uma mesma rota
  * Testa movimento em todas as rotas
  */
-Solucao movimento_intra_realoacao(Solucao &s, ListaTabu* tabu)
+Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 {
     cout << "Movimento intra-rota de realocação";
 
@@ -32,21 +32,21 @@ Solucao movimento_intra_realoacao(Solucao &s, ListaTabu* tabu)
 
         int tamanho = r->get_tamanho();
 
-        for (int pos_cliente = 1; pos_cliente < tamanho - 1; pos_cliente++) {
+        for (int pos_cliente = 1; pos_cliente < tamanho - tam - 1; pos_cliente++) {
 
-            Cliente c = r->clientes.at(pos_cliente);
+            vector<Cliente> clientes_realocados(&r->clientes.at(pos_cliente), &r->clientes.at(pos_cliente+tam));
 
             // tenta realocá-lo em todas as outras posições
             // começa em 1 pq não troca com depósito
             // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
-            for (int i = 1; i < tamanho - 2; i++)
+            for (int i = 1; i < tamanho - tam - 1; i++)
             {
-                r->clientes.erase(r->clientes.begin() + pos_cliente);
+                r->clientes.erase(r->clientes.begin() + pos_cliente, r->clientes.begin() + pos_cliente + tam);
 
                 // não tenta realocar na mesma posição
                 if (i == pos_cliente) continue;
 
-                r->clientes.insert(r->clientes.begin()+i, c);
+                r->clientes.insert(r->clientes.begin()+i, clientes_realocados.begin(), clientes_realocados.end());
 
                 s_temp.recalcula_rotulos_utilizados();
 
@@ -55,18 +55,18 @@ Solucao movimento_intra_realoacao(Solucao &s, ListaTabu* tabu)
 
                     // se existir lista tabu para verificar...
                     if (tabu != nullptr) {
-                        cout << "Verificando lista tabu..." << endl;
-                        vector<int> lista_clientes = {c.id};
-                        Movimento mov = std::make_tuple(id_rota, i, lista_clientes);
+                        // cout << "Verificando lista tabu..." << endl;
+                        // vector<int> lista_clientes = {c.id};
+                        // Movimento mov = std::make_tuple(id_rota, i, lista_clientes);
 
-                        // se for tabu, ignora
-                        if (tabu->is_tabu(mov))
-                        {
-                            cout << "-- Movimento Tabu --" << endl;
-                            continue;
-                        }
-                        else
-                            tabu->adiciona(mov);
+                        // // se for tabu, ignora
+                        // if (tabu->is_tabu(mov))
+                        // {
+                        //     cout << "-- Movimento Tabu --" << endl;
+                        //     continue;
+                        // }
+                        // else
+                        //     tabu->adiciona(mov);
                     }
 
                     // estratégia primeiro aprimorante
@@ -148,6 +148,28 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
 
     throw NENHUM_MOVIMENTO;
 
+}
+
+Solucao movimento_or_opt(Solucao &s, ListaTabu* tabu) {
+    try {
+        return movimento_intra_realoacao(s, 1, tabu);
+    } catch (int e) {
+        cout << "não conseguiu, indo para or opt 2" << endl;
+    }
+
+    try {
+        return movimento_intra_realoacao(s, 2, tabu);
+    } catch (int e) {
+        cout << "não conseguiu, indo para or opt 3" << endl;
+    }
+
+    try {
+        return movimento_intra_realoacao(s, 3, tabu);
+    } catch (int e) {
+        cout << "não conseguiu nada" << endl;
+    }
+
+    throw NENHUM_MOVIMENTO;
 }
 
 // /* 
