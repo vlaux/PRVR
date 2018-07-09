@@ -9,6 +9,7 @@
 Solucao movimento_intra_realoacao(Solucao &s, int tam = 1, ListaTabu* tabu = nullptr);
 Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu = nullptr);
 Solucao movimento_or_opt(Solucao &s, ListaTabu* tabu = nullptr);
+Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu = nullptr);
 
 // Solucao movimento_intra_rota(Solucao s, Matriz &mapa_rotulos, int k=1, ListaTabu* tabu = nullptr);
 // Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k=1, ListaTabu* tabu = nullptr);
