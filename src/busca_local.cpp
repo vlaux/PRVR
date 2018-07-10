@@ -305,7 +305,7 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
     int tamanho = (rand() % 2) + 1;
 
     for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
-        for (int inicio_conjunto_r2 = 1; inicio_conjunto_r2 < s.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r2++) {
+        for (int inicio_conjunto_r2 = 1; inicio_conjunto_r2 < s.get_rota(pos_rota_2).get_tamanho() - tamanho; inicio_conjunto_r2++) {
             Rota* rota_1 = s_temp.get_rota_ref(pos_rota_1);
             Rota* rota_2 = s_temp.get_rota_ref(pos_rota_2);
 
@@ -315,12 +315,14 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
             if (rota_1->get_carga() > s.get_instancia()->get_capacidade())
             {
                 cout << "-- capacidade excedida r1 --" << endl;
+                s_temp = s;
                 continue;
             }
 
             if (rota_2->get_carga() > s.get_instancia()->get_capacidade())
             {
                 cout << "-- capacidade excedida r2--" << endl;
+                s_temp = s;
                 continue;
             }
 
@@ -329,6 +331,61 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
             if (s_temp.get_custo() < s.get_custo()) {
                 // verifica tabu
                 cout << endl<< "troca de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << inicio_conjunto_r2 << endl;
+
+                return s_temp;
+            } else {
+                s_temp = s;
+            }
+
+        }
+    }
+
+    throw NENHUM_MOVIMENTO;
+}
+
+Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        throw SEM_ROTAS;
+
+    Solucao s_temp = s;
+
+    int pos_rota_1 = rand() % n_rotas;
+    int pos_rota_2 = pos_rota_1;
+
+    while (pos_rota_1 == pos_rota_2)
+        pos_rota_2 = rand() % n_rotas;
+
+    int tamanho = (rand() % 2) + 1;
+
+    for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s_temp.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
+        for (int posicao_r2 = 1; posicao_r2 < s_temp.get_rota(pos_rota_2).get_tamanho() - 1; posicao_r2++) {
+            Rota* rota_1 = s_temp.get_rota_ref(pos_rota_1);
+            Rota* rota_2 = s_temp.get_rota_ref(pos_rota_2);
+
+            rota_2->clientes.insert(rota_2->clientes.begin() + posicao_r2, rota_1->clientes.begin() + inicio_conjunto_r1, rota_1->clientes.begin() + inicio_conjunto_r1 + tamanho);
+            rota_1->clientes.erase(rota_1->clientes.begin() + inicio_conjunto_r1, rota_1->clientes.begin() + inicio_conjunto_r1 + tamanho);
+
+            if (rota_2->get_carga() > s.get_instancia()->get_capacidade())
+            {
+                cout << "-- capacidade excedida r2--" << endl;
+                s_temp = s;
+                continue;
+            }
+
+            if (rota_1->get_tamanho() < 3) {
+                s_temp.remove_rota(pos_rota_1);
+            }
+
+            if (rota_2->get_tamanho() < 3) {
+                s_temp.remove_rota(pos_rota_2);
+            }
+
+            s_temp.recalcula_rotulos_utilizados();
+
+            if (s_temp.get_custo() < s.get_custo()) {
+                // verifica tabu
+                cout << endl<< "realocao de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << posicao_r2 << endl;
 
                 return s_temp;
             } else {
