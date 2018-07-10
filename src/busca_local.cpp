@@ -218,6 +218,53 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
 }
 
 
+
+// MOVIMENTOS INTER ROTA
+
+Solucao perturbacao_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, int ponto_corte_rota_1, int ponto_corte_rota_2) {
+    Rota rota_original_1 = s_temp.get_rota(id_rota_1);
+    Rota rota_original_2 = s_temp.get_rota(id_rota_2);
+
+    Rota nova_rota_1;
+    Rota nova_rota_2;
+
+    for (std::vector<Cliente>::iterator it = rota_original_1.clientes.begin(); it != rota_original_1.clientes.begin() + ponto_corte_rota_1 + 1; it++)
+        nova_rota_1.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_original_2.clientes.begin() + ponto_corte_rota_2 + 1; it != rota_original_2.clientes.end(); it++)
+        nova_rota_1.clientes.push_back(*it);
+
+    if (nova_rota_1.get_carga() > s_temp.get_instancia()->get_capacidade())
+    {
+        cout << "-- capacidade excedida r1 --" << endl;
+        throw CAPACIDADE_EXCEDIDA;
+    }
+
+    for (std::vector<Cliente>::iterator it = rota_original_2.clientes.begin(); it != rota_original_2.clientes.begin() + ponto_corte_rota_2 + 1; it++)
+        nova_rota_2.clientes.push_back(*it);
+    for (std::vector<Cliente>::iterator it = rota_original_1.clientes.begin() + ponto_corte_rota_1 + 1; it != rota_original_1.clientes.end(); it++)
+        nova_rota_2.clientes.push_back(*it);
+
+    if (nova_rota_2.get_carga() > s_temp.get_instancia()->get_capacidade())
+    {
+        cout << "-- capacidade excedida r2--" << endl;
+        throw CAPACIDADE_EXCEDIDA;
+    }
+
+    s_temp.update_rota(nova_rota_1, id_rota_1);
+    s_temp.update_rota(nova_rota_2, id_rota_2);
+
+    //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
+    if (nova_rota_1.get_tamanho() < 3)
+        s_temp.remove_rota(id_rota_1);
+
+    if (nova_rota_2.get_tamanho() < 3)
+        s_temp.remove_rota(id_rota_2);
+
+    s_temp.recalcula_rotulos_utilizados();
+
+    return s_temp;
+}
+
 Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
@@ -231,48 +278,15 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
     while (pos_rota_1 == pos_rota_2)
         pos_rota_2 = rand() % n_rotas;
 
-    Rota rota_1 = s_temp.get_rota(pos_rota_1);
-    Rota rota_2 = s_temp.get_rota(pos_rota_2);
+    for (int ponto_corte_rota_1 = 0; ponto_corte_rota_1 < s.get_rota(pos_rota_1).get_tamanho() - 1; ponto_corte_rota_1++) {
+        for (int ponto_corte_rota_2 = 0; ponto_corte_rota_2 < s.get_rota(pos_rota_2).get_tamanho() - 1; ponto_corte_rota_2++) {
 
-    for (int ponto_corte_rota_1 = 0; ponto_corte_rota_1 < rota_1.get_tamanho() - 1; ponto_corte_rota_1++) {
-        for (int ponto_corte_rota_2 = 0; ponto_corte_rota_2 < rota_2.get_tamanho() - 1; ponto_corte_rota_2++) {
-
-            Rota nova_rota_1;
-            Rota nova_rota_2;
-
-            for (std::vector<Cliente>::iterator it = rota_1.clientes.begin(); it != rota_1.clientes.begin() + ponto_corte_rota_1 + 1; it++)
-                nova_rota_1.clientes.push_back(*it);
-            for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2 + 1; it != rota_2.clientes.end(); it++)
-                nova_rota_1.clientes.push_back(*it);
-
-            if (nova_rota_1.get_carga() > s.get_instancia()->get_capacidade())
-            {
-                cout << "-- capacidade excedida r1 --" << endl;
+            try {
+                s_temp = perturbacao_corte_cruzado(s_temp, pos_rota_1, pos_rota_2, ponto_corte_rota_1, ponto_corte_rota_2);
+            } catch (int e) {
+                s_temp = s;
                 continue;
             }
-
-            for (std::vector<Cliente>::iterator it = rota_2.clientes.begin(); it != rota_2.clientes.begin() + ponto_corte_rota_2 + 1; it++)
-                nova_rota_2.clientes.push_back(*it);
-            for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1 + 1; it != rota_1.clientes.end(); it++)
-                nova_rota_2.clientes.push_back(*it);
-
-            if (nova_rota_2.get_carga() > s.get_instancia()->get_capacidade())
-            {
-                cout << "-- capacidade excedida r2--" << endl;
-                continue;
-            }
-
-            s_temp.update_rota(nova_rota_1, pos_rota_1);
-            s_temp.update_rota(nova_rota_2, pos_rota_2);
-
-            //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
-            if (nova_rota_1.get_tamanho() < 3)
-                s_temp.remove_rota(pos_rota_1);
-
-            if (nova_rota_2.get_tamanho() < 3)
-                s_temp.remove_rota(pos_rota_2);
-
-            s_temp.recalcula_rotulos_utilizados();
 
             if (s_temp.get_custo() < s.get_custo()) {
                 // verifica tabu
@@ -288,6 +302,24 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
     }
 
     throw NENHUM_MOVIMENTO;
+}
+
+Solucao perturbacao_troca_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int inicio_conjunto_r2, int tamanho) {
+    Rota* rota_1 = s_temp.get_rota_ref(id_rota_1);
+    Rota* rota_2 = s_temp.get_rota_ref(id_rota_2);
+
+    for (int k = 0; k < tamanho; k++)
+        swap(rota_1->clientes[inicio_conjunto_r1 + k], rota_2->clientes[inicio_conjunto_r2 + k]);
+
+    if (rota_1->get_carga() > s_temp.get_instancia()->get_capacidade())
+        throw CAPACIDADE_EXCEDIDA;
+    
+    if (rota_2->get_carga() > s_temp.get_instancia()->get_capacidade())
+        throw CAPACIDADE_EXCEDIDA;
+
+    s_temp.recalcula_rotulos_utilizados();
+
+    return s_temp;
 }
 
 Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
@@ -307,41 +339,49 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
 
     for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
         for (int inicio_conjunto_r2 = 1; inicio_conjunto_r2 < s.get_rota(pos_rota_2).get_tamanho() - tamanho; inicio_conjunto_r2++) {
-            Rota* rota_1 = s_temp.get_rota_ref(pos_rota_1);
-            Rota* rota_2 = s_temp.get_rota_ref(pos_rota_2);
-
-            for (int k = 0; k < tamanho; k++)
-                swap(rota_1->clientes[inicio_conjunto_r1 + k], rota_2->clientes[inicio_conjunto_r2 + k]);
-
-            if (rota_1->get_carga() > s.get_instancia()->get_capacidade())
-            {
-                cout << "-- capacidade excedida r1 --" << endl;
+            
+            try {
+                s_temp = perturbacao_troca_conjuntos(s_temp, pos_rota_1, pos_rota_2, inicio_conjunto_r1, inicio_conjunto_r2, tamanho);
+            } catch (int e) {
                 s_temp = s;
                 continue;
             }
-
-            if (rota_2->get_carga() > s.get_instancia()->get_capacidade())
-            {
-                cout << "-- capacidade excedida r2--" << endl;
-                s_temp = s;
-                continue;
-            }
-
-            s_temp.recalcula_rotulos_utilizados();
 
             if (s_temp.get_custo() < s.get_custo()) {
                 // verifica tabu
                 cout << endl<< "troca de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << inicio_conjunto_r2 << endl;
 
                 return s_temp;
-            } else {
-                s_temp = s;
             }
 
+            s_temp = s;
         }
     }
 
     throw NENHUM_MOVIMENTO;
+}
+
+Solucao perturbacao_realocacao_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int posicao_r2, int tamanho) {
+    Rota* rota_1 = s_temp.get_rota_ref(id_rota_1);
+    Rota* rota_2 = s_temp.get_rota_ref(id_rota_2);
+
+    rota_2->clientes.insert(rota_2->clientes.begin() + posicao_r2, rota_1->clientes.begin() + inicio_conjunto_r1, rota_1->clientes.begin() + inicio_conjunto_r1 + tamanho);
+    rota_1->clientes.erase(rota_1->clientes.begin() + inicio_conjunto_r1, rota_1->clientes.begin() + inicio_conjunto_r1 + tamanho);
+
+    if (rota_2->get_carga() > s_temp.get_instancia()->get_capacidade())
+        throw CAPACIDADE_EXCEDIDA;
+
+    if (rota_1->get_tamanho() < 3) {
+        s_temp.remove_rota(id_rota_1);
+    }
+
+    if (rota_2->get_tamanho() < 3) {
+        s_temp.remove_rota(id_rota_2);
+    }
+
+    s_temp.recalcula_rotulos_utilizados();
+
+    return s_temp;
 }
 
 Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
@@ -361,28 +401,12 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
 
     for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s_temp.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
         for (int posicao_r2 = 1; posicao_r2 < s_temp.get_rota(pos_rota_2).get_tamanho() - 1; posicao_r2++) {
-            Rota* rota_1 = s_temp.get_rota_ref(pos_rota_1);
-            Rota* rota_2 = s_temp.get_rota_ref(pos_rota_2);
-
-            rota_2->clientes.insert(rota_2->clientes.begin() + posicao_r2, rota_1->clientes.begin() + inicio_conjunto_r1, rota_1->clientes.begin() + inicio_conjunto_r1 + tamanho);
-            rota_1->clientes.erase(rota_1->clientes.begin() + inicio_conjunto_r1, rota_1->clientes.begin() + inicio_conjunto_r1 + tamanho);
-
-            if (rota_2->get_carga() > s.get_instancia()->get_capacidade())
-            {
-                cout << "-- capacidade excedida r2--" << endl;
+            try {
+                s_temp = perturbacao_realocacao_conjuntos(s_temp, pos_rota_1, pos_rota_2, inicio_conjunto_r1, posicao_r2, tamanho);
+            } catch (int e) {
                 s_temp = s;
                 continue;
             }
-
-            if (rota_1->get_tamanho() < 3) {
-                s_temp.remove_rota(pos_rota_1);
-            }
-
-            if (rota_2->get_tamanho() < 3) {
-                s_temp.remove_rota(pos_rota_2);
-            }
-
-            s_temp.recalcula_rotulos_utilizados();
 
             if (s_temp.get_custo() < s.get_custo()) {
                 // verifica tabu
