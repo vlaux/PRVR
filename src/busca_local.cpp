@@ -221,17 +221,95 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
 
 // MOVIMENTOS INTER ROTA
 
-Solucao perturbacao_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, int ponto_corte_rota_1, int ponto_corte_rota_2) {
+Solucao perturbacao_corte_cruzado(Solucao &s) {
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        throw SEM_ROTAS;
+
+    Solucao s_temp = s;
+
+    int id_rota_1 = rand() % n_rotas;
+    int id_rota_2 = id_rota_1;
+
+    while (id_rota_1 == id_rota_2)
+        id_rota_2 = rand() % n_rotas;
+
+    int ponto_corte_rota_1 = rand() % (s.get_rota(id_rota_1).get_tamanho() - 1);
+    int ponto_corte_rota_2 = rand() % (s.get_rota(id_rota_2).get_tamanho() - 1);
+
+    try {
+        return _perturba_corte_cruzado(s_temp, id_rota_1, id_rota_2, ponto_corte_rota_1, ponto_corte_rota_2);
+    } catch (int e) {
+        return perturbacao_corte_cruzado(s);
+    }
+}
+
+Solucao perturbacao_troca_conjuntos(Solucao &s) {
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        throw SEM_ROTAS;
+
+    Solucao s_temp = s;
+
+    int id_rota_1 = rand() % n_rotas;
+    int id_rota_2 = id_rota_1;
+
+    while (id_rota_1 == id_rota_2)
+        id_rota_2 = rand() % n_rotas;
+
+    int tamanho = (rand() % 2) + 1;
+
+    int inicio_conjunto_r1 = (rand() % (s.get_rota(id_rota_1).get_tamanho() - tamanho - 1)) + 1;
+    int inicio_conjunto_r2 = (rand() % (s.get_rota(id_rota_2).get_tamanho() - tamanho - 1)) + 1;
+
+    try {
+        return _perturba_troca_conjuntos(s_temp, id_rota_1, id_rota_2, inicio_conjunto_r1, inicio_conjunto_r2, tamanho);
+    } catch (int e) {
+        return perturbacao_troca_conjuntos(s);
+    }
+}
+
+Solucao perturbacao_realocacao_conjuntos(Solucao &s) {
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        throw SEM_ROTAS;
+
+    Solucao s_temp = s;
+
+    int id_rota_1 = rand() % n_rotas;
+    int id_rota_2 = id_rota_1;
+
+    while (id_rota_1 == id_rota_2)
+        id_rota_2 = rand() % n_rotas;
+
+    int tamanho = (rand() % 2) + 1;
+
+    int inicio_conjunto_r1 = (rand() % (s.get_rota(id_rota_1).get_tamanho() - tamanho - 1)) + 1;
+    int posicao_r2 = (rand() % s.get_rota(id_rota_2).get_tamanho() - 1) + 1;
+
+    try {
+        return _perturba_realocacao_conjuntos(s_temp, id_rota_1, id_rota_2, inicio_conjunto_r1, posicao_r2, tamanho);
+    } catch (int e) {
+        return perturbacao_realocacao_conjuntos(s);
+    }
+}
+
+Solucao _perturba_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, int ponto_corte_rota_1, int ponto_corte_rota_2) {
     Rota rota_original_1 = s_temp.get_rota(id_rota_1);
     Rota rota_original_2 = s_temp.get_rota(id_rota_2);
 
     Rota nova_rota_1;
     Rota nova_rota_2;
 
-    for (std::vector<Cliente>::iterator it = rota_original_1.clientes.begin(); it != rota_original_1.clientes.begin() + ponto_corte_rota_1 + 1; it++)
-        nova_rota_1.clientes.push_back(*it);
-    for (std::vector<Cliente>::iterator it = rota_original_2.clientes.begin() + ponto_corte_rota_2 + 1; it != rota_original_2.clientes.end(); it++)
-        nova_rota_1.clientes.push_back(*it);
+    // for (std::vector<Cliente>::iterator it = rota_original_1.clientes.begin(); it != rota_original_1.clientes.begin() + ponto_corte_rota_1 + 1; it++)
+    //     nova_rota_1.clientes.push_back(*it);
+    // for (std::vector<Cliente>::iterator it = rota_original_2.clientes.begin() + ponto_corte_rota_2 + 1; it != rota_original_2.clientes.end(); it++)
+    //     nova_rota_1.clientes.push_back(*it);
+
+    for (int i = 0; i <= ponto_corte_rota_1; i++)
+        nova_rota_1.clientes.push_back(rota_original_1.clientes[i]);
+    for (int i = ponto_corte_rota_2 + 1; i < rota_original_2.get_tamanho(); i++)
+        nova_rota_1.clientes.push_back(rota_original_2.clientes[i]);
 
     if (nova_rota_1.get_carga() > s_temp.get_instancia()->get_capacidade())
     {
@@ -239,10 +317,15 @@ Solucao perturbacao_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2,
         throw CAPACIDADE_EXCEDIDA;
     }
 
-    for (std::vector<Cliente>::iterator it = rota_original_2.clientes.begin(); it != rota_original_2.clientes.begin() + ponto_corte_rota_2 + 1; it++)
-        nova_rota_2.clientes.push_back(*it);
-    for (std::vector<Cliente>::iterator it = rota_original_1.clientes.begin() + ponto_corte_rota_1 + 1; it != rota_original_1.clientes.end(); it++)
-        nova_rota_2.clientes.push_back(*it);
+    // for (std::vector<Cliente>::iterator it = rota_original_2.clientes.begin(); it != rota_original_2.clientes.begin() + ponto_corte_rota_2 + 1; it++)
+    //     nova_rota_2.clientes.push_back(*it);
+    // for (std::vector<Cliente>::iterator it = rota_original_1.clientes.begin() + ponto_corte_rota_1 + 1; it != rota_original_1.clientes.end(); it++)
+    //     nova_rota_2.clientes.push_back(*it);
+
+    for (int i = 0; i <= ponto_corte_rota_2; i++)
+        nova_rota_2.clientes.push_back(rota_original_2.clientes[i]);
+    for (int i = ponto_corte_rota_1 + 1; i < rota_original_1.get_tamanho(); i++)
+        nova_rota_2.clientes.push_back(rota_original_1.clientes[i]);
 
     if (nova_rota_2.get_carga() > s_temp.get_instancia()->get_capacidade())
     {
@@ -282,7 +365,7 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
         for (int ponto_corte_rota_2 = 0; ponto_corte_rota_2 < s.get_rota(pos_rota_2).get_tamanho() - 1; ponto_corte_rota_2++) {
 
             try {
-                s_temp = perturbacao_corte_cruzado(s_temp, pos_rota_1, pos_rota_2, ponto_corte_rota_1, ponto_corte_rota_2);
+                s_temp = _perturba_corte_cruzado(s_temp, pos_rota_1, pos_rota_2, ponto_corte_rota_1, ponto_corte_rota_2);
             } catch (int e) {
                 s_temp = s;
                 continue;
@@ -304,7 +387,7 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
     throw NENHUM_MOVIMENTO;
 }
 
-Solucao perturbacao_troca_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int inicio_conjunto_r2, int tamanho) {
+Solucao _perturba_troca_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int inicio_conjunto_r2, int tamanho) {
     Rota* rota_1 = s_temp.get_rota_ref(id_rota_1);
     Rota* rota_2 = s_temp.get_rota_ref(id_rota_2);
 
@@ -341,7 +424,7 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
         for (int inicio_conjunto_r2 = 1; inicio_conjunto_r2 < s.get_rota(pos_rota_2).get_tamanho() - tamanho; inicio_conjunto_r2++) {
             
             try {
-                s_temp = perturbacao_troca_conjuntos(s_temp, pos_rota_1, pos_rota_2, inicio_conjunto_r1, inicio_conjunto_r2, tamanho);
+                s_temp = _perturba_troca_conjuntos(s_temp, pos_rota_1, pos_rota_2, inicio_conjunto_r1, inicio_conjunto_r2, tamanho);
             } catch (int e) {
                 s_temp = s;
                 continue;
@@ -361,7 +444,7 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
     throw NENHUM_MOVIMENTO;
 }
 
-Solucao perturbacao_realocacao_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int posicao_r2, int tamanho) {
+Solucao _perturba_realocacao_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int posicao_r2, int tamanho) {
     Rota* rota_1 = s_temp.get_rota_ref(id_rota_1);
     Rota* rota_2 = s_temp.get_rota_ref(id_rota_2);
 
@@ -402,7 +485,7 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
     for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s_temp.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
         for (int posicao_r2 = 1; posicao_r2 < s_temp.get_rota(pos_rota_2).get_tamanho() - 1; posicao_r2++) {
             try {
-                s_temp = perturbacao_realocacao_conjuntos(s_temp, pos_rota_1, pos_rota_2, inicio_conjunto_r1, posicao_r2, tamanho);
+                s_temp = _perturba_realocacao_conjuntos(s_temp, pos_rota_1, pos_rota_2, inicio_conjunto_r1, posicao_r2, tamanho);
             } catch (int e) {
                 s_temp = s;
                 continue;

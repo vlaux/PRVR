@@ -18,9 +18,14 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu = nullptr);
 Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu = nullptr);
 Solucao movimento_mix_inter(Solucao &s, ListaTabu* tabu = nullptr);
 
-// perturbações isoladas
-Solucao perturbacao_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, int ponto_corte_rota_1, int ponto_corte_rota2);
-Solucao perturbacao_realocacao_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int posicao_r2, int tamanho);
-Solucao perturbacao_troca_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int inicio_conjunto_r2, int tamanho);
+// perturbações isoladas, usando movimentos inter-rota
+Solucao perturbacao_realocacao_conjuntos(Solucao &s);
+Solucao perturbacao_corte_cruzado(Solucao &s);
+Solucao perturbacao_troca_conjuntos(Solucao &s);
+
+// helpers
+Solucao _perturba_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, int ponto_corte_rota_1, int ponto_corte_rota2);
+Solucao _perturba_realocacao_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int posicao_r2, int tamanho);
+Solucao _perturba_troca_conjuntos(Solucao &s_temp, int id_rota_1, int id_rota_2, int inicio_conjunto_r1, int inicio_conjunto_r2, int tamanho);
 
 #endif
