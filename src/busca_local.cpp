@@ -233,17 +233,15 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
     Rota rota_1 = s_temp.get_rota(pos_rota_1);
     Rota rota_2 = s_temp.get_rota(pos_rota_2);
 
-    int tamanho_corte = (rand() % 2) + 1;
-
-    for (int ponto_corte_rota_1 = 0; ponto_corte_rota_1 < rota_1.get_tamanho() - tamanho_corte; ponto_corte_rota_1++) {
-        for (int ponto_corte_rota_2 = 0; ponto_corte_rota_2 < rota_2.get_tamanho() - tamanho_corte; ponto_corte_rota_2++) {
+    for (int ponto_corte_rota_1 = 0; ponto_corte_rota_1 < rota_1.get_tamanho() - 1; ponto_corte_rota_1++) {
+        for (int ponto_corte_rota_2 = 0; ponto_corte_rota_2 < rota_2.get_tamanho() - 1; ponto_corte_rota_2++) {
 
             Rota nova_rota_1;
             Rota nova_rota_2;
 
             for (std::vector<Cliente>::iterator it = rota_1.clientes.begin(); it != rota_1.clientes.begin() + ponto_corte_rota_1 + 1; it++)
                 nova_rota_1.clientes.push_back(*it);
-            for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2 + tamanho_corte; it != rota_2.clientes.end(); it++)
+            for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2 + 1; it != rota_2.clientes.end(); it++)
                 nova_rota_1.clientes.push_back(*it);
 
             if (nova_rota_1.get_carga() > s.get_instancia()->get_capacidade())
@@ -254,7 +252,7 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
 
             for (std::vector<Cliente>::iterator it = rota_2.clientes.begin(); it != rota_2.clientes.begin() + ponto_corte_rota_2 + 1; it++)
                 nova_rota_2.clientes.push_back(*it);
-            for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1 + tamanho_corte; it != rota_1.clientes.end(); it++)
+            for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1 + 1; it != rota_1.clientes.end(); it++)
                 nova_rota_2.clientes.push_back(*it);
 
             if (nova_rota_2.get_carga() > s.get_instancia()->get_capacidade())
@@ -277,6 +275,60 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
 
             if (s_temp.get_custo() < s.get_custo()) {
                 // verifica tabu
+
+                cout << "TROCA CORTE CRUZADO ENCONTRADO: Rotas " << pos_rota_1 << " e " << pos_rota_2 << " posicoes " << ponto_corte_rota_1 << " e " << ponto_corte_rota_2 << endl;
+
+                return s_temp;
+            } else {
+                s_temp = s;
+            }
+
+        }
+    }
+
+    throw NENHUM_MOVIMENTO;
+}
+
+Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        throw SEM_ROTAS;
+
+    Solucao s_temp = s;
+
+    int pos_rota_1 = rand() % n_rotas;
+    int pos_rota_2 = pos_rota_1;
+
+    while (pos_rota_1 == pos_rota_2)
+        pos_rota_2 = rand() % n_rotas;
+
+    int tamanho = (rand() % 2) + 1;
+
+    for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
+        for (int inicio_conjunto_r2 = 1; inicio_conjunto_r2 < s.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r2++) {
+            Rota* rota_1 = s_temp.get_rota_ref(pos_rota_1);
+            Rota* rota_2 = s_temp.get_rota_ref(pos_rota_2);
+
+            for (int k = 0; k < tamanho; k++)
+                swap(rota_1->clientes[inicio_conjunto_r1 + k], rota_2->clientes[inicio_conjunto_r2 + k]);
+
+            if (rota_1->get_carga() > s.get_instancia()->get_capacidade())
+            {
+                cout << "-- capacidade excedida r1 --" << endl;
+                continue;
+            }
+
+            if (rota_2->get_carga() > s.get_instancia()->get_capacidade())
+            {
+                cout << "-- capacidade excedida r2--" << endl;
+                continue;
+            }
+
+            s_temp.recalcula_rotulos_utilizados();
+
+            if (s_temp.get_custo() < s.get_custo()) {
+                // verifica tabu
+                cout << endl<< "troca de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << inicio_conjunto_r2 << endl;
 
                 return s_temp;
             } else {
