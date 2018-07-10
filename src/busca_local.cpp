@@ -185,8 +185,8 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_intra_realoacao(s_temp);
-                    if (s_temp.get_custo() < s_best.get_custo()) {
-                        cout << "mix 0 deu certo" << endl; return s_best = s_temp; }
+                    if (s_temp.get_custo() < s_best.get_custo())
+                        s_best = s_temp;
                 } catch (int e) {}
                 break;
         
@@ -194,8 +194,8 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_2_opt(s_temp);
-                    if (s_temp.get_custo() < s_best.get_custo()) {
-                        cout << "mix 1 deu certo" << endl; return s_best = s_temp; }
+                    if (s_temp.get_custo() < s_best.get_custo())
+                        s_best = s_temp;
                 } catch (int e) {}
                 break;
             
@@ -203,8 +203,8 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_or_opt(s_temp);
-                    if (s_temp.get_custo() < s_best.get_custo()) {
-                        cout << "mix 2 deu certo" << endl; return s_best = s_temp; }
+                    if (s_temp.get_custo() < s_best.get_custo())
+                        s_best = s_temp;
                 } catch (int e) {}
                 break;
 
@@ -212,69 +212,82 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                 break;
         }
     }
+
+    return s_best;
 }
 
-// /* 
-//  * Movimento intra rota para múltiplas rotas
-//  * Troca clientes de posição k vezes, em quaisquer rotas da solução
-//  */
-// Solucao movimento_intra_rota_n_rotas(Solucao s, Matriz &mapa_rotulos, int k, ListaTabu* tabu)
-// {
-//     cout << "Movimento 1 - Intra rota múltiplas rotas";
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 1)
-//         return s;
 
-//     int id_rota, tamanho;
-//     Rota *r;
+Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
+    int n_rotas = s.get_n_rotas();
+    if (n_rotas < 2)
+        throw SEM_ROTAS;
 
-//     for (int i = 0; i < k; i++)
-//     {
-//         id_rota = rand() % n_rotas;
-//         r = s.get_rota_ref(id_rota);
+    Solucao s_temp = s;
 
-//         cout << "Rota " << id_rota;
+    int pos_rota_1 = rand() % n_rotas;
+    int pos_rota_2 = pos_rota_1;
 
-//         tamanho = r->get_tamanho();
+    while (pos_rota_1 == pos_rota_2)
+        pos_rota_2 = rand() % n_rotas;
 
-//         if (tamanho < 4) // pelo menos dois clientes são necessários: depósito, cliente 1, cliente 2, depósito
-//             return s;
+    Rota rota_1 = s_temp.get_rota(pos_rota_1);
+    Rota rota_2 = s_temp.get_rota(pos_rota_2);
 
-//         int pos_origem = rand() % (tamanho - 2) + 1;
-//         int pos_destino = pos_origem;
+    int tamanho_corte = (rand() % 2) + 1;
 
-//         while (pos_destino == pos_origem)
-//         {
-//             pos_destino = rand() % (tamanho - 2) + 1;
-//         }
+    for (int ponto_corte_rota_1 = 0; ponto_corte_rota_1 < rota_1.get_tamanho() - tamanho_corte; ponto_corte_rota_1++) {
+        for (int ponto_corte_rota_2 = 0; ponto_corte_rota_2 < rota_2.get_tamanho() - tamanho_corte; ponto_corte_rota_2++) {
 
-//         if (tabu != nullptr) {
-//             Movimento mov_1 = std::make_tuple(r->clientes[pos_origem].id, id_rota, pos_destino);
-//             Movimento mov_2 = std::make_tuple(r->clientes[pos_destino].id, id_rota, pos_origem);
+            Rota nova_rota_1;
+            Rota nova_rota_2;
 
-//             if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2))
-//             {
-//                 cout << "-- Movimento Tabu --" << endl;
-//                 return s;
-//             }
-//             else
-//             {
-//                 tabu->adiciona(mov_1);
-//                 tabu->adiciona(mov_2);
-//             }
-//         }
+            for (std::vector<Cliente>::iterator it = rota_1.clientes.begin(); it != rota_1.clientes.begin() + ponto_corte_rota_1 + 1; it++)
+                nova_rota_1.clientes.push_back(*it);
+            for (std::vector<Cliente>::iterator it = rota_2.clientes.begin() + ponto_corte_rota_2 + tamanho_corte; it != rota_2.clientes.end(); it++)
+                nova_rota_1.clientes.push_back(*it);
 
-//         //Efetua a troca
-//         std::swap(r->clientes[pos_origem], r->clientes[pos_destino]);
+            if (nova_rota_1.get_carga() > s.get_instancia()->get_capacidade())
+            {
+                cout << "-- capacidade excedida r1 --" << endl;
+                continue;
+            }
 
-//         s.recalcula_rotulos_utilizados(mapa_rotulos);
-//     }
+            for (std::vector<Cliente>::iterator it = rota_2.clientes.begin(); it != rota_2.clientes.begin() + ponto_corte_rota_2 + 1; it++)
+                nova_rota_2.clientes.push_back(*it);
+            for (std::vector<Cliente>::iterator it = rota_1.clientes.begin() + ponto_corte_rota_1 + tamanho_corte; it != rota_1.clientes.end(); it++)
+                nova_rota_2.clientes.push_back(*it);
 
-//     s.imprime();
-//     cout << "Trocado! Custo agora é " << s.get_custo() << endl;
+            if (nova_rota_2.get_carga() > s.get_instancia()->get_capacidade())
+            {
+                cout << "-- capacidade excedida r2--" << endl;
+                continue;
+            }
 
-//     return s;
-// }
+            s_temp.update_rota(nova_rota_1, pos_rota_1);
+            s_temp.update_rota(nova_rota_2, pos_rota_2);
+
+            //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
+            if (nova_rota_1.get_tamanho() < 3)
+                s_temp.remove_rota(pos_rota_1);
+
+            if (nova_rota_2.get_tamanho() < 3)
+                s_temp.remove_rota(pos_rota_2);
+
+            s_temp.recalcula_rotulos_utilizados();
+
+            if (s_temp.get_custo() < s.get_custo()) {
+                // verifica tabu
+
+                return s_temp;
+            } else {
+                s_temp = s;
+            }
+
+        }
+    }
+
+    throw NENHUM_MOVIMENTO;
+}
 
 // /* 
 //  * Movimento inter rota
@@ -346,63 +359,6 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
 //     return s;
 // }
 
-// /* 
-//  * Movimento de troca 2-opt
-//  * Escolhe dois pontos na rota e inverte todos os clientes entre eles
-//  * TODO adicionar movimento Tabu
-//  */
-// Solucao movimento_intra_2_opt(Solucao s, Matriz &mapa_rotulos, int k, ListaTabu* tabu)
-// {
-//     cout << "Movimento intra rota 2-opt" << endl;
-
-//     int n_rotas = s.get_n_rotas();
-//     if (n_rotas < 1)
-//         return s;
-
-//     int pos_rota = rand() % n_rotas;
-//     Rota *r = s.get_rota_ref(pos_rota);
-
-//     cout << "Rota " << pos_rota;
-
-//     int tamanho = r->get_tamanho();
-
-//     if (tamanho < (2+k+1)) // pelo menos 2 (depósito no início e fim) + (k+1) clientes necessários
-//         return s;
-
-//     int teto_inicio = (tamanho - 2 - k);
-//     assert(teto_inicio > 0);
-
-//     int pos_inicio = (rand() % teto_inicio) + 1;
-//     assert(pos_inicio > 0);
-
-//     cout << " - revertendo clientes de " << pos_inicio << " até " << pos_inicio + k << endl;
-
-//     if (tabu != nullptr) {
-//         std::vector<Movimento> movimentos;
-
-//         for (int i = pos_inicio; i < pos_inicio + k; i++) 
-//         {
-//             Movimento mov = std::make_tuple(r->clientes[i].id, pos_rota, pos_inicio + k - i);
-//             if (tabu->is_tabu(mov)) 
-//             {
-//                 cout << "Movimento Tabu" << endl;
-//                 return s;
-//             } 
-//             else 
-//             {
-//                 movimentos.push_back(mov);
-//             }
-//         }
-//         for_each(movimentos.begin(), movimentos.end(), [tabu](Movimento mov) { tabu->adiciona(mov); });
-//     }
-
-//     std::reverse(r->clientes.begin() + pos_inicio, r->clientes.begin() + pos_inicio + k + 1);
-
-//     s.recalcula_rotulos_utilizados(mapa_rotulos);
-//     s.imprime();
-
-//     return s;
-// }
 
 // /* 
 //  * Movimento de perturbação
