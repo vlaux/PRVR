@@ -184,7 +184,8 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
             case 0:
                 try {
                     Solucao s_temp = s;
-                    s_temp = movimento_intra_realoacao(s_temp);
+                    int tam = (rand() % 2) + 1;
+                    s_temp = movimento_intra_realoacao(s_temp, tam, tabu);
                     if (s_temp.get_custo() < s_best.get_custo())
                         s_best = s_temp;
                 } catch (int e) {}
@@ -193,7 +194,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
             case 1:
                 try {
                     Solucao s_temp = s;
-                    s_temp = movimento_2_opt(s_temp);
+                    s_temp = movimento_2_opt(s_temp, tabu);
                     if (s_temp.get_custo() < s_best.get_custo())
                         s_best = s_temp;
                 } catch (int e) {}
@@ -202,7 +203,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
             case 2:
                 try {
                     Solucao s_temp = s;
-                    s_temp = movimento_or_opt(s_temp);
+                    s_temp = movimento_or_opt(s_temp, tabu);
                     if (s_temp.get_custo() < s_best.get_custo())
                         s_best = s_temp;
                 } catch (int e) {}
@@ -396,6 +397,49 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
     }
 
     throw NENHUM_MOVIMENTO;
+}
+
+Solucao movimento_mix_inter(Solucao &s, ListaTabu* tabu) {
+    Solucao s_best = s;
+    vector<int> movimentos = {0, 1, 2};
+    utils::random::shuffle(movimentos.begin(), movimentos.end());
+    for (int i = 0; i < movimentos.size(); i++) {
+        
+        switch (movimentos[i])
+        {
+            case 0:
+                try {
+                    Solucao s_temp = s;
+                    s_temp = movimento_corte_cruzado(s_temp, tabu);
+                    if (s_temp.get_custo() < s_best.get_custo())
+                        s_best = s_temp;
+                } catch (int e) {}
+                break;
+        
+            case 1:
+                try {
+                    Solucao s_temp = s;
+                    s_temp = movimento_troca_conjuntos(s_temp, tabu);
+                    if (s_temp.get_custo() < s_best.get_custo())
+                        s_best = s_temp;
+                } catch (int e) {}
+                break;
+            
+            case 2:
+                try {
+                    Solucao s_temp = s;
+                    s_temp = movimento_realocacao_conjuntos(s_temp, tabu);
+                    if (s_temp.get_custo() < s_best.get_custo())
+                        s_best = s_temp;
+                } catch (int e) {}
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    return s_best;
 }
 
 // /* 
