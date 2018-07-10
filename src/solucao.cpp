@@ -9,10 +9,11 @@
 #include "rotulo.h"
 
 bool Solucao::existe_cliente_nao_atendido() {
-    int n_clientes = instancia.get_n_clientes();
+    int n_clientes = instancia->get_n_clientes();
     for (int i = 1; i <= n_clientes; i++)
         if (!clientes_visitados[i]) return true;
     return false;
+
 }
 
 int Solucao::get_custo()
@@ -23,11 +24,30 @@ int Solucao::get_custo()
     return INT32_MAX;
 }
 
-Solucao::Solucao(Instancia &ins) : instancia(ins)
+int Solucao::get_custo_ponderado_rotulos()
 {
-    int n_rotulos = ins.get_n_rotulos();
+    std::vector<Rotulo> rotulos_ordenados = rotulos;    
+    std::sort(rotulos_ordenados.begin(), rotulos_ordenados.end(), greater<Rotulo>());
+    int custo = 0;
+    for (int i = 0; i < rotulos.size() && rotulos_ordenados[i].get_frequencia() > 0; i++)
+        custo += rotulos_ordenados[i].get_frequencia() * rotulos.size() - i;
+    
+    return custo;
+}
+
+int Solucao::get_custo_ponderado()
+{
+    int custo = get_custo() * rotulos.size() * rotulos.size();
+    return custo - get_custo_ponderado_rotulos();
+}
+
+
+Solucao::Solucao(Instancia* ins)
+{
+    this->instancia = ins;
+    int n_rotulos = ins->get_n_rotulos();
     Solucao::rotas = vector<Rota>();
-    clientes_visitados = vector<bool>(ins.get_n_clientes() + 1);
+    clientes_visitados = vector<bool>(ins->get_n_clientes() + 1);
     fill(clientes_visitados.begin(), clientes_visitados.end(), false);
 
     for(int i=0; i<n_rotulos; i++) {
@@ -35,11 +55,11 @@ Solucao::Solucao(Instancia &ins) : instancia(ins)
     }
 }
 
-Solucao::Solucao(const Solucao& s) : instancia(s.instancia) {
-    copy(s);
-}
+// Solucao::Solucao(const Solucao& s) {
+//     copy(s);
+// }
 
-Solucao& Solucao::operator=(const Solucao& s) 
+Solucao Solucao::operator=(const Solucao& s) 
 {
     copy(s);
     return *this;
@@ -93,21 +113,16 @@ void Solucao::remove_rotulo(int id_rotulo)
         rotulos[id_rotulo].frequencia -= 1;
 }
 
-void Solucao::recalcula_rotulos_utilizados(Matriz & mapa_rotulos) 
+void Solucao::recalcula_rotulos_utilizados() 
 {
     //zera utilização de todos os rótulos
-    for(int i=0; i<rotulos.size(); i++) {
-        rotulos[i] = Rotulo(i);
-    }
+    for(int i=0; i<rotulos.size(); i++)
+        rotulos[i].frequencia = 0;
 
     //recalcula utilização   
     std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
-        int id_rotulo;
         for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
-        {
-            id_rotulo = mapa_rotulos[c->id][std::next(c)->id];
-            rotulos[id_rotulo].frequencia++;
-        }
+            get_rotulo_entre(c->id, std::next(c)->id).frequencia++;
      });
 }
 
@@ -131,13 +146,16 @@ void Solucao::imprime()
         cout << endl;
      });
      cout << "Custo: " << get_custo() << endl;
+     cout << "Rótulos: ";
+     for (int i = 0; i < instancia->get_n_rotulos(); i++)
+        cout << "[" << i << "]: " << rotulos[i].get_frequencia() << " ";
 }
 
 Instancia* Solucao::get_instancia() {
-    return &instancia;
+    return instancia;
 }
 
 Rotulo& Solucao::get_rotulo_entre(int id_origem, int id_destino) {
-    int id_rotulo = instancia.get_rotulo_entre(id_origem, id_destino).id;
+    int id_rotulo = instancia->get_rotulo_entre(id_origem, id_destino).id;
     return rotulos[id_rotulo];
 }
