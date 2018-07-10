@@ -42,11 +42,10 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
             // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
             for (int i = 1; i < tamanho - tam - 1; i++)
             {
-                r->clientes.erase(r->clientes.begin() + pos_cliente, r->clientes.begin() + pos_cliente + tam);
-
                 // não tenta realocar na mesma posição
                 if (i == pos_cliente) continue;
 
+                r->clientes.erase(r->clientes.begin() + pos_cliente, r->clientes.begin() + pos_cliente + tam);
                 r->clientes.insert(r->clientes.begin()+i, clientes_realocados.begin(), clientes_realocados.end());
 
                 s_temp.recalcula_rotulos_utilizados();
@@ -56,18 +55,21 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 
                     // se existir lista tabu para verificar...
                     if (tabu != nullptr) {
-                        // cout << "Verificando lista tabu..." << endl;
-                        // vector<int> lista_clientes = {c.id};
-                        // Movimento mov = std::make_tuple(id_rota, i, lista_clientes);
+                        vector<int> lista_clientes(clientes_realocados.size());
+                        for(int i = 0; i < clientes_realocados.size(); i++)
+                            lista_clientes.push_back(clientes_realocados.at(i).id);
+                        
+                        Movimento mov = std::make_tuple(id_rota, lista_clientes);
+                        tabu->adiciona(mov);
 
-                        // // se for tabu, ignora
-                        // if (tabu->is_tabu(mov))
-                        // {
-                        //     cout << "-- Movimento Tabu --" << endl;
-                        //     continue;
-                        // }
-                        // else
-                        //     tabu->adiciona(mov);
+                        if (tabu->is_tabu(mov))
+                        {
+                            cout << "-- Movimento Tabu --" << endl;
+                            s_temp = s;
+                            continue;
+                        }
+                        else
+                            tabu->adiciona(mov);
                     }
 
                     // estratégia primeiro aprimorante
@@ -116,21 +118,20 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
                 if (s_temp.get_custo() < s.get_custo()) {
                     // se existir lista tabu para verificar...
                     if (tabu != nullptr) {
-                        cout << "Verificando lista tabu..." << endl;
                         vector<int> lista_clientes;
                         for (int t = i; t < j; t++)
-                            lista_clientes.push_back(r->clientes.at(t).id);
+                            lista_clientes.push_back(rota_original.clientes.at(t).id);
 
-                        Movimento mov = std::make_tuple(id_rota, i, lista_clientes);
+                        Movimento mov = std::make_tuple(id_rota, lista_clientes);
 
-                        // se for tabu, ignora
                         if (tabu->is_tabu(mov))
                         {
                             cout << "-- Movimento Tabu --" << endl;
+                            s_temp = s;
                             continue;
                         }
-                        //else
-                            //tabu->adiciona(mov);
+                        else
+                            tabu->adiciona(mov);
                     }
 
                     // estratégia primeiro aprimorante
@@ -372,7 +373,22 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
             }
 
             if (s_temp.get_custo() < s.get_custo()) {
-                // verifica tabu
+                if (tabu != nullptr) {
+                    vector<int> lista_clientes;
+                    for (int i = ponto_corte_rota_1 + 1; i < s.get_rota(pos_rota_1).get_tamanho(); i++)
+                        lista_clientes.push_back(s.get_rota(pos_rota_1).clientes.at(i).id);
+                    Movimento mov_1 = std::make_tuple(pos_rota_1, lista_clientes);
+                    
+                    lista_clientes.clear();
+                    for (int i = ponto_corte_rota_2 + 1; i < s.get_rota(pos_rota_2).get_tamanho(); i++)
+                        lista_clientes.push_back(s.get_rota(pos_rota_2).clientes.at(i).id);
+                    Movimento mov_2 = std::make_tuple(pos_rota_2, lista_clientes);
+
+                    if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2)) {
+                        s_temp = s;
+                        continue;
+                    }
+                }
 
                 cout << "TROCA CORTE CRUZADO ENCONTRADO: Rotas " << pos_rota_1 << " e " << pos_rota_2 << " posicoes " << ponto_corte_rota_1 << " e " << ponto_corte_rota_2 << endl;
 
@@ -431,7 +447,23 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
             }
 
             if (s_temp.get_custo() < s.get_custo()) {
-                // verifica tabu
+                if (tabu != nullptr) {
+                    vector<int> lista_clientes;
+                    for (int i = inicio_conjunto_r1; i < inicio_conjunto_r1 + tamanho; i++)
+                        lista_clientes.push_back(s.get_rota(pos_rota_1).clientes.at(i).id);
+                    Movimento mov_1 = std::make_tuple(pos_rota_1, lista_clientes);
+                    
+                    lista_clientes.clear();
+                    for (int i = inicio_conjunto_r2; i < inicio_conjunto_r2 + tamanho; i++)
+                        lista_clientes.push_back(s.get_rota(pos_rota_2).clientes.at(i).id);
+                    Movimento mov_2 = std::make_tuple(pos_rota_2, lista_clientes);
+
+                    if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2)) {
+                        s_temp = s;
+                        continue;
+                    }
+                }
+
                 cout << endl<< "troca de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << inicio_conjunto_r2 << endl;
 
                 return s_temp;
@@ -492,7 +524,18 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
             }
 
             if (s_temp.get_custo() < s.get_custo()) {
-                // verifica tabu
+                if (tabu != nullptr) {
+                    vector<int> lista_clientes;
+                    for (int i = inicio_conjunto_r1; i < inicio_conjunto_r1 + tamanho; i++)
+                        lista_clientes.push_back(s.get_rota(pos_rota_1).clientes.at(i).id);
+                    Movimento mov = std::make_tuple(pos_rota_1, lista_clientes);
+
+                    if (tabu->is_tabu(mov)) {
+                        s_temp = s;
+                        continue;
+                    }
+                }
+
                 cout << endl<< "realocao de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << posicao_r2 << endl;
 
                 return s_temp;

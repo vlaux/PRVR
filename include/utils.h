@@ -19,7 +19,12 @@
 #include <cmath>
 
 typedef std::vector<std::vector<int>> Matriz;
-typedef std::tuple<int, int, int> Movimento;
+typedef std::tuple<int, std::vector<int>> Movimento; // <id_rota, lista de clientes>
+
+// exceptions
+#define NENHUM_MOVIMENTO 1
+#define SEM_ROTAS 2
+#define CAPACIDADE_EXCEDIDA 3
 
 namespace utils{
 

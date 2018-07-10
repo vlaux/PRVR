@@ -1,5 +1,5 @@
-#ifndef TABU
-#define TABU
+#ifndef LISTA_TABU
+#define LISTA_TABU
 
 #include <list>
 #include <tuple>
@@ -9,7 +9,7 @@ using namespace std;
 
 class ListaTabu {
     private:
-        std::list<Movimento > lista_tabu;
+        std::list<Movimento> lista_tabu;
         int tamanho_maximo;
         int tamanho;
     public:

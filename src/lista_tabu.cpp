@@ -17,7 +17,7 @@ void ListaTabu::adiciona(const Movimento movimento)
 
 bool ListaTabu::is_tabu(const Movimento movimento)
 {
-    return (std::find(lista_tabu.begin(), lista_tabu.end(), movimento) != lista_tabu.end());
+    return std::find(lista_tabu.begin(), lista_tabu.end(), movimento) != lista_tabu.end();
 }
 
 // TODO melhorar isso
@@ -29,6 +29,8 @@ void ListaTabu::aumenta_lista()
 void ListaTabu::diminui_lista()
 {
     tamanho = tamanho_maximo / 2;
+    while (lista_tabu.size() > tamanho)
+        lista_tabu.pop_front();
 }
 
 ListaTabu::ListaTabu(int tamanho_maximo)
