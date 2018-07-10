@@ -387,6 +387,9 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
                     if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2)) {
                         s_temp = s;
                         continue;
+                    } else {
+                        tabu->adiciona(mov_1);
+                        tabu->adiciona(mov_2);
                     }
                 }
 
@@ -461,6 +464,9 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
                     if (tabu->is_tabu(mov_1) || tabu->is_tabu(mov_2)) {
                         s_temp = s;
                         continue;
+                    } else {
+                        tabu->adiciona(mov_1);
+                        tabu->adiciona(mov_2);
                     }
                 }
 
@@ -533,6 +539,8 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
                     if (tabu->is_tabu(mov)) {
                         s_temp = s;
                         continue;
+                    } else {
+                        tabu->adiciona(mov);
                     }
                 }
 
