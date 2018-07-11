@@ -19,7 +19,7 @@ using namespace std;
  */
 Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 {
-    cout << "Movimento intra-rota de realocação";
+    cout << "Movimento intra-rota de realocação" << endl;
 
     Solucao s_temp = s;
 
@@ -29,18 +29,16 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
         Rota rota_original = s_temp.get_rota(id_rota);
         Rota* r = s_temp.get_rota_ref(id_rota);
 
-        cout << "Rota " << id_rota;
-
         int tamanho = r->get_tamanho();
 
-        for (int pos_cliente = 1; pos_cliente < tamanho - tam - 1; pos_cliente++) {
+        for (int pos_cliente = 1; pos_cliente < tamanho - tam; pos_cliente++) {
 
             vector<Cliente> clientes_realocados(&r->clientes.at(pos_cliente), &r->clientes.at(pos_cliente+tam));
 
             // tenta realocá-lo em todas as outras posições
             // começa em 1 pq não troca com depósito
             // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
-            for (int i = 1; i < tamanho - tam - 1; i++)
+            for (int i = 1; i < tamanho - tam; i++)
             {
                 // não tenta realocar na mesma posição
                 if (i == pos_cliente) continue;
@@ -105,12 +103,10 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
         Rota rota_original = s_temp.get_rota(id_rota);
         Rota* r = s_temp.get_rota_ref(id_rota);
 
-        cout << "Rota " << id_rota << endl;
-
         int tamanho = r->get_tamanho();
 
         for (int i = 1; i < tamanho; i++) {
-            for (int j = i + 2; j < tamanho; j++) {
+            for (int j = i + 1; j < tamanho - 1; j++) {
     
                 std::reverse(r->clientes.begin() + i, r->clientes.begin() + j);
                 s_temp.recalcula_rotulos_utilizados();
@@ -260,6 +256,9 @@ Solucao perturbacao_troca_conjuntos(Solucao &s) {
 
     int tamanho = (rand() % 2) + 1;
 
+    if (s.get_rota(id_rota_1).get_tamanho() <= 3 || s.get_rota(id_rota_2).get_tamanho() <= 3)
+        tamanho = 1;
+
     int inicio_conjunto_r1 = (rand() % (s.get_rota(id_rota_1).get_tamanho() - tamanho - 1)) + 1;
     int inicio_conjunto_r2 = (rand() % (s.get_rota(id_rota_2).get_tamanho() - tamanho - 1)) + 1;
 
@@ -286,7 +285,7 @@ Solucao perturbacao_realocacao_conjuntos(Solucao &s) {
     int tamanho = (rand() % 2) + 1;
 
     int inicio_conjunto_r1 = (rand() % (s.get_rota(id_rota_1).get_tamanho() - tamanho - 1)) + 1;
-    int posicao_r2 = (rand() % s.get_rota(id_rota_2).get_tamanho() - 1) + 1;
+    int posicao_r2 = (rand() % (s.get_rota(id_rota_2).get_tamanho() - 1)) + 1;
 
     try {
         return _perturba_realocacao_conjuntos(s_temp, id_rota_1, id_rota_2, inicio_conjunto_r1, posicao_r2, tamanho);
@@ -438,6 +437,8 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
         pos_rota_2 = rand() % n_rotas;
 
     int tamanho = (rand() % 2) + 1;
+    if (s.get_rota(pos_rota_1).get_tamanho() <= 3 || s.get_rota(pos_rota_2).get_tamanho() <= 3)
+        tamanho = 1;
 
     for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
         for (int inicio_conjunto_r2 = 1; inicio_conjunto_r2 < s.get_rota(pos_rota_2).get_tamanho() - tamanho; inicio_conjunto_r2++) {
@@ -519,6 +520,9 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
         pos_rota_2 = rand() % n_rotas;
 
     int tamanho = (rand() % 2) + 1;
+
+    if (s.get_rota(pos_rota_1).get_tamanho() <= 3)
+        tamanho = 1;
 
     for (int inicio_conjunto_r1 = 1; inicio_conjunto_r1 < s_temp.get_rota(pos_rota_1).get_tamanho() - tamanho; inicio_conjunto_r1++) {
         for (int posicao_r2 = 1; posicao_r2 < s_temp.get_rota(pos_rota_2).get_tamanho() - 1; posicao_r2++) {
