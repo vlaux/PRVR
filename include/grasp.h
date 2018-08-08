@@ -8,8 +8,6 @@
 
 using namespace std;
 
-#define LIMITE_CONSTRUCAO 0.8
-
 class Grasp 
 {
     private:
@@ -21,13 +19,10 @@ class Grasp
         vector<int> counts;
         vector<double> scores;
         vector<double> probs;
-
-        void avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter);        
-        Cliente escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha);
+        void avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter);
     public:
-        Grasp(bool is_reativo = false, int n_iter = 1, int iter_until_update = 20, float alpha = 1);
-        Solucao constroi_solucao(Instancia &ins, float alpha = 1);
-        Solucao executa(Instancia &ins, char* argv[]);
+        Grasp(bool is_reativo = false, int n_iter = 1, float alpha = 1);
+        Solucao executa(Instancia *ins);
 };
 
 #endif

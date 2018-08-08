@@ -1,45 +1,54 @@
 #include "vnd.h"
 #include <iostream>
+#include <cstdlib>
 #include "solucao.h"
 #include "instancia.h"
 #include "busca_local.h"
 
+#define L_MAX 4
 
-Vnd::Vnd() {};
+Vnd::Vnd() {
+    this->tabu = nullptr;
+};
 
 Vnd::Vnd(ListaTabu* lista_tabu)
 {
     tabu = lista_tabu;
 }
 
-Solucao Vnd::executa(Solucao s, Instancia& ins, int k_max)
+Solucao Vnd::executa(Solucao &s)
 {
-    int k = 1;
+    int l = 1;
 
     Solucao s_temp = s;
     Solucao s_best = s;
     
-    while (k <= k_max)
+    while (l <= L_MAX)
     {
         #ifdef DEBUG
-        cout << "K = " << k << endl;
+        cout << "[VND] l = " << l << endl;
         #endif
 
-        s_temp = busca_melhor_vizinho(s_best, ins, k);
+        try {
+            s_temp = busca_local(s_best, l);
+        } catch (int e) {
+            l++;
+            continue;
+        }
         
         if (s_temp.get_custo() < s_best.get_custo())
         {
             #ifdef DEBUG
-            cout << "ENCONTROU. K=1" << endl;
+            cout << "[VND] ENCONTROU. l=1" << endl;
             #endif
             s_best = s_temp;
-            k = 1;
+            l = 1;
         }
         else 
         {
-            k++;
+            l++;
             #ifdef DEBUG
-            cout << "NÃO ENCONTROU. K = " << k << endl;
+            cout << "[VND] NÃO ENCONTROU. l = " << k << endl;
             #endif
         }
     }
@@ -47,51 +56,19 @@ Solucao Vnd::executa(Solucao s, Instancia& ins, int k_max)
     return s_best;
 }
 
-Solucao Vnd::busca_melhor_vizinho(Solucao s, Instancia& ins, int k)
-{
-    cout << "Procurando melhor vizinho em k = " << k << endl;
-
-    int max_busca_em_k = ins.get_n_rotulos(); // bom valor?
-    // int max_busca_em_k = 1; // para testes
-    Solucao s_temp = s;
-    Solucao s_best = s;
-
-    for (int i = 0; i < max_busca_em_k; i++)
-    {
-        switch (rand() % N_MOVIMENTOS)
-        {
-        case 0:
-            s_temp = movimento_intra_rota(s_temp, ins.get_mapa_rotulos(), k, tabu);
-            break;
-        case 1:
-            s_temp = movimento_intra_rota_n_rotas(s_temp, ins.get_mapa_rotulos(), k);
-            break;
-        case 2:
-            s_temp = movimento_inter_move_n(s_temp, ins.get_capacidade(), ins.get_mapa_rotulos(), k);
-            break;
+Solucao Vnd::busca_local(Solucao &s, int l) {
+    switch(l) {
+        case 1: {
+            int tam = (rand() % 2) + 1;
+            return movimento_intra_realoacao(s, tam, tabu);
+        }
+        case 2: 
+            return movimento_2_opt(s, tabu);
         case 3:
-            s_temp = movimento_intra_2_opt(s_temp, ins.get_mapa_rotulos(), k);
-            break;
+            return movimento_or_opt(s, tabu);
+        case 4:
+            return movimento_mix_intra(s, tabu);
         default:
-            cerr << "Que movimento é esse???" << endl;
-            exit(EXIT_FAILURE);
-        }
-        if (s_temp.get_custo() < s_best.get_custo())
-        {
-            s_best = s_temp;
-            #ifdef DEBUG
-            cout << "Encontrou melhora em k " << k << endl;
-            #endif
-        }
-        else
-        {
-            s_temp = s_best;
-        }
+            return s;
     }
-
-    #ifdef DEBUG
-    cout << "Encerrando busca em k=" << k << endl;
-    #endif
-
-    return s_best;
 }

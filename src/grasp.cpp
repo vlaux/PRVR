@@ -3,8 +3,9 @@
 #include "grasp.h"
 #include "vnd.h"
 #include "vns.h"
+#include "construtor.h"
 
-Grasp::Grasp(bool is_reativo, int n_iter, int iter_until_update, float alpha)
+Grasp::Grasp(bool is_reativo, int n_iter, float alpha)
 {
     counts = vector<int>(alphas.size());
     scores = vector<double>(alphas.size());
@@ -12,7 +13,7 @@ Grasp::Grasp(bool is_reativo, int n_iter, int iter_until_update, float alpha)
 
     this->alpha = alpha;
     this->n_iter = n_iter;
-    this->iter_until_update = iter_until_update;
+    this->iter_until_update = 10;
 
     if (is_reativo) {
         counts = vector<int>(alphas.size());
@@ -25,13 +26,11 @@ Grasp::Grasp(bool is_reativo, int n_iter, int iter_until_update, float alpha)
     }
 }
 
-Solucao Grasp::executa(Instancia &ins, char* argv[]) {
+Solucao Grasp::executa(Instancia *ins) {
     Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0, max_iter_grasp = this->n_iter;
-    cout << max_iter_grasp << endl;
-    while (iter_sem_melhora < max_iter_grasp) {
-        
+    while (iter_sem_melhora < max_iter_grasp) {        
         int alpha_idx = -1;
         if (is_reativo) {
             alpha_idx = utils::random::select_index_randomly(probs);
@@ -41,40 +40,20 @@ Solucao Grasp::executa(Instancia &ins, char* argv[]) {
         cout << "iteração " << iter << "  usando alpha = " << alpha << endl;
         
         Solucao s(ins);
-        s = constroi_solucao(ins, alpha);
+        s = Construtor(ins).construcao_gulosa_aleatoria(alpha);
         #ifdef DEBUG
         s.imprime();
         #endif
 
         avalia_alpha(s, s_best, alpha_idx, iter);
-        
-        //Busca local definida via param de entrada
 
-        char* busca_local = argv[4];
-        if (strcmp(busca_local, "VND") == 0) {
-            int k_max = atoi(argv[5]);
-            s = Vnd().executa(s, ins, k_max);
-        }
-        else if (strcmp(busca_local, "VNS") == 0) {
-            int k_max = atoi(argv[5]);
-            char *tipo_bl = argv[6];
-            int k_max_bl = atoi(argv[7]);
-            s = Vns(tipo_bl, k_max_bl).executa(s, ins, k_max);
-            s.imprime();
-        }
-        else if (strcmp(busca_local, "TABU") == 0) {
-            cerr << "TABU não implementado para GRASP" << endl;
-            abort();
-        }
-        else { // random
-            cerr << "deveria executar busca aleatória?" << endl;
-            abort();
-        }
+        #ifdef VNS
+        s = Vns().executa(s);
+        #endif
 
-        
-        // transformar em função
-        if (s.get_custo() < s_best.get_custo()) {
+        if (!iter || s.get_custo_ponderado() < s_best.get_custo_ponderado()) {
 	        s_best = s;
+            s_best.imprime();
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;
@@ -83,8 +62,8 @@ Solucao Grasp::executa(Instancia &ins, char* argv[]) {
         iter++;
     }
 
+    cout << "finalizando grasp" << endl;
     s_best.imprime();
-
     return s_best;
 }
 
@@ -116,64 +95,4 @@ void Grasp::avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter)
                 cout << alphas[i] << " = " << probs[i] << endl;
         }
     }
-}
-
-Solucao Grasp::constroi_solucao(Instancia &ins, float alpha)
-{
-    Solucao s(ins);
-
-    Cliente deposito = ins.get_cliente(0);
-    
-    while(s.existe_cliente_nao_atendido()) {
-        Rota r(deposito);
-        
-        Cliente c = escolhe_melhor_cliente(s, ins, r.clientes.back(), alpha);
-        while (c.id != r.clientes.back().id && r.get_carga() + c.demanda <= ins.get_capacidade() * 1) { // CORRIGIR
-            s.adiciona_cliente(c, r, ins.get_mapa_rotulos());
-            c = escolhe_melhor_cliente(s, ins, r.clientes.back(), alpha);
-        }
-
-        s.adiciona_cliente(deposito, r, ins.get_mapa_rotulos());
-        s.adiciona_rota(r);
-    }
-
-    return s;
-}
-
-Cliente Grasp::escolhe_melhor_cliente(Solucao s, Instancia &ins, Cliente origem, float alpha)
-{
-    if (!s.existe_cliente_nao_atendido())
-        return origem;
-
-    int max = -1, min = INT32_MAX;
-    int n_clientes = ins.get_n_clientes();
-    vector<int> avaliacao(n_clientes + 1);
-
-    for(int i = 1; i <= n_clientes; i++)
-    {
-        if(i != origem.id && !s.is_cliente_visitado(i))
-        {
-            avaliacao[i] = s.get_rotulo_entre(origem.id, i).get_frequencia();
-            
-            if (avaliacao[i] > max) max = avaliacao[i];
-            if (avaliacao[i] < min) min = avaliacao[i];
-        }
-        else 
-            avaliacao[i] = -1;
-    }
-
-    vector<Cliente> lrc;
-
-    for(int i = 1; i <= n_clientes; i++)
-    {
-        if (avaliacao[i] >= (min + alpha*(max-min))) 
-        {
-            Cliente c = ins.get_cliente(i);        
-            lrc.push_back(c);            
-        }
-    }
-
-    assert(!lrc.empty());
-    
-    return lrc[rand()%lrc.size()];
 }

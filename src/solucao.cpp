@@ -41,6 +41,7 @@ int Solucao::get_custo_ponderado()
     return custo - get_custo_ponderado_rotulos();
 }
 
+// Solucao::Solucao() {}
 
 Solucao::Solucao(Instancia* ins)
 {
@@ -121,6 +122,8 @@ void Solucao::recalcula_rotulos_utilizados()
 
     //recalcula utilização   
     std::for_each(rotas.begin(), rotas.end(), [&](Rota r) {
+        assert(r.clientes.front().id == 0 && r.clientes.back().id == 0 && "tem um depósito fora do lugar");
+
         for (std::vector<Cliente>::iterator c = r.clientes.begin(); c != std::prev(r.clientes.end()); c++)
             get_rotulo_entre(c->id, std::next(c)->id).frequencia++;
      });

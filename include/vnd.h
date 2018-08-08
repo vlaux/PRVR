@@ -10,12 +10,12 @@ using namespace std;
 class Vnd {
     private:
         ListaTabu* tabu = nullptr;
-        Solucao busca_melhor_vizinho(Solucao s, Instancia& ins, int k);        
+        Solucao busca_local(Solucao &s, int l);
 
     public:
         Vnd();
         Vnd(ListaTabu* tabu);
-        Solucao executa(Solucao s, Instancia& ins, int k_max = 1);
+        Solucao executa(Solucao &s);
 };
 
 #endif

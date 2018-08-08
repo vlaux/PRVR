@@ -1,66 +1,90 @@
 #include "vns.h"
+
 #include <iostream>
+#include <cstdlib>
+
 #include "solucao.h"
 #include "instancia.h"
 #include "busca_local.h"
 #include "vnd.h"
 
-Vns::Vns() {};
+#define K_MAX 4
 
-Vns::Vns(char* tipo_busca, int k_max_bl, ListaTabu* lista_tabu)
+Vns::Vns() {
+    this->tabu = nullptr;
+};
+
+Vns::Vns(ListaTabu* lista_tabu)
 {
     this->tabu = lista_tabu;
-    this->tipo_busca_local = tipo_busca;
-    this->k_max_bl = k_max_bl;
 }
 
-Solucao Vns::executa(Solucao s, Instancia& ins, int k_max)
+Solucao Vns::executa(Solucao &s)
 {
     int k = 1;
 
     Solucao s_temp = s;
     Solucao s_best = s;
-    
-    while (k <= k_max)
-    {
-        #ifdef DEBUG
-        cout << "K = " << k << endl;
-        #endif
 
-        s_temp = movimento_perturbacao_cortes(s_best, ins.get_capacidade(), ins.get_mapa_rotulos());
-        s_temp = busca_local(s_temp, ins);
-        
-        if (s_temp.get_custo() < s_best.get_custo())
+    int iter = 0, iter_sem_melhora = 0, max_iter = 100, custo = INT32_MAX;
+
+    while(iter_sem_melhora < max_iter)
+    {
+        k = 1;
+        iter++;
+
+        while (k <= K_MAX)
         {
             #ifdef DEBUG
-            cout << "ENCONTROU. K=1" << endl;
+            cout << "k = " << k << endl;
             #endif
-            s_best = s_temp;
-            k = 1;
+
+            s_temp = perturbacao(s_best, k);
+            s_temp = Vnd(tabu).executa(s_temp);
+            
+            if (s_temp.get_custo() < s_best.get_custo())
+            {
+                #ifdef DEBUG
+                cout << "ENCONTROU. K=1" << endl;
+                #endif
+
+                k = 1;
+                s_best = s_temp;
+            }
+            else 
+            {
+                #ifdef DEBUG
+                cout << "NÃO ENCONTROU. K = " << k << endl;
+                #endif
+
+                k++;
+            }
         }
-        else 
-        {
-            k++;
-            #ifdef DEBUG
-            cout << "NÃO ENCONTROU. K = " << k << endl;
-            #endif
+
+        if (s_best.get_custo() < custo) {
+            custo = s_best.get_custo();
+            iter_sem_melhora = 0;
         }
+        else iter_sem_melhora++;
     }
 
     return s_best;
 }
 
-Solucao Vns::busca_local(Solucao s, Instancia ins) {
-    if (strcmp(tipo_busca_local, "VND") == 0) {
-        return Vnd().executa(s, ins, k_max_bl);
+Solucao Vns::perturbacao(Solucao &s, int k) {
+    switch(k) {
+        case 1:
+            return perturbacao_troca_conjuntos(s);
+        case 2:
+            return perturbacao_realocacao_conjuntos(s);
+        case 3:
+            return perturbacao_corte_cruzado(s);
+        case 4: { // mix
+            int k_rand = rand() % 4;
+            return perturbacao(s, k_rand);
+        }
+        default:
+            return s;
+            
     }
-    else if (strcmp(tipo_busca_local, "TABU") == 0) {
-        cout << "tabu para ILS ainda não suportado" << endl;
-        abort();
-    }
-    else {
-        cout << "deveria executar movs aleatórios no ILS: não implementado yet" << endl;
-        abort();
-    }
-    return s;
 }
