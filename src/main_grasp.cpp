@@ -29,11 +29,7 @@ int main(int argc, char *argv[])
 
     cout << n_iter << endl;
 
-    // Solucao s = Grasp(false, 100, 0.8).executa(ins);
-    
     Solucao s = Construtor(ins).construcao_aleatoria();
-
-    s = Ils().executa(s, 1000);
 
     s.imprime();
     // vector<Rotulo> sorted1 = s.rotulos;

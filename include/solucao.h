@@ -26,7 +26,7 @@ class Solucao
     Solucao operator=(const Solucao& s);
     std::vector<Rota> rotas; // era pra ser private, mas na correria foi pra public pra contornar problema
     std::vector<Rotulo> rotulos; // idem acima
-    Rota* get_rota_ref(int id_rota) { 
+    Rota* get_rota_ref(unsigned int id_rota) { 
       assert(id_rota < rotas.size() && "índice maior que no. de rotas");
       return &rotas[id_rota]; 
     };

@@ -23,10 +23,10 @@ bool Validador::valida(Instancia *ins, Solucao &s) {
     }
 
     int acc = 0;
-    for (int i = 0; i < rotulos_utilizados.size(); i++)
+    for (unsigned int i = 0; i < rotulos_utilizados.size(); i++)
         if (rotulos_utilizados[i] > 0) acc++;
 
-    for (int i = 1; i < vezes_visitado.size(); i++)
+    for (unsigned int i = 1; i < vezes_visitado.size(); i++)
         assert(vezes_visitado[i] == 1 && "cliente visitado mais de uma vez");
 
     assert(s.get_custo() == acc && "Validação de custo falhou");

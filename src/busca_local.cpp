@@ -57,7 +57,7 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
                     // se existir lista tabu para verificar...
                     if (tabu != nullptr) {
                         vector<int> lista_clientes(clientes_realocados.size());
-                        for(int i = 0; i < clientes_realocados.size(); i++)
+                        for(unsigned int i = 0; i < clientes_realocados.size(); i++)
                             lista_clientes.push_back(clientes_realocados.at(i).id);
                         
                         Movimento mov = std::make_tuple(id_rota, lista_clientes);
@@ -177,7 +177,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
     Solucao s_best = s;
     vector<int> movimentos = {0, 1, 2};
     utils::random::shuffle(movimentos.begin(), movimentos.end());
-    for (int i = 0; i < movimentos.size(); i++) {
+    for (unsigned int i = 0; i < movimentos.size(); i++) {
         
         switch (movimentos[i])
         {
@@ -560,7 +560,7 @@ Solucao movimento_mix_inter(Solucao &s, ListaTabu* tabu) {
     Solucao s_best = s;
     vector<int> movimentos = {0, 1, 2};
     utils::random::shuffle(movimentos.begin(), movimentos.end());
-    for (int i = 0; i < movimentos.size(); i++) {
+    for (unsigned int i = 0; i < movimentos.size(); i++) {
         
         switch (movimentos[i])
         {
