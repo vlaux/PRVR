@@ -26,7 +26,7 @@ Grasp::Grasp(bool is_reativo, int n_iter, float alpha)
     }
 }
 
-Solucao Grasp::executa(Instancia *ins) {
+Solucao Grasp::executa(Instancia *ins, BuscaLocal* bl) {
     Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0, max_iter_grasp = this->n_iter;
@@ -47,9 +47,7 @@ Solucao Grasp::executa(Instancia *ins) {
 
         avalia_alpha(s, s_best, alpha_idx, iter);
 
-        #ifdef VNS
-        s = Vns().executa(s);
-        #endif
+        s = bl->executa(s);
 
         if (!iter || s.get_custo_ponderado() < s_best.get_custo_ponderado()) {
 	        s_best = s;

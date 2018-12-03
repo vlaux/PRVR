@@ -2,6 +2,7 @@
 #define GRASP
 
 #include "solucao.h"
+#include "busca_local.h"
 #include "cliente.h"
 #include "instancia.h"
 #include "utils.h"
@@ -22,7 +23,7 @@ class Grasp
         void avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter);
     public:
         Grasp(bool is_reativo = false, int n_iter = 1, float alpha = 1);
-        Solucao executa(Instancia *ins);
+        Solucao executa(Instancia *ins, BuscaLocal* bl);
 };
 
 #endif
