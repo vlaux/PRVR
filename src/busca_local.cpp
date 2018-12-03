@@ -12,8 +12,10 @@
 #define MODULO(x) ((x) >= 0 ? (x) : -(x))
 
 #define N_MOVIMENTOS 8
+#define MAX_TENTATIVAS 10
 
 using namespace std;
+
 
 /* 
  * Movimento intra rota
@@ -221,7 +223,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
 
 // MOVIMENTOS INTER ROTA
 
-Solucao perturbacao_corte_cruzado(Solucao &s) {
+Solucao perturbacao_corte_cruzado(Solucao &s, unsigned int tentativa) {
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         throw SEM_ROTAS;
@@ -240,11 +242,12 @@ Solucao perturbacao_corte_cruzado(Solucao &s) {
     try {
         return _perturba_corte_cruzado(s_temp, id_rota_1, id_rota_2, ponto_corte_rota_1, ponto_corte_rota_2);
     } catch (int e) {
-        return perturbacao_corte_cruzado(s);
+        if (tentativa > MAX_TENTATIVAS) return s;
+        return perturbacao_corte_cruzado(s, tentativa++);
     }
 }
 
-Solucao perturbacao_troca_conjuntos(Solucao &s) {
+Solucao perturbacao_troca_conjuntos(Solucao &s, unsigned int tentativa) {
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         throw SEM_ROTAS;
@@ -268,11 +271,12 @@ Solucao perturbacao_troca_conjuntos(Solucao &s) {
     try {
         return _perturba_troca_conjuntos(s_temp, id_rota_1, id_rota_2, inicio_conjunto_r1, inicio_conjunto_r2, tamanho);
     } catch (int e) {
-        return perturbacao_troca_conjuntos(s);
+        if (tentativa > MAX_TENTATIVAS) return s;
+        return perturbacao_troca_conjuntos(s, tentativa++);
     }
 }
 
-Solucao perturbacao_realocacao_conjuntos(Solucao &s) {
+Solucao perturbacao_realocacao_conjuntos(Solucao &s, unsigned int tentativa) {
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
         throw SEM_ROTAS;
@@ -295,7 +299,8 @@ Solucao perturbacao_realocacao_conjuntos(Solucao &s) {
     try {
         return _perturba_realocacao_conjuntos(s_temp, id_rota_1, id_rota_2, inicio_conjunto_r1, posicao_r2, tamanho);
     } catch (int e) {
-        return perturbacao_realocacao_conjuntos(s);
+        if (tentativa > MAX_TENTATIVAS) return s;
+        return perturbacao_realocacao_conjuntos(s, tentativa++);
     }
 }
 
