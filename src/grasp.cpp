@@ -4,6 +4,7 @@
 #include "vnd.h"
 #include "vns.h"
 #include "construtor.h"
+#include "utils.h"
 
 Grasp::Grasp(bool is_reativo, int n_iter, float alpha)
 {
@@ -62,6 +63,7 @@ Solucao Grasp::executa(Instancia *ins, BuscaLocal* bl) {
 
     cout << "finalizando grasp" << endl;
     s_best.imprime();
+
     return s_best;
 }
 
