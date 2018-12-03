@@ -11,9 +11,10 @@ class ListaTabu {
     private:
         std::list<Movimento> lista_tabu;
         int tamanho_maximo;
+        int tamanho_minimo;
         int tamanho;
     public:
-        ListaTabu(int tamanho_maximo);
+        ListaTabu(int tamanho);
         void adiciona(Movimento movimento);
         bool is_tabu(Movimento movimento);
         void aumenta_lista();

@@ -6,25 +6,23 @@
 #include "instancia.h"
 // #include "utils.h"
 #include "lista_tabu.h"
+#include "busca_local.h"
 
 using namespace std;
 
 
-class BuscaTabu
+class BuscaTabu : public BuscaLocal
 {
-    // private:
-    //     ListaTabu* lista_tabu;
-    //     int tam_maximo_lista = 100; // definir via tamanho da ins?
-    //     int ultimo_custo_avaliado = INT32_MAX;
-    //     int iter_until_update = 20; //receber via param de conf
-    //     void avalia_tamanho_lista_tabu(Solucao s_best, int iter);
-    //     char* tipo_busca_local;
-    //     int k_max_bl;
-    //     Solucao busca_local(Solucao s, Instancia ins);        
-    // public:
-    //     BuscaTabu();
-    //     BuscaTabu(char* tipo_busca_local, int k_max_bl);
-    //     Solucao executa(Instancia &ins, Solucao sol_inicial, int max_iter);
+    private:
+        ListaTabu* lista_tabu;
+        BuscaLocal* busca_local;
+        int tamanho_lista = 100;
+        int iter_until_update = 10;
+        int max_iter_sem_melhora = 100;
+        void avalia_tamanho_lista_tabu(Solucao s, int iter);
+    public:
+        BuscaTabu(int tamanho_lista, int max_iter_sem_melhora, BuscaLocal* busca_local);
+        Solucao executa(Solucao &sol_inicial, ListaTabu* _ = nullptr);
 };
 
 #endif
