@@ -26,35 +26,6 @@ typedef std::tuple<int, std::vector<int>> Movimento; // <id_rota, lista de clien
 #define SEM_ROTAS 2
 #define CAPACIDADE_EXCEDIDA 3
 
-class Logger {
-    private:
-        /* Here will be the instance stored. */
-        static Logger* instance;
-
-        /* Private constructor to prevent instancing. */
-        Logger();
-
-    public:
-        /* Static access method. */
-        static Logger* get_instance();
-}
-
-Logger* Logger::instance = 0;
-
-Logger* Logger::getInstance()
-{
-    if (instance == 0)
-    {
-        instance = new Logger();
-    }
-
-    return instance;
-}
-
-Logger::Logger() {
-    
-}
-
 namespace utils{
 
     namespace functional {
