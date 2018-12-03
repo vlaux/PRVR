@@ -10,23 +10,16 @@
 
 #define K_MAX 4
 
-Vns::Vns() {
-    this->tabu = nullptr;
-};
+Vns::Vns() {};
 
-Vns::Vns(ListaTabu* lista_tabu)
-{
-    this->tabu = lista_tabu;
-}
-
-Solucao Vns::executa(Solucao &s)
+Solucao Vns::executa(Solucao &s, ListaTabu* lista_tabu)
 {
     int k = 1;
 
     Solucao s_temp = s;
     Solucao s_best = s;
 
-    int iter = 0, iter_sem_melhora = 0, max_iter = 100, custo = INT32_MAX;
+    int iter = 0, iter_sem_melhora = 0, max_iter = 1, custo = INT32_MAX;
 
     while(iter_sem_melhora < max_iter)
     {
@@ -40,7 +33,7 @@ Solucao Vns::executa(Solucao &s)
             #endif
 
             s_temp = perturbacao(s_best, k);
-            s_temp = Vnd(tabu).executa(s_temp);
+            s_temp = Vnd().executa(s_temp, lista_tabu);
             
             if (s_temp.get_custo() < s_best.get_custo())
             {

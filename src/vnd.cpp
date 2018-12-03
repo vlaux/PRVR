@@ -7,16 +7,9 @@
 
 #define L_MAX 4
 
-Vnd::Vnd() {
-    this->tabu = nullptr;
-};
+Vnd::Vnd() { };
 
-Vnd::Vnd(ListaTabu* lista_tabu)
-{
-    tabu = lista_tabu;
-}
-
-Solucao Vnd::executa(Solucao &s)
+Solucao Vnd::executa(Solucao &s, ListaTabu* tabu)
 {
     int l = 1;
 
@@ -30,7 +23,7 @@ Solucao Vnd::executa(Solucao &s)
         #endif
 
         try {
-            s_temp = busca_local(s_best, l);
+            s_temp = busca_local(s_best, l, tabu);
         } catch (int e) {
             l++;
             continue;
@@ -56,7 +49,7 @@ Solucao Vnd::executa(Solucao &s)
     return s_best;
 }
 
-Solucao Vnd::busca_local(Solucao &s, int l) {
+Solucao Vnd::busca_local(Solucao &s, int l, ListaTabu* tabu) {
     switch(l) {
         case 1: {
             int tam = (rand() % 2) + 1;

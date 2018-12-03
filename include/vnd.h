@@ -4,18 +4,16 @@
 #include "solucao.h"
 #include "utils.h"
 #include "lista_tabu.h"
+#include "busca_local.h"
 
 using namespace std;
 
-class Vnd {
+class Vnd : public BuscaLocal {
     private:
-        ListaTabu* tabu = nullptr;
-        Solucao busca_local(Solucao &s, int l);
-
+        Solucao busca_local(Solucao &s, int l, ListaTabu* tabu);
     public:
         Vnd();
-        Vnd(ListaTabu* tabu);
-        Solucao executa(Solucao &s);
+        Solucao executa(Solucao &s, ListaTabu* tabu = nullptr);
 };
 
 #endif
