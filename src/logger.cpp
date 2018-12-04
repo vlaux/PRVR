@@ -19,13 +19,22 @@ long double Logger::get_elapsed_time()
 
 void Logger::inicia_logger(string file_prefix) 
 {
-    string logfile_name = "/output/" + file_prefix + "._log.txt";
-    string tttfile_name = "/output/" + file_prefix + "._ttt.txt";
-    string resultsfile_name = "/output/resultados/" + file_prefix + ".txt";
+    string logfile_name = "output/" + file_prefix + "_log.txt";
+    string tttfile_name = "output/" + file_prefix + "_ttt.txt";
+    string resultsfile_name = "output/resultados/" + file_prefix + ".txt";
 
-    logfile.open(logfile_name, ios::out);
-    tttfile.open(tttfile_name, ios::out);
-    results.open(resultsfile_name, ios::app);
+    logfile.open(logfile_name, fstream::out);
+    tttfile.open(tttfile_name, fstream::out);
+    results.open(resultsfile_name, fstream::app);
+}
+
+void Logger::finaliza_logger()
+{
+    logfile.close();
+    tttfile.close();
+    results.close();
+
+    cout << "Arquivos de log gravados" << endl;
 }
 
 Logger::Logger() {

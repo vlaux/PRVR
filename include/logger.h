@@ -15,9 +15,9 @@ class Logger {
         Logger();
 
         std::chrono::time_point<std::chrono::high_resolution_clock> start;
-        ofstream logfile;
-        ofstream tttfile;
-        ofstream results;
+        fstream logfile;
+        fstream tttfile;
+        fstream results;
 
         long double get_elapsed_time();
     public:
@@ -25,6 +25,7 @@ class Logger {
         static Logger* get_instance();
 
         void inicia_logger(string file_prefix);
+        void finaliza_logger();
 
         void salva_resultado_final();
         void salva_resultado_parcial();
