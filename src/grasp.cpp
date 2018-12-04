@@ -6,7 +6,7 @@
 #include "construtor.h"
 #include "utils.h"
 
-Grasp::Grasp(bool is_reativo, int n_iter, float alpha)
+Grasp::Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl)
 {
     counts = vector<int>(alphas.size());
     scores = vector<double>(alphas.size());
@@ -15,6 +15,7 @@ Grasp::Grasp(bool is_reativo, int n_iter, float alpha)
     this->alpha = alpha;
     this->n_iter = n_iter;
     this->iter_until_update = 10;
+    this->busca_local = bl;
 
     if (is_reativo) {
         counts = vector<int>(alphas.size());
@@ -27,7 +28,7 @@ Grasp::Grasp(bool is_reativo, int n_iter, float alpha)
     }
 }
 
-Solucao Grasp::executa(Instancia *ins, BuscaLocal* bl) {
+Solucao Grasp::executa(Instancia *ins) {
     Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0, max_iter_grasp = this->n_iter;
@@ -48,7 +49,7 @@ Solucao Grasp::executa(Instancia *ins, BuscaLocal* bl) {
 
         avalia_alpha(s, s_best, alpha_idx, iter);
 
-        s = bl->executa(s);
+        s = busca_local->executa(s);
 
         if (!iter || s.get_custo_ponderado() < s_best.get_custo_ponderado()) {
 	        s_best = s;

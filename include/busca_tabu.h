@@ -21,7 +21,7 @@ class BuscaTabu : public BuscaLocal
         int max_iter_sem_melhora = 100;
         void avalia_tamanho_lista_tabu(Solucao s, int iter);
     public:
-        BuscaTabu(int tamanho_lista, int max_iter_sem_melhora, BuscaLocal* busca_local);
+        BuscaTabu(int max_iter_sem_melhora, int tamanho_lista, BuscaLocal* busca_local);
         Solucao executa(Solucao &sol_inicial, ListaTabu* _ = nullptr);
 };
 

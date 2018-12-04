@@ -6,7 +6,7 @@
 
 using namespace std;
 
-BuscaTabu::BuscaTabu(int tamanho_lista, int max_iter_sem_melhora, BuscaLocal* busca_local)
+BuscaTabu::BuscaTabu(int max_iter_sem_melhora, int tamanho_lista, BuscaLocal* busca_local)
 {
     this->busca_local = busca_local;
     this->tamanho_lista = tamanho_lista;

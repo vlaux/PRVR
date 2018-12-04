@@ -12,6 +12,10 @@
 
 Vns::Vns() {};
 
+Vns::Vns(int max_iter) {
+    Vns::max_iter = max_iter;
+};
+
 Solucao Vns::executa(Solucao &s, ListaTabu* lista_tabu)
 {
     int k = 1;
@@ -19,7 +23,7 @@ Solucao Vns::executa(Solucao &s, ListaTabu* lista_tabu)
     Solucao s_temp = s;
     Solucao s_best = s;
 
-    int iter = 0, iter_sem_melhora = 0, max_iter = 1, custo = INT32_MAX;
+    int iter = 0, iter_sem_melhora = 0, custo = INT32_MAX;
 
     while(iter_sem_melhora < max_iter)
     {
