@@ -23,7 +23,7 @@ Solucao BuscaTabu::executa(Solucao &sol_inicial, ListaTabu* _)
     int iter_sem_melhora = 0, iter = 0;
     while(iter_sem_melhora < max_iter_sem_melhora)
     {
-        s = busca_local->executa(s);
+        s = busca_local->executa(s, lista_tabu);
 
         if (s.get_custo_ponderado() < s_best.get_custo_ponderado()) 
         {
