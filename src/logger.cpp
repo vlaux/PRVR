@@ -23,8 +23,8 @@ void Logger::inicia_logger(string file_prefix)
 
     string timestamp = to_string(now.time_since_epoch().count());
 
-    string logfile_name = "output/" + file_prefix + timestamp + "log.txt";
-    string tttfile_name = "output/" + file_prefix + timestamp + "ttt.txt";
+    string logfile_name = "output/" + file_prefix + timestamp + "_log.txt";
+    string tttfile_name = "output/" + file_prefix + timestamp + "_ttt.txt";
     string resultsfile_name = "output/resultados/" + file_prefix + ".txt";
 
     logfile.open(logfile_name, fstream::out);

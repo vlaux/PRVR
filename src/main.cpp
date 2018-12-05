@@ -59,6 +59,17 @@ int main(int argc, char *argv[])
             bl = new Vns(iter_vns);
         }
 
+        // ----------- com ILS -----------
+        if (strcmp(metodo_bl, "ILS") == 0)
+        {
+            file_prefix += "ILS_";
+
+            int iter_ils = atoi(argv[6]);
+            int iter_vns_aux = 100; // FIXAR BASEADO EM OUTROS TESTES (?)
+            bl_aux = new Vns(iter_vns_aux); // FIXAR BASEADO EM TESTES GRASP
+            bl = new Ils(iter_ils, bl_aux);
+        }
+
         // ----------- com VND -----------
         if (strcmp(metodo_bl, "VND") == 0)
         {
@@ -99,7 +110,7 @@ int main(int argc, char *argv[])
         solucao_final = Grasp(is_reativo, iter_grasp, alpha, bl).executa(ins);
 
         delete bl;
-        delete bl_aux;
+        if (bl_aux != nullptr) delete bl_aux;
     }
 
     // --------------- VNS ---------------
@@ -136,6 +147,59 @@ int main(int argc, char *argv[])
         solucao_final = Vns(iter_vns).executa(s);
     }
 
+    // --------------- ILS ---------------
+    if (strcmp(metaheuristica, "ILS") == 0)
+    {
+        file_prefix += "_ILS_";
+
+        BuscaLocal* bl = nullptr;
+
+        int iter_ils = atoi(argv[3]);
+        char* modo_construcao = argv[4];
+        char* tipo_bl = argv[5];
+
+        Solucao s(ins);
+        if (strcmp(modo_construcao, "GUL") == 0)
+        {
+            file_prefix += "GUL_";
+
+            s = Construtor(ins).construcao_gulosa();
+        }
+        else if (strcmp(modo_construcao, "AL") == 0)
+        {
+            file_prefix += "AL_";
+
+            s = Construtor(ins).construcao_aleatoria();
+        }
+        else if (strcmp(modo_construcao, "GUL_AL") == 0)
+        {
+            file_prefix += "GUL_AL_";
+
+            float alpha_construcao = 0.8; // FIXAR BASEADO EM TESTES GRASP
+            s = Construtor(ins).construcao_gulosa_aleatoria(alpha_construcao);
+        }
+
+        // ----------- ILS com VNS -----------
+        if (strcmp(tipo_bl, "VNS") == 0)
+        {
+            file_prefix += "VNS_";
+
+            int iter_vns = atoi(argv[6]);
+            bl = new Vns(iter_vns);
+        }
+        // ----------- ILS com VND -----------
+        else if (strcmp(tipo_bl, "VND") == 0)
+        {
+            file_prefix += "VND_";
+
+            bl = new Vnd();
+        }
+
+        logger->inicia_logger(file_prefix);
+
+        solucao_final = Ils(iter_ils, bl).executa(s);
+    }
+
     // --------------- TABU ---------------
     if (strcmp(metaheuristica, "TABU") == 0)
     {
@@ -146,6 +210,7 @@ int main(int argc, char *argv[])
         char* tipo_bl_tabu = argv[5];
         char* modo_construcao = argv[6];
         BuscaLocal* bl_tabu = nullptr;
+        BuscaLocal* bl_ils_tabu = nullptr;
 
         Solucao s(ins);
         if (strcmp(modo_construcao, "GUL") == 0)
@@ -154,13 +219,13 @@ int main(int argc, char *argv[])
 
             s = Construtor(ins).construcao_gulosa();
         }
-        if (strcmp(modo_construcao, "AL") == 0)
+        else if (strcmp(modo_construcao, "AL") == 0)
         {
             file_prefix += "AL_";
 
             s = Construtor(ins).construcao_aleatoria();
         }
-        if (strcmp(modo_construcao, "GUL_AL") == 0)
+        else if (strcmp(modo_construcao, "GUL_AL") == 0)
         {
             file_prefix += "GUL_AL_";
 
@@ -183,12 +248,25 @@ int main(int argc, char *argv[])
 
             bl_tabu = new Vnd();
         }
+        // ----------- TABU com ILS -----------
+        else if (strcmp(tipo_bl_tabu, "ILS") == 0)
+        {
+            file_prefix += "ILS_";
+
+            int iter_bl_aux = atoi(argv[9]);
+
+            int iter_bl_ils_tabu = 100; // FIXAR BASEADO EM TESTES GRASP
+            bl_ils_tabu = new Vns(iter_bl_ils_tabu);
+            
+            bl_tabu = new Ils(iter_bl_aux, bl_ils_tabu);
+        }
 
         logger->inicia_logger(file_prefix);
 
         solucao_final = BuscaTabu(iter_tabu, tamanho_lista, bl_tabu).executa(s);
 
         delete bl_tabu;
+        if (bl_ils_tabu != nullptr) delete bl_ils_tabu;
     }
 
     Validador().valida(ins, solucao_final);

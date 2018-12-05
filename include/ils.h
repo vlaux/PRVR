@@ -9,10 +9,15 @@
 
 using namespace std;
 
-class Ils
+class Ils : public BuscaLocal
 {
+    private:
+        int max_iter;
+        BuscaLocal* bl;
+        Solucao perturbacao(Solucao &s);
     public:
-        Solucao executa(Solucao &s, int max_iter);
+        Ils(int max_iter, BuscaLocal* bl);
+        Solucao executa(Solucao &s, ListaTabu* tabu = nullptr);
 };
 
 #endif
