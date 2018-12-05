@@ -32,7 +32,7 @@ Solucao Grasp::executa(Instancia *ins) {
     Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0, max_iter_grasp = this->n_iter;
-    while (iter_sem_melhora < max_iter_grasp) {        
+    while (iter_sem_melhora < max_iter_grasp) {
         int alpha_idx = -1;
         if (is_reativo) {
             alpha_idx = utils::random::select_index_randomly(probs);
@@ -50,7 +50,7 @@ Solucao Grasp::executa(Instancia *ins) {
         s.imprime();
         #endif
 
-        avalia_alpha(s, s_best, alpha_idx, iter);
+        if (is_reativo) avalia_alpha(s, s_best, alpha_idx, iter);
 
         s = busca_local->executa(s);
 
