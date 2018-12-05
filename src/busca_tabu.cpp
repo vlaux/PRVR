@@ -25,7 +25,7 @@ Solucao BuscaTabu::executa(Solucao &sol_inicial, ListaTabu* _)
     {
         s = busca_local->executa(s);
 
-        if (s.get_custo() < s_best.get_custo()) 
+        if (s.get_custo_ponderado() < s_best.get_custo_ponderado()) 
         {
             s_best = s;
             iter_sem_melhora = 0;

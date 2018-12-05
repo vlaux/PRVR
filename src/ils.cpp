@@ -16,7 +16,7 @@ Solucao Ils::executa(Solucao &s, int max_iter)
 
         s_temp = busca_local_aleatoria(s_temp, 100); // talvez testar com VNS?
 
-        if (s_temp.get_custo() < s_best.get_custo())
+        if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
         {
             iter_sem_melhora = 0;
             s_best = s_temp;

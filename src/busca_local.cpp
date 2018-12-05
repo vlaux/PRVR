@@ -54,7 +54,7 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
                 s_temp.recalcula_rotulos_utilizados();
 
                 // encontrou movimento aprimorante        
-                if (s_temp.get_custo() < s.get_custo()) {
+                if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
 
                     // se existir lista tabu para verificar...
                     if (tabu != nullptr) {
@@ -116,7 +116,7 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
                 std::reverse(r->clientes.begin() + i, r->clientes.begin() + j);
                 s_temp.recalcula_rotulos_utilizados();
 
-                if (s_temp.get_custo() < s.get_custo()) {
+                if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
                     // se existir lista tabu para verificar...
                     if (tabu != nullptr) {
                         vector<int> lista_clientes;
@@ -188,7 +188,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                     Solucao s_temp = s;
                     int tam = (rand() % 2) + 1;
                     s_temp = movimento_intra_realoacao(s_temp, tam, tabu);
-                    if (s_temp.get_custo() < s_best.get_custo())
+                    if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
                         s_best = s_temp;
                 } catch (int e) {}
                 break;
@@ -197,7 +197,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_2_opt(s_temp, tabu);
-                    if (s_temp.get_custo() < s_best.get_custo())
+                    if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
                         s_best = s_temp;
                 } catch (int e) {}
                 break;
@@ -206,7 +206,7 @@ Solucao movimento_mix_intra(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_or_opt(s_temp, tabu);
-                    if (s_temp.get_custo() < s_best.get_custo())
+                    if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
                         s_best = s_temp;
                 } catch (int e) {}
                 break;
@@ -371,7 +371,7 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
                 continue;
             }
 
-            if (s_temp.get_custo() < s.get_custo()) {
+            if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
                 if (tabu != nullptr) {
                     vector<int> lista_clientes;
                     for (int i = ponto_corte_rota_1 + 1; i < s.get_rota(pos_rota_1).get_tamanho(); i++)
@@ -450,7 +450,7 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
                 continue;
             }
 
-            if (s_temp.get_custo() < s.get_custo()) {
+            if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
                 if (tabu != nullptr) {
                     vector<int> lista_clientes;
                     for (int i = inicio_conjunto_r1; i < inicio_conjunto_r1 + tamanho; i++)
@@ -533,7 +533,7 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
                 continue;
             }
 
-            if (s_temp.get_custo() < s.get_custo()) {
+            if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
                 if (tabu != nullptr) {
                     vector<int> lista_clientes;
                     for (int i = inicio_conjunto_r1; i < inicio_conjunto_r1 + tamanho; i++)
@@ -573,7 +573,7 @@ Solucao movimento_mix_inter(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_corte_cruzado(s_temp, tabu);
-                    if (s_temp.get_custo() < s_best.get_custo())
+                    if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
                         s_best = s_temp;
                 } catch (int e) {}
                 break;
@@ -582,7 +582,7 @@ Solucao movimento_mix_inter(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_troca_conjuntos(s_temp, tabu);
-                    if (s_temp.get_custo() < s_best.get_custo())
+                    if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
                         s_best = s_temp;
                 } catch (int e) {}
                 break;
@@ -591,7 +591,7 @@ Solucao movimento_mix_inter(Solucao &s, ListaTabu* tabu) {
                 try {
                     Solucao s_temp = s;
                     s_temp = movimento_realocacao_conjuntos(s_temp, tabu);
-                    if (s_temp.get_custo() < s_best.get_custo())
+                    if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
                         s_best = s_temp;
                 } catch (int e) {}
                 break;
@@ -636,7 +636,7 @@ Solucao busca_local_aleatoria(Solucao &s, int n_iter, ListaTabu* tabu) {
             }
         }
 
-        if (s_temp.get_custo() < s_best.get_custo())
+        if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
             s_best = s_temp;
     }
     return s_best;

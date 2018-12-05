@@ -39,7 +39,7 @@ Solucao Vns::executa(Solucao &s, ListaTabu* lista_tabu)
             s_temp = perturbacao(s_best, k);
             s_temp = Vnd().executa(s_temp, lista_tabu);
             
-            if (s_temp.get_custo() < s_best.get_custo())
+            if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
             {
                 #ifdef DEBUG
                 cout << "ENCONTROU. K=1" << endl;
@@ -58,8 +58,8 @@ Solucao Vns::executa(Solucao &s, ListaTabu* lista_tabu)
             }
         }
 
-        if (s_best.get_custo() < custo) {
-            custo = s_best.get_custo();
+        if (s_best.get_custo_ponderado() < custo) {
+            custo = s_best.get_custo_ponderado();
             iter_sem_melhora = 0;
         }
         else iter_sem_melhora++;
