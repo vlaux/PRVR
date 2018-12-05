@@ -19,8 +19,12 @@ long double Logger::get_elapsed_time()
 
 void Logger::inicia_logger(string file_prefix) 
 {
-    string logfile_name = "output/" + file_prefix + "_log.txt";
-    string tttfile_name = "output/" + file_prefix + "_ttt.txt";
+    auto now = std::chrono::high_resolution_clock::now();
+
+    string timestamp = to_string(now.time_since_epoch().count());
+
+    string logfile_name = "output/" + file_prefix + timestamp + "log.txt";
+    string tttfile_name = "output/" + file_prefix + timestamp + "ttt.txt";
     string resultsfile_name = "output/resultados/" + file_prefix + ".txt";
 
     logfile.open(logfile_name, fstream::out);
