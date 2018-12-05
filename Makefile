@@ -23,7 +23,7 @@ CXXFLAGS = -Wall -O0 -g3 -std=c++11
 INCLUDES = -I include/ -I /usr/local/include
 
 # LIBS = -lpthread -lconfig++
-LIBS = -DDEBUG
+# LIBS = -DDEBUG
 LDFLAGS = $(LIBS)
 
 .PHONY: default_target

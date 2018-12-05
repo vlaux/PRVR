@@ -60,25 +60,25 @@ int main(int argc, char *argv[])
         }
 
         // ----------- com ILS -----------
-        if (strcmp(metodo_bl, "ILS") == 0)
+        else if (strcmp(metodo_bl, "ILS") == 0)
         {
             file_prefix += "ILS_";
 
             int iter_ils = atoi(argv[6]);
-            int iter_vns_aux = 100; // FIXAR BASEADO EM OUTROS TESTES (?)
+            int iter_vns_aux = 1; // FIXAR BASEADO EM OUTROS TESTES (?)
             bl_aux = new Vns(iter_vns_aux); // FIXAR BASEADO EM TESTES GRASP
             bl = new Ils(iter_ils, bl_aux);
         }
 
         // ----------- com VND -----------
-        if (strcmp(metodo_bl, "VND") == 0)
+        else if (strcmp(metodo_bl, "VND") == 0)
         {
             file_prefix += "VND_";
             bl = new Vnd();
         }
 
         // ----------- com TABU -----------
-        if (strcmp(metodo_bl, "TABU") == 0)
+        else if (strcmp(metodo_bl, "TABU") == 0)
         {
             file_prefix += "TABU_";
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     }
 
     // --------------- VNS ---------------
-    if (strcmp(metaheuristica, "VNS") == 0)
+    else if (strcmp(metaheuristica, "VNS") == 0)
     {
         file_prefix += "_VNS_";
 
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     }
 
     // --------------- ILS ---------------
-    if (strcmp(metaheuristica, "ILS") == 0)
+    else if (strcmp(metaheuristica, "ILS") == 0)
     {
         file_prefix += "_ILS_";
 
@@ -201,14 +201,14 @@ int main(int argc, char *argv[])
     }
 
     // --------------- TABU ---------------
-    if (strcmp(metaheuristica, "TABU") == 0)
+    else if (strcmp(metaheuristica, "TABU") == 0)
     {
         file_prefix += "_TABU_";
 
         int iter_tabu = atoi(argv[3]);
         int tamanho_lista = atoi(argv[4]);
-        char* tipo_bl_tabu = argv[5];
-        char* modo_construcao = argv[6];
+        char* modo_construcao = argv[5];
+        char* tipo_bl_tabu = argv[6];
         BuscaLocal* bl_tabu = nullptr;
         BuscaLocal* bl_ils_tabu = nullptr;
 
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
         {
             file_prefix += "GUL_AL_";
 
-            float alpha_construcao = atof(argv[7]);
+            float alpha_construcao = 0.8; // FIXAR TESTES GRASP
             s = Construtor(ins).construcao_gulosa_aleatoria(alpha_construcao);
         }
 
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
         {
             file_prefix += "VNS_";
 
-            int iter_bl_aux = atoi(argv[9]);
+            int iter_bl_aux = atoi(argv[7]);
             bl_tabu = new Vns(iter_bl_aux);
         }
         // ----------- TABU com VND -----------
@@ -253,11 +253,11 @@ int main(int argc, char *argv[])
         {
             file_prefix += "ILS_";
 
-            int iter_bl_aux = atoi(argv[9]);
+            int iter_bl_aux = atoi(argv[7]);
 
             int iter_bl_ils_tabu = 100; // FIXAR BASEADO EM TESTES GRASP
             bl_ils_tabu = new Vns(iter_bl_ils_tabu);
-            
+
             bl_tabu = new Ils(iter_bl_aux, bl_ils_tabu);
         }
 
@@ -269,6 +269,7 @@ int main(int argc, char *argv[])
         if (bl_ils_tabu != nullptr) delete bl_ils_tabu;
     }
 
+    solucao_final.imprime();
     Validador().valida(ins, solucao_final);
 
     delete ins;

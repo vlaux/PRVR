@@ -39,10 +39,13 @@ Solucao Grasp::executa(Instancia *ins) {
             alpha = alphas[alpha_idx];
         }
 
+        #ifdef DEBUG
         cout << "iteração " << iter << "  usando alpha = " << alpha << endl;
-        
+        #endif
+
         Solucao s(ins);
         s = Construtor(ins).construcao_gulosa_aleatoria(alpha);
+
         #ifdef DEBUG
         s.imprime();
         #endif
@@ -53,7 +56,6 @@ Solucao Grasp::executa(Instancia *ins) {
 
         if (!iter || s.get_custo_ponderado() < s_best.get_custo_ponderado()) {
 	        s_best = s;
-            s_best.imprime();
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;
@@ -62,8 +64,10 @@ Solucao Grasp::executa(Instancia *ins) {
         iter++;
     }
 
+    #ifdef DEBUG
     cout << "finalizando grasp" << endl;
     s_best.imprime();
+    #endif
 
     return s_best;
 }
@@ -90,10 +94,12 @@ void Grasp::avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter)
             for (size_t bk = 0; bk < alphas.size(); ++bk)
                 probs[bk] = Q[bk]/q;
 
+            #ifdef DEBUG
             cout << "Probabilidades atualizadas de escolha para alfa: " << endl;;
 
             for (size_t i = 0; i < alphas.size(); ++i)
                 cout << alphas[i] << " = " << probs[i] << endl;
+            #endif
         }
     }
 }

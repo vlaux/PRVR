@@ -38,7 +38,9 @@ void Logger::finaliza_logger()
     tttfile.close();
     results.close();
 
+    #ifdef DEBUG
     cout << "Arquivos de log gravados" << endl;
+    #endif
 }
 
 Logger::Logger() {

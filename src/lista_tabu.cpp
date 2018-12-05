@@ -12,7 +12,6 @@ using namespace std;
 
 void ListaTabu::adiciona(const Movimento movimento)
 {
-    // cout << "Tamanho: " << lista_tabu.size() << "/" << tamanho << endl;
     if (lista_tabu.size() == tamanho)
         lista_tabu.pop_front();
     

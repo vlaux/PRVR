@@ -24,7 +24,9 @@ using namespace std;
  */
 Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 {
+    #ifdef DEBUG
     cout << "Movimento intra-rota de realocação" << endl;
+    #endif
 
     Solucao s_temp = s;
 
@@ -67,7 +69,10 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 
                         if (tabu->is_tabu(mov))
                         {
+                            #ifdef DEBUG
                             cout << "-- Movimento Tabu --" << endl;
+                            #endif
+
                             s_temp = s;
                             continue;
                         }
@@ -76,7 +81,10 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
                     }
 
                     // estratégia primeiro aprimorante
+                    #ifdef DEBUG
                     cout << "movimento aprimorante encontrado" << endl;
+                    #endif
+
                     return s_temp;
                 }
 
@@ -98,7 +106,9 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 
 Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
 {
+    #ifdef DEBUG
     cout << "Movimento 2 opt" << endl;
+    #endif
 
     Solucao s_temp = s;
 
@@ -127,7 +137,10 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
 
                         if (tabu->is_tabu(mov))
                         {
+                            #ifdef DEBUG
                             cout << "-- Movimento Tabu --" << endl;
+                            #endif
+
                             s_temp = s;
                             continue;
                         }
@@ -136,7 +149,10 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
                     }
 
                     // estratégia primeiro aprimorante
+                    #ifdef DEBUG
                     cout << "movimento aprimorante encontrado" << endl;
+                    #endif
+
                     return s_temp;
                 }
 
@@ -156,21 +172,15 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
 Solucao movimento_or_opt(Solucao &s, ListaTabu* tabu) {
     try {
         return movimento_intra_realoacao(s, 1, tabu);
-    } catch (int e) {
-        cout << "não conseguiu, indo para or opt 2" << endl;
-    }
+    } catch (int e) {}
 
     try {
         return movimento_intra_realoacao(s, 2, tabu);
-    } catch (int e) {
-        cout << "não conseguiu, indo para or opt 3" << endl;
-    }
+    } catch (int e) {}
 
     try {
         return movimento_intra_realoacao(s, 3, tabu);
-    } catch (int e) {
-        cout << "não conseguiu nada" << endl;
-    }
+    } catch (int e) {}
 
     throw NENHUM_MOVIMENTO;
 }
@@ -318,7 +328,10 @@ Solucao _perturba_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, i
 
     if (nova_rota_1.get_carga() > s_temp.get_instancia()->get_capacidade())
     {
+        #ifdef DEBUG
         cout << "-- capacidade excedida r1 --" << endl;
+        #endif
+
         throw CAPACIDADE_EXCEDIDA;
     }
 
@@ -329,7 +342,10 @@ Solucao _perturba_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, i
 
     if (nova_rota_2.get_carga() > s_temp.get_instancia()->get_capacidade())
     {
+        #ifdef DEBUG
         cout << "-- capacidade excedida r2--" << endl;
+        #endif 
+
         throw CAPACIDADE_EXCEDIDA;
     }
 
@@ -392,7 +408,9 @@ Solucao movimento_corte_cruzado(Solucao &s, ListaTabu* tabu) {
                     }
                 }
 
+                #ifdef DEBUG
                 cout << "TROCA CORTE CRUZADO ENCONTRADO: Rotas " << pos_rota_1 << " e " << pos_rota_2 << " posicoes " << ponto_corte_rota_1 << " e " << ponto_corte_rota_2 << endl;
+                #endif
 
                 return s_temp;
             } else {
@@ -471,7 +489,9 @@ Solucao movimento_troca_conjuntos(Solucao &s, ListaTabu* tabu) {
                     }
                 }
 
+                #ifdef DEBUG
                 cout << endl<< "troca de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << inicio_conjunto_r2 << endl;
+                #endif
 
                 return s_temp;
             }
@@ -548,8 +568,10 @@ Solucao movimento_realocacao_conjuntos(Solucao &s, ListaTabu* tabu) {
                     }
                 }
 
+                #ifdef DEBUG
                 cout << endl<< "realocao de conjuntos com sucesso. rotas: " << pos_rota_1 << " e " << pos_rota_2 << " tam: " << tamanho << " pos: " << inicio_conjunto_r1 << " e " << posicao_r2 << endl;
-
+                #endif
+                
                 return s_temp;
             } else {
                 s_temp = s;
