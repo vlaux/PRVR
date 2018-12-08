@@ -19,7 +19,6 @@ class Logger {
         fstream logfile;
         fstream results;
 
-        long double get_elapsed_time();
     public:
         /* Static access method. */
         static Logger* get_instance();
@@ -29,7 +28,7 @@ class Logger {
 
         void salva_resultado_final(int custo);
         void salva_resultado_parcial(int iter, int custo);
-        void salva_ttt();
+        long double get_elapsed_time();
 };
 
 

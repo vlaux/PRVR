@@ -24,6 +24,8 @@ Logger *logger = Logger::get_instance();
 
 int main(int argc, char *argv[])
 {
+    cout << "Iniciando execução PRVR" << endl;
+
     srand(time(NULL));
 
     char *nome_arquivo = argv[1];
@@ -220,13 +222,19 @@ int main(int argc, char *argv[])
         if (bl_ils_tabu != nullptr) delete bl_ils_tabu;
     }
 
+    #ifdef DEBUG
+    cout << "Solução final:" << endl;
     solucao_final.imprime();
+    #endif
+
     Validador().valida(ins, solucao_final);
 
     delete ins;
 
     logger->salva_resultado_final(solucao_final.get_custo());
     logger->finaliza_logger();
+
+    cout << "Finalizado em " << logger->get_elapsed_time() << " s" << endl;
 
     return EXIT_SUCCESS;
 }

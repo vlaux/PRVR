@@ -28,6 +28,8 @@ void Logger::inicia_logger(list<string> call_args)
     for (string arg: call_args) ss << "_" << arg;
     string file_prefix = ss.str();
 
+    cout << "Modo: " << file_prefix << endl;
+
     auto now = std::chrono::high_resolution_clock::now();
     string timestamp = to_string(now.time_since_epoch().count());
 
