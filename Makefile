@@ -20,7 +20,8 @@ OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
 DEPS = $(OBJECTS:.o=.d)
 
 # flags #
-CXXFLAGS = -Wall -O0 -g3 -std=c++11
+# for debuggin only: CXXFLAGS = -Wall -O0 -g3 -std=c++11
+CXXFLAGS = -Wall -O0 -std=c++11
 INCLUDES = -I include/ -I /usr/local/include
 
 # LIBS = -lpthread -lconfig++
