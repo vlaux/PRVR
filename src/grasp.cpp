@@ -35,7 +35,8 @@ void Grasp::registra_logger(Logger* logger)
     Grasp::logger = logger;
 }
 
-Solucao Grasp::executa(Instancia *ins) {
+Solucao Grasp::executa(Instancia *ins) 
+{
     Solucao s_best(ins);
 
     int iter = 0, iter_sem_melhora = 0, max_iter_grasp = this->n_iter;
@@ -62,7 +63,7 @@ Solucao Grasp::executa(Instancia *ins) {
         s = busca_local->executa(s);
 
         if (!iter || s.get_custo() < s_best.get_custo()) {
-	        s_best = s;
+            s_best = s;
             logger->salva_resultado_parcial(iter, s_best.get_custo());
             iter_sem_melhora = 0;
         } else {
