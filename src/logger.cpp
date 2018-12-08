@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <sstream>
 
 Logger* Logger::instance = 0;
 
@@ -18,27 +19,28 @@ long double Logger::get_elapsed_time()
     return elapsed.count();
 }
 
-void Logger::inicia_logger(string file_prefix) 
+void Logger::inicia_logger(list<string> call_args) 
 {
-    auto now = std::chrono::high_resolution_clock::now();
+    std::stringstream ss;
+    string instance_name = call_args.front();
+    call_args.pop_front();
+    ss << instance_name.substr(4, instance_name.length() - 8);
+    for (string arg: call_args) ss << "_" << arg;
+    string file_prefix = ss.str();
 
+    auto now = std::chrono::high_resolution_clock::now();
     string timestamp = to_string(now.time_since_epoch().count());
 
-    string logfile_name = "output/" + file_prefix + timestamp + "_log.txt";
-    string tttfile_name = "output/" + file_prefix + timestamp + "_ttt.txt";
+    string logfile_name = "output/" + file_prefix + "_" + timestamp + "_log.txt";
     string resultsfile_name = "output/resultados/" + file_prefix + ".txt";
 
     logfile.open(logfile_name, fstream::out);
-    tttfile.open(tttfile_name, fstream::out);
     results.open(resultsfile_name, fstream::app);
 }
 
 void Logger::salva_resultado_parcial(int iter, int custo)
 {
-
     logfile << iter << "\t" << get_elapsed_time() << "\t" << custo << endl;
-
-    tttfile << get_elapsed_time() << endl;
 }
 
 void Logger::salva_resultado_final(int custo)
@@ -49,7 +51,6 @@ void Logger::salva_resultado_final(int custo)
 void Logger::finaliza_logger()
 {
     logfile.close();
-    tttfile.close();
     results.close();
 
     #ifdef DEBUG

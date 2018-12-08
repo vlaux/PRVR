@@ -4,6 +4,7 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <list>
 
 using namespace std;
 
@@ -16,7 +17,6 @@ class Logger {
 
         std::chrono::time_point<std::chrono::high_resolution_clock> start;
         fstream logfile;
-        fstream tttfile;
         fstream results;
 
         long double get_elapsed_time();
@@ -24,7 +24,7 @@ class Logger {
         /* Static access method. */
         static Logger* get_instance();
 
-        void inicia_logger(string file_prefix);
+        void inicia_logger(list<string> call_args);
         void finaliza_logger();
 
         void salva_resultado_final(int custo);
