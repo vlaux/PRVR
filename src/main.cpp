@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <string.h>
 #include "leitor_arquivos.h"
 #include "instancia.h"
 #include "solucao.h"
@@ -36,6 +37,8 @@ int main(int argc, char *argv[])
     Solucao solucao_final(ins);
 
     char *metaheuristica = argv[2];
+
+    cout << metaheuristica << endl;
 
     // --------------- GRASP ---------------
     if (strcmp(metaheuristica, "GRASP") == 0)
