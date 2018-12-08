@@ -23,18 +23,19 @@ Solucao BuscaTabu::executa(Solucao &sol_inicial, ListaTabu* _)
     int iter_sem_melhora = 0, iter = 0;
     while(iter_sem_melhora < max_iter_sem_melhora)
     {
+        iter++;
         s = busca_local->executa(s, lista_tabu);
 
         if (s.get_custo() < s_best.get_custo()) 
         {
             s_best = s;
             iter_sem_melhora = 0;
+            if (logger != nullptr) logger->salva_resultado_parcial(iter, s_best.get_custo());            
         }
         else
             iter_sem_melhora++;
 
         avalia_tamanho_lista_tabu(s, iter);
-        iter++;
     }
 
     delete lista_tabu;

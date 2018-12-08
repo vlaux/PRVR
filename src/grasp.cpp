@@ -6,7 +6,7 @@
 #include "construtor.h"
 #include "utils.h"
 
-Grasp::Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl)
+Grasp::Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl, Logger* logger)
 {
     counts = vector<int>(alphas.size());
     scores = vector<double>(alphas.size());
@@ -17,16 +17,22 @@ Grasp::Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl)
     this->iter_until_update = 10;
     this->busca_local = bl;
     this->is_reativo = is_reativo;
+    this->logger = logger;
 
     if (is_reativo) {
         counts = vector<int>(alphas.size());
         scores = vector<double>(alphas.size());
         probs = vector<double>(alphas.size());
 
-        fill(counts.begin(), counts.end(), 0);        
-        fill(scores.begin(), scores.end(), 0);        
+        fill(counts.begin(), counts.end(), 0);
+        fill(scores.begin(), scores.end(), 0);
         fill(probs.begin(), probs.end(), (1.0 / (double) alphas.size()));
     }
+}
+
+void Grasp::registra_logger(Logger* logger)
+{
+    Grasp::logger = logger;
 }
 
 Solucao Grasp::executa(Instancia *ins) {
@@ -57,8 +63,7 @@ Solucao Grasp::executa(Instancia *ins) {
 
         if (!iter || s.get_custo() < s_best.get_custo()) {
 	        s_best = s;
-            cout << "Ĩteração: " << iter << endl;
-            s_best.imprime();
+            logger->salva_resultado_parcial(iter, s_best.get_custo());
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;

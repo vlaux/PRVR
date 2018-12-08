@@ -1,4 +1,5 @@
 #include "construtor.h"
+#include "validador.h"
 #include <cstdlib>
 #include <cassert>
 #include <map>

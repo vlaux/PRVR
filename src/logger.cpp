@@ -10,6 +10,7 @@ Logger* Logger::get_instance()
     return instance;
 }
 
+// retorna tempo em segundos
 long double Logger::get_elapsed_time()
 {
     auto now = std::chrono::high_resolution_clock::now();
@@ -30,6 +31,19 @@ void Logger::inicia_logger(string file_prefix)
     logfile.open(logfile_name, fstream::out);
     tttfile.open(tttfile_name, fstream::out);
     results.open(resultsfile_name, fstream::app);
+}
+
+void Logger::salva_resultado_parcial(int iter, int custo)
+{
+
+    logfile << iter << "\t" << get_elapsed_time() << "\t" << custo << endl;
+
+    tttfile << get_elapsed_time() << endl;
+}
+
+void Logger::salva_resultado_final(int custo)
+{
+    results << get_elapsed_time() << "\t" << custo << endl;
 }
 
 void Logger::finaliza_logger()

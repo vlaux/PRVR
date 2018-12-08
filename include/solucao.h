@@ -43,7 +43,7 @@ class Solucao
     void adiciona_cliente(Cliente &c, Rota &r, Matriz &mapa_rotulos);
     void usa_rotulo(int id_rotulo);
     void remove_rotulo(int id_rotulo);
-    void remove_rota(int pos_rota);
+    void remove_rotas_vazias();
     bool existe_cliente_nao_atendido();
     void imprime();
     Instancia* get_instancia();

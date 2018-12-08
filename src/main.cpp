@@ -38,8 +38,6 @@ int main(int argc, char *argv[])
 
     char *metaheuristica = argv[2];
 
-    cout << metaheuristica << endl;
-
     // --------------- GRASP ---------------
     if (strcmp(metaheuristica, "GRASP") == 0)
     {
@@ -110,8 +108,8 @@ int main(int argc, char *argv[])
 
         bool is_reativo = alpha < 0;
 
-        solucao_final = Grasp(is_reativo, iter_grasp, alpha, bl).executa(ins);
-
+        solucao_final = Grasp(is_reativo, iter_grasp, alpha, bl, logger).executa(ins);
+        
         delete bl;
         if (bl_aux != nullptr) delete bl_aux;
     }
@@ -147,7 +145,11 @@ int main(int argc, char *argv[])
 
         logger->inicia_logger(file_prefix);
 
-        solucao_final = Vns(iter_vns).executa(s);
+        BuscaLocal* vns = new Vns(iter_vns);
+        vns->registra_logger(logger);
+        solucao_final = vns->executa(s);
+
+        delete vns;
     }
 
     // --------------- ILS ---------------
@@ -200,7 +202,11 @@ int main(int argc, char *argv[])
 
         logger->inicia_logger(file_prefix);
 
-        solucao_final = Ils(iter_ils, bl).executa(s);
+        BuscaLocal* ils = new Ils(iter_ils, bl);
+        ils->registra_logger(logger);
+        solucao_final = ils->executa(s);
+
+        delete ils;
     }
 
     // --------------- TABU ---------------
@@ -266,7 +272,11 @@ int main(int argc, char *argv[])
 
         logger->inicia_logger(file_prefix);
 
-        solucao_final = BuscaTabu(iter_tabu, tamanho_lista, bl_tabu).executa(s);
+        BuscaLocal* bt = new BuscaTabu(iter_tabu, tamanho_lista, bl_tabu);
+        bt->registra_logger(logger);
+        solucao_final = bt->executa(s);
+
+        delete bt;
 
         delete bl_tabu;
         if (bl_ils_tabu != nullptr) delete bl_ils_tabu;
@@ -277,6 +287,7 @@ int main(int argc, char *argv[])
 
     delete ins;
 
+    logger->salva_resultado_final(solucao_final.get_custo());
     logger->finaliza_logger();
 
     return EXIT_SUCCESS;

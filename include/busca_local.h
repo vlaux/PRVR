@@ -4,6 +4,7 @@
 #include "solucao.h"
 #include "instancia.h"
 #include "lista_tabu.h"
+#include "logger.h"
 
 // #define N_MOVIMENTOS 4
 
@@ -11,6 +12,9 @@ class BuscaLocal {
     public:
         virtual ~BuscaLocal() {};
         virtual Solucao executa(Solucao &s, ListaTabu* lista_tabu = nullptr) = 0;
+        void registra_logger(Logger* logger);
+    protected:
+        Logger *logger = nullptr;
 };
 
 // Movimentos INTRA-rota

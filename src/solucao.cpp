@@ -129,9 +129,16 @@ void Solucao::recalcula_rotulos_utilizados()
      });
 }
 
-void Solucao::remove_rota(int pos_rota)
+void Solucao::remove_rotas_vazias()
 {
-    rotas.erase(rotas.begin() + pos_rota);
+    for (int i = 0; i < rotas.size(); i++)
+    {
+        if (rotas.at(i).get_tamanho() < 3) {
+            rotas.erase(rotas.begin() + i);
+            rotas.shrink_to_fit();
+            i = 0;
+        }
+    }
 }
 
 int Solucao::get_n_rotas()

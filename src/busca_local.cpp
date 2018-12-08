@@ -16,6 +16,10 @@
 
 using namespace std;
 
+void BuscaLocal::registra_logger(Logger* logger)
+{
+    BuscaLocal::logger = logger;
+}
 
 /* 
  * Movimento intra rota
@@ -288,7 +292,7 @@ Solucao perturbacao_troca_conjuntos(Solucao &s, unsigned int tentativa) {
 Solucao perturbacao_realocacao_conjuntos(Solucao &s, unsigned int tentativa) {
     int n_rotas = s.get_n_rotas();
     if (n_rotas < 2)
-        throw SEM_ROTAS;
+        return s;
 
     Solucao s_temp = s;
 
@@ -352,11 +356,7 @@ Solucao _perturba_corte_cruzado(Solucao &s_temp, int id_rota_1, int id_rota_2, i
     s_temp.update_rota(nova_rota_2, id_rota_2);
 
     //remove a rota caso ela tenha virado uma rota com apenas depósito [0-0]
-    if (nova_rota_1.get_tamanho() < 3)
-        s_temp.remove_rota(id_rota_1);
-
-    if (nova_rota_2.get_tamanho() < 3)
-        s_temp.remove_rota(id_rota_2);
+    s_temp.remove_rotas_vazias();
 
     s_temp.recalcula_rotulos_utilizados();
 
@@ -512,13 +512,7 @@ Solucao _perturba_realocacao_conjuntos(Solucao &s_temp, int id_rota_1, int id_ro
     if (rota_2->get_carga() > s_temp.get_instancia()->get_capacidade())
         throw CAPACIDADE_EXCEDIDA;
 
-    if (rota_1->get_tamanho() < 3) {
-        s_temp.remove_rota(id_rota_1);
-    }
-
-    if (rota_2->get_tamanho() < 3) {
-        s_temp.remove_rota(id_rota_2);
-    }
+    s_temp.remove_rotas_vazias();
 
     s_temp.recalcula_rotulos_utilizados();
 

@@ -6,6 +6,7 @@
 #include "cliente.h"
 #include "instancia.h"
 #include "utils.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -22,9 +23,11 @@ class Grasp
         vector<double> scores;
         vector<double> probs;
         void avalia_alpha(Solucao s, Solucao s_best, float alpha_idx, int iter);
+        Logger* logger = nullptr;
     public:
-        Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl);
+        Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl, Logger* logger);
         Solucao executa(Instancia *ins);
+        void registra_logger(Logger* logger);
 };
 
 #endif

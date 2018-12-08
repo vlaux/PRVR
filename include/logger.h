@@ -27,8 +27,8 @@ class Logger {
         void inicia_logger(string file_prefix);
         void finaliza_logger();
 
-        void salva_resultado_final();
-        void salva_resultado_parcial();
+        void salva_resultado_final(int custo);
+        void salva_resultado_parcial(int iter, int custo);
         void salva_ttt();
 };
 

@@ -17,8 +17,11 @@ Solucao Ils::executa(Solucao &s, ListaTabu* tabu)
 
     int iter_sem_melhora = 0;
 
+    int iter = 0;
+
     while (iter_sem_melhora < max_iter)
     {
+        iter++;
         s_temp = perturbacao(s_temp);
 
         s_temp = bl->executa(s_temp, tabu);
@@ -27,6 +30,7 @@ Solucao Ils::executa(Solucao &s, ListaTabu* tabu)
         {
             iter_sem_melhora = 0;
             s_best = s_temp;
+            if (logger != nullptr) logger->salva_resultado_parcial(iter, s_best.get_custo());
         }
         else 
         {
