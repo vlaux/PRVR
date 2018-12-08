@@ -65,7 +65,6 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
                             lista_clientes.push_back(clientes_realocados.at(i).id);
                         
                         Movimento mov = std::make_tuple(id_rota, lista_clientes);
-                        tabu->adiciona(mov);
 
                         if (tabu->is_tabu(mov))
                         {
