@@ -20,7 +20,7 @@ using namespace std;
 /* 
  * Movimento intra rota
  * Realoca k clientes dentro de uma mesma rota
- * Testa movimento em todas as rotas
+ * Testa movimento apenas em uma rota sorteada
  */
 Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 {
@@ -32,72 +32,72 @@ Solucao movimento_intra_realoacao(Solucao &s, int tam, ListaTabu* tabu)
 
     int n_rotas = s_temp.get_n_rotas();
 
-    for (int id_rota = 0; id_rota < n_rotas; id_rota++) {
-        Rota rota_original = s_temp.get_rota(id_rota);
-        Rota* r = s_temp.get_rota_ref(id_rota);
+    int id_rota = rand() % n_rotas;
 
-        int tamanho = r->get_tamanho();
+    Rota rota_original = s_temp.get_rota(id_rota);
+    Rota* r = s_temp.get_rota_ref(id_rota);
 
-        for (int pos_cliente = 1; pos_cliente < tamanho - tam; pos_cliente++) {
+    int tamanho = r->get_tamanho();
 
-            vector<Cliente> clientes_realocados(&r->clientes.at(pos_cliente), &r->clientes.at(pos_cliente+tam));
+    for (int pos_cliente = 1; pos_cliente < tamanho - tam; pos_cliente++) {
 
-            // tenta realocá-lo em todas as outras posições
-            // começa em 1 pq não troca com depósito
-            // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
-            for (int i = 1; i < tamanho - tam; i++)
-            {
-                // não tenta realocar na mesma posição
-                if (i == pos_cliente) continue;
+        vector<Cliente> clientes_realocados(&r->clientes.at(pos_cliente), &r->clientes.at(pos_cliente+tam));
 
-                r->clientes.erase(r->clientes.begin() + pos_cliente, r->clientes.begin() + pos_cliente + tam);
-                r->clientes.insert(r->clientes.begin()+i, clientes_realocados.begin(), clientes_realocados.end());
+        // tenta realocá-lo em todas as outras posições
+        // começa em 1 pq não troca com depósito
+        // tamanho -2 pra não trocar com o depósito na última posição && desconta posição que foi removido
+        for (int i = 1; i < tamanho - tam; i++)
+        {
+            // não tenta realocar na mesma posição
+            if (i == pos_cliente) continue;
 
-                s_temp.recalcula_rotulos_utilizados();
+            r->clientes.erase(r->clientes.begin() + pos_cliente, r->clientes.begin() + pos_cliente + tam);
+            r->clientes.insert(r->clientes.begin()+i, clientes_realocados.begin(), clientes_realocados.end());
 
-                // encontrou movimento aprimorante        
-                if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
-
-                    // se existir lista tabu para verificar...
-                    if (tabu != nullptr) {
-                        vector<int> lista_clientes(clientes_realocados.size());
-                        for(unsigned int i = 0; i < clientes_realocados.size(); i++)
-                            lista_clientes.push_back(clientes_realocados.at(i).id);
-                        
-                        Movimento mov = std::make_tuple(id_rota, lista_clientes);
-
-                        if (tabu->is_tabu(mov))
-                        {
-                            #ifdef DEBUG
-                            cout << "-- Movimento Tabu --" << endl;
-                            #endif
-
-                            s_temp = s;
-                            continue;
-                        }
-                        else
-                            tabu->adiciona(mov);
-                    }
-
-                    // estratégia primeiro aprimorante
-                    #ifdef DEBUG
-                    cout << "movimento aprimorante encontrado" << endl;
-                    #endif
-
-                    return s_temp;
-                }
-
-                // não melhorou, restaura rota pro estado anterior ao movimento
-                else {
-                    s_temp.rotas[id_rota] = rota_original;
-                    s_temp.recalcula_rotulos_utilizados();
-                }
-            }
-
-            s_temp.rotas[id_rota] = rota_original;
             s_temp.recalcula_rotulos_utilizados();
 
+            // encontrou movimento aprimorante        
+            if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
+
+                // se existir lista tabu para verificar...
+                if (tabu != nullptr) {
+                    vector<int> lista_clientes(clientes_realocados.size());
+                    for(unsigned int i = 0; i < clientes_realocados.size(); i++)
+                        lista_clientes.push_back(clientes_realocados.at(i).id);
+                    
+                    Movimento mov = std::make_tuple(id_rota, lista_clientes);
+
+                    if (tabu->is_tabu(mov))
+                    {
+                        #ifdef DEBUG
+                        cout << "-- Movimento Tabu --" << endl;
+                        #endif
+
+                        s_temp = s;
+                        continue;
+                    }
+                    else
+                        tabu->adiciona(mov);
+                }
+
+                // estratégia primeiro aprimorante
+                #ifdef DEBUG
+                cout << "movimento aprimorante encontrado" << endl;
+                #endif
+
+                return s_temp;
+            }
+
+            // não melhorou, restaura rota pro estado anterior ao movimento
+            else {
+                s_temp.rotas[id_rota] = rota_original;
+                s_temp.recalcula_rotulos_utilizados();
+            }
         }
+
+        s_temp.rotas[id_rota] = rota_original;
+        s_temp.recalcula_rotulos_utilizados();
+
     }
 
     throw NENHUM_MOVIMENTO;
@@ -113,54 +113,54 @@ Solucao movimento_2_opt(Solucao &s, ListaTabu* tabu)
 
     int n_rotas = s_temp.get_n_rotas();
 
-    for (int id_rota = 0; id_rota < n_rotas; id_rota++) {
-        Rota rota_original = s_temp.get_rota(id_rota);
-        Rota* r = s_temp.get_rota_ref(id_rota);
+    int id_rota = rand() % n_rotas;
 
-        int tamanho = r->get_tamanho();
+    Rota rota_original = s_temp.get_rota(id_rota);
+    Rota* r = s_temp.get_rota_ref(id_rota);
 
-        for (int i = 1; i < tamanho; i++) {
-            for (int j = i + 1; j < (tamanho - 1); j++) {
-    
-                std::reverse(r->clientes.begin() + i, r->clientes.begin() + j);
-                s_temp.recalcula_rotulos_utilizados();
+    int tamanho = r->get_tamanho();
 
-                if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
-                    // se existir lista tabu para verificar...
-                    if (tabu != nullptr) {
-                        vector<int> lista_clientes;
-                        for (int t = i; t < j; t++)
-                            lista_clientes.push_back(rota_original.clientes.at(t).id);
+    for (int i = 1; i < tamanho; i++) {
+        for (int j = i + 1; j < (tamanho - 1); j++) {
 
-                        Movimento mov = std::make_tuple(id_rota, lista_clientes);
+            std::reverse(r->clientes.begin() + i, r->clientes.begin() + j);
+            s_temp.recalcula_rotulos_utilizados();
 
-                        if (tabu->is_tabu(mov))
-                        {
-                            #ifdef DEBUG
-                            cout << "-- Movimento Tabu --" << endl;
-                            #endif
+            if (s_temp.get_custo_ponderado() < s.get_custo_ponderado()) {
+                // se existir lista tabu para verificar...
+                if (tabu != nullptr) {
+                    vector<int> lista_clientes;
+                    for (int t = i; t < j; t++)
+                        lista_clientes.push_back(rota_original.clientes.at(t).id);
 
-                            s_temp = s;
-                            continue;
-                        }
-                        else
-                            tabu->adiciona(mov);
+                    Movimento mov = std::make_tuple(id_rota, lista_clientes);
+
+                    if (tabu->is_tabu(mov))
+                    {
+                        #ifdef DEBUG
+                        cout << "-- Movimento Tabu --" << endl;
+                        #endif
+
+                        s_temp = s;
+                        continue;
                     }
-
-                    // estratégia primeiro aprimorante
-                    #ifdef DEBUG
-                    cout << "movimento aprimorante encontrado" << endl;
-                    #endif
-
-                    return s_temp;
+                    else
+                        tabu->adiciona(mov);
                 }
 
-                else {
-                    s_temp.rotas[id_rota] = rota_original;
-                    s_temp.recalcula_rotulos_utilizados();
-                }
+                // estratégia primeiro aprimorante
+                #ifdef DEBUG
+                cout << "movimento aprimorante encontrado" << endl;
+                #endif
 
+                return s_temp;
             }
+
+            else {
+                s_temp.rotas[id_rota] = rota_original;
+                s_temp.recalcula_rotulos_utilizados();
+            }
+
         }
     }
 
