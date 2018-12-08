@@ -32,7 +32,7 @@ void Logger::inicia_logger(list<string> call_args)
     string timestamp = to_string(now.time_since_epoch().count());
 
     string logfile_name = "output/" + file_prefix + "_" + timestamp + "_log.txt";
-    string resultsfile_name = "output/resultados/" + file_prefix + ".txt";
+    string resultsfile_name = "output/results/" + file_prefix + ".txt";
 
     logfile.open(logfile_name, fstream::out);
     results.open(resultsfile_name, fstream::app);

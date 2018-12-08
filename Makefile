@@ -4,6 +4,7 @@ CXX ?= g++
 SRC_PATH = src
 BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
+OUTPUT_PATH = output/results
 
 # executable #
 BIN_NAME = prvr.out
@@ -37,6 +38,7 @@ release: dirs
 .PHONY: dirs
 dirs:
 	@echo "Criando pastas"
+	@mkdir -p $(OUTPUT_PATH)
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
 

@@ -2,6 +2,6 @@ a.out*
 *.json
 *.o
 *.d
-*.exe
+*.out
 teste.c
 *.DS_Store*
