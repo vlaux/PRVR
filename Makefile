@@ -6,7 +6,7 @@ BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
 
 # executable #
-BIN_NAME = main.exe
+BIN_NAME = prvr.out
 
 # extensions #
 SRC_EXT = cpp
