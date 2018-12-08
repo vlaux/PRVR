@@ -16,6 +16,7 @@ Grasp::Grasp(bool is_reativo, int n_iter, float alpha, BuscaLocal* bl)
     this->n_iter = n_iter;
     this->iter_until_update = 10;
     this->busca_local = bl;
+    this->is_reativo = is_reativo;
 
     if (is_reativo) {
         counts = vector<int>(alphas.size());
@@ -54,8 +55,10 @@ Solucao Grasp::executa(Instancia *ins) {
 
         s = busca_local->executa(s);
 
-        if (!iter || s.get_custo_ponderado() < s_best.get_custo_ponderado()) {
+        if (!iter || s.get_custo() < s_best.get_custo()) {
 	        s_best = s;
+            cout << "Ĩteração: " << iter << endl;
+            s_best.imprime();
             iter_sem_melhora = 0;
         } else {
             iter_sem_melhora++;

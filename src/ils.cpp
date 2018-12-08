@@ -23,7 +23,7 @@ Solucao Ils::executa(Solucao &s, ListaTabu* tabu)
 
         s_temp = bl->executa(s_temp, tabu);
 
-        if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
+        if (s_temp.get_custo() < s_best.get_custo())
         {
             iter_sem_melhora = 0;
             s_best = s_temp;

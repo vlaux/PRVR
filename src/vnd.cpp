@@ -29,7 +29,7 @@ Solucao Vnd::executa(Solucao &s, ListaTabu* tabu)
             continue;
         }
         
-        if (s_temp.get_custo_ponderado() < s_best.get_custo_ponderado())
+        if (s_temp.get_custo() < s_best.get_custo())
         {
             #ifdef DEBUG
             cout << "[VND] ENCONTROU. l=1" << endl;

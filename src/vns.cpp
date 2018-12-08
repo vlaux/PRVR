@@ -58,8 +58,8 @@ Solucao Vns::executa(Solucao &s, ListaTabu* lista_tabu)
             }
         }
 
-        if (s_best.get_custo_ponderado() < custo) {
-            custo = s_best.get_custo_ponderado();
+        if (s_best.get_custo() < custo) {
+            custo = s_best.get_custo();
             iter_sem_melhora = 0;
         }
         else iter_sem_melhora++;
