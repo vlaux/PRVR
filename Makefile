@@ -66,6 +66,8 @@ $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
 # Source file rules
 # After the first compilation they will be joined with the rules from the
 # dependency files to provide header dependencies
+mkdir -p output/resultados
+
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	@echo "Compilando: $< -> $@"
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
