@@ -212,7 +212,7 @@
 		set title \'$filename\'
 		set terminal postscript color \'Helvetica\' 
 		set output \'$ps_lin_filename\'
-		plot "$emp_lin_filename" t "empirical" w points, "$the_lin_filename" t "estimated" with lines 3, "$up_lin_filename" t "+1 std dev range" w lines 4, "$lo_lin_filename" t "-1 std dev range" w lines 4 
+		plot "$emp_lin_filename" t "empirical" w points, "$the_lin_filename" t "estimated" with lines linestyle 3, "$up_lin_filename" t "+1 std dev range" w lines linestyle 4, "$lo_lin_filename" t "-1 std dev range" w lines linestyle 4 
 		quit
 EOF
 
@@ -244,7 +244,7 @@ EOF
 		set title \'$filename\'
 		set terminal postscript color \'Helvetica\'
 		set output \'$ps_exp_filename\'
-		plot "$emp_exp_filename" t "empirical" w points, "$the_exp_filename" t "theoretical" w lines 3
+		plot "$emp_exp_filename" t "empirical" w points, "$the_exp_filename" t "theoretical" w lines linestyle 3
 		quit
 EOF
 
