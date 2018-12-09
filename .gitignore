@@ -3,5 +3,6 @@ a.out*
 *.o
 *.d
 *.out
-teste.c
+*_res.txt
+*_log.txt
 *.DS_Store*
