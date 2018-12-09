@@ -20,6 +20,8 @@
 
 using namespace std;
 
+#define ITER_VNS 50
+
 Logger *logger = Logger::get_instance();
 
 int main(int argc, char *argv[])
@@ -55,16 +57,15 @@ int main(int argc, char *argv[])
         // ----------- com VNS -----------
         if (strcmp(metodo_bl, "VNS") == 0)
         {
-            int iter_vns = atoi(argv[6]);
-            bl = new Vns(iter_vns);
+            // int iter_vns = atoi(argv[6]);
+            bl = new Vns(ITER_VNS);
         }
 
         // ----------- com ILS -----------
         else if (strcmp(metodo_bl, "ILS") == 0)
         {
             int iter_ils = atoi(argv[6]);
-            int iter_vns_aux = 1; // FIXAR BASEADO EM OUTROS TESTES (?)
-            bl_aux = new Vns(iter_vns_aux); // FIXAR BASEADO EM TESTES GRASP
+            bl_aux = new Vns(ITER_VNS); // baseado em testes
             bl = new Ils(iter_ils, bl_aux);
         }
 
@@ -84,8 +85,7 @@ int main(int argc, char *argv[])
             // ----------- TABU com VNS -----------
             if (strcmp(bl_tabu, "VNS") == 0)
             {
-                int iter_bl_aux = atoi(argv[9]);
-                bl_aux = new Vns(iter_bl_aux);
+                bl_aux = new Vns(ITER_VNS);
             }
             // ----------- TABU com VND -----------
             else if (strcmp(bl_tabu, "VND") == 0)
@@ -154,8 +154,7 @@ int main(int argc, char *argv[])
         // ----------- ILS com VNS -----------
         if (strcmp(tipo_bl, "VNS") == 0)
         {
-            int iter_vns = atoi(argv[6]);
-            bl = new Vns(iter_vns);
+            bl = new Vns(ITER_VNS);
         }
         // ----------- ILS com VND -----------
         else if (strcmp(tipo_bl, "VND") == 0)
@@ -194,8 +193,7 @@ int main(int argc, char *argv[])
         // ----------- TABU com VNS -----------
         if (strcmp(tipo_bl_tabu, "VNS") == 0)
         {
-            int iter_bl_aux = atoi(argv[7]);
-            bl_tabu = new Vns(iter_bl_aux);
+            bl_tabu = new Vns(ITER_VNS);
         }
         // ----------- TABU com VND -----------
         else if (strcmp(tipo_bl_tabu, "VND") == 0)
@@ -206,8 +204,7 @@ int main(int argc, char *argv[])
         {
             int iter_bl_aux = atoi(argv[7]);
 
-            int iter_bl_ils_tabu = 100; // FIXAR BASEADO EM TESTES GRASP
-            bl_ils_tabu = new Vns(iter_bl_ils_tabu);
+            bl_ils_tabu = new Vns(ITER_VNS);
 
             bl_tabu = new Ils(iter_bl_aux, bl_ils_tabu);
         }

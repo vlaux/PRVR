@@ -6,6 +6,7 @@ namespace fs = std::experimental::filesystem;
 
 using namespace std;
 
+// Compilar com -std=c++17 -lstdc++fs
 int main(int argc, char *argv[])
 {
     string results_path = argv[1];
