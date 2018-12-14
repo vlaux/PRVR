@@ -6,17 +6,19 @@ namespace fs = std::experimental::filesystem;
 
 using namespace std;
 
+// Compilar com -std=c++17 -lstdc++fs
 int main(int argc, char *argv[])
 {
-    string path = "output/results";
-    string log_path = "output";
-
     string prefix = argv[1];
+
+    string path = argv[2];
+    string log_path = argv[3];
 
     for (int i = 1; i <= 7; i++)
     {
         for (int j = 1; j <= 3; j++)
         {
+            string ins_name = "prvr-" + to_string(i) + "-" + to_string(j) + ".ins";
             string curr_ins = "prvr-" + to_string(i) + "-" + to_string(j) + "_" + prefix;
             string nome_arquivo;
 
@@ -51,9 +53,11 @@ int main(int argc, char *argv[])
                         sum_tempo += tempo;
                     }
 
-                    cout << "===============================" << endl;
-                    cout << curr_ins << endl;
-                    cout << "--------" << endl;
+                    // Para gerar coluna de tabela em LaTeX
+                    // cout << "\\hline" << endl;
+                    // cout << ins_name << " & " << best_custo << " & " << best_tempo << " & " << sum_custo / count << " & " << sum_tempo / count << "\\\\" << endl;
+                    // cout << " & " << sum_custo / count << " & " << sum_tempo / count << endl;
+                    cout << "============================" << endl;                    
                     cout << "Melhor custo:\t\t" << best_custo << endl;
                     cout << "Custo médio:\t\t" << sum_custo / count << endl;
                     cout << "Melhor tempo:\t\t" << best_tempo << endl;
@@ -106,9 +110,10 @@ int main(int argc, char *argv[])
                 }
             }
 
-            cout << "Maior iteração:\t\t" << maior_iteracao << endl;
-            cout << "Maior intervalo:\t" << maior_intervalo << endl;
-            cout << "Média intervalo:\t" << sum_intervalos / count_intervalos << endl;
+            // Quando útil
+            // cout << "Maior iteração:\t\t" << maior_iteracao << endl;
+            // cout << "Maior intervalo:\t" << maior_intervalo << endl;
+            // cout << "Média intervalo:\t" << sum_intervalos / count_intervalos << endl;
         }
     }
 
